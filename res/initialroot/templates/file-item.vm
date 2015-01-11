@@ -1,0 +1,306 @@
+#parse( "item-header.vm" )
+<!-- ======== START OF FILE DATA ======== -->
+#set( $file = $item )
+<div class="header">
+<div class="subTitle">$project</div>
+<h2 title="Statdoc File ${item.getName()}" class="title">File ${item.getName()}</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>
+<table border="0" style="border-collapse: collapse;table-layout: auto;width: auto;">
+  <colgroup>
+    <col span="1" width="200px">
+    <col width="10px" style="text-align:center;">
+    <col width="200px">
+    <col width="10px" style="text-align:center;">
+    <col span="1" width="200px">
+  </colgroup>
+#foreach( $match in $item.getChildrenBy( "match:input", "match:produce", "match:call") )
+<tr class="inheritance">
+	<!-- DEBUG $match.getFullName() -->
+#set( $noMatches = $match.getChildren().size() )
+#set( $origin = "" )
+#set( $origin = $match.get("origin") )
+<!-- DEBUG $match.getChildren() -->
+<td style="text-align:right;">
+    
+#*
+ calling script   
+*#
+#if ( $noMatches == 0 )
+
+#else
+#foreach ( $submatch in $match.getMatchChildrenBy( "match:produce", "match:input", "match:call" ) )
+    #displayItemLink( $submatch "span" "<br>" )
+#end
+#end
+</td>
+<td colspan="1" style="text-align:center; background: ${item.myColor()};">
+#*
+ line number   
+*#
+#if ( "$!origin" != "" )
+<i>&nbsp;[<a href="../${origin.getLink()}" title="$origin.getFullName()">$origin.getLine()</a>]&nbsp;</i>
+#end
+</td>  
+#*
+ associated output
+*#
+#if ( $noMatches == 0 )
+<td style="white-space: nowrap;">
+${match.getAbbrevProperty("term", 25)}
+(no match)
+</td>
+#elseif ( $noMatches == 1 )
+#foreach ( $submatch in $match.getChildren() )
+    #displayItemLink( $submatch "td" )
+#end
+#else
+<td style="white-space: nowrap;" >
+#set( $uniqueId = "multin_${match.hashCode()}" )
+<a href="javascript:toggle('$uniqueId');">
+[+]&nbspl${match.getAbbrevProperty("term", 30)}
+</a>
+<div id="$uniqueId" style="display:none;">
+#foreach ( $submatch in $match.getChildren() )
+    #displayItemLink( $submatch "span" "<br>")
+#end
+</div>
+</td>
+#end  
+</tr>
+#end
+<tr class="inheritance">
+<td style="border: none;"></td>
+<td style="text-align:center;background: ${item.myColor()};">&rarr;</td>
+<td  style="background: ${item.myColor()};">
+<span style="background: ${item.myColor()};"><b>${item.getAbbrevFullName(35)}</b></span>
+</td>
+<td style="text-align:center;background: ${item.myColor()};">&#8600;</td>
+</tr>
+#foreach( $match in $item.getChildrenBy("match:output","match:run","match:use") )
+<tr class="inheritance">
+#set( $noMatches = $match.getChildren().size() )
+#set( $origin = "" )
+#set( $origin = $match.get("origin") )
+<!-- DEBUG $match.getChildren() -->
+<td colspan="2" style="border: none;"></td>
+#*
+ associated output
+*#
+#if ( $noMatches == 0 )
+<td style="text-align:right;" colspan="1">
+${match.getAbbrevProperty("term", 25)}
+(no match)
+</td> 
+#elseif ( $noMatches == 1 )
+#foreach ( $submatch in $match.getChildren() )
+<td style="text-align:right; background: #if ( "$!{submatch.getLine()}" != "" )  $submatch.getFileItem().myColor() #else $submatch.myColor() #end;" colspan="1">
+    #displayItemLink( $submatch "span" "<br>" )
+</td> 
+#end
+#else
+<td style="text-align:right;white-space: nowrap;" colspan="1">
+#set( $uniqueId = "multout_${match.hashCode()}" )
+<a href="javascript:toggle('$uniqueId');">
+[+]&nbsp;${match.getAbbrevProperty("term", 30)}
+</a><br>
+<div id="$uniqueId" style="display:none;">
+#foreach ( $submatch in $match.getChildren() )
+    #displayItemLink( $submatch "span" "<br>" )
+#end
+</div>
+</td> 
+#end
+<td style="text-align:center; background: ${item.myColor()};">
+#*
+ line number   
+*#
+#if ( "$!origin" != "" )
+<i>&nbsp;[<a href="../${origin.getLink()}" title="$origin.getFullName()">$origin.getLine()</a>]&nbsp;</i>
+#end
+</td>
+<td>
+#*
+ used in scripts   
+*#
+#if ( $noMatches == 0 )
+
+#else
+#foreach ( $submatch in $match.getMatchChildrenBy(  "match:use", "match:output", "match:run" ) )
+    #displayItemLink( $submatch "span" "<br>" )
+#end
+#end
+</td>
+</tr>
+#end
+</table>
+</li>
+</ul>
+</li>
+</ul>
+#*
+
+KEY INFORMATION FOR ALL FILES
+
+*#
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre><span class="strong">${item.getFullName()} <a href="../${item.getFileLink()}">open</a></span>
+${item.getType()}</pre>
+</li>
+</ul>
+#if ( "$!{item.getSummary()}" != "" )
+<ul class="blockList">
+<li class="blockList">
+<div class="block">$!{item.getSummary()}</div>
+</li>
+</ul>
+#end
+#*
+<ul class="blockList">
+<li class="blockList">
+<div class="block">
+    #colors_table( $item )  
+</div>
+</li>
+</ul>
+*#
+</div>
+#warnings( $item )
+#if( $item.keySet().size() > 0 )
+<ul class="blockList">
+<li class="blockList">
+#propmap( $item )
+</li>
+</ul>
+#end
+
+#*
+
+VARIABLES (for file:data)
+
+*#
+#if( ${file.getType().startsWith("file:data")} )
+#variableItems( $groupedVars "All variables in ${item.getName()}" )
+#end
+
+#*
+
+CmdItem (for file:script)
+
+*#
+#if( ${file.getType().startsWith("file:script")} )
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variable Summary table, listing datasets and labels">
+<caption><span><a name="variables"><!-- --></a>All commands</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" style="width:30px" scope="col">#</th>
+<th class="colLast" width="100%" scope="col">content
+<span style="float: right;">&nbsp;<a title="Raw Source" href="javascript:toggle('rawframe');">raw</a>
+#foreach( $match in $file.getChildrenByBy( "cmd:outputcmd:log", "match:output:file:log" ) )
+#foreach( $log in $match.getChildren() )
+<span style="float: right;">&nbsp;<a title="$log.getFullName()" href="javascript:toggle('log_$log.hashCode()');">log</a>
+</span>
+#end
+#end
+</th>
+#set( $span =  $file.getChildrenBy("cmd:").size() * 2 )
+#foreach( $match in $file.getChildrenByBy( "cmd:outputcmd:log", "match:output:file:log" ) )
+#foreach( $log in $match.getChildren() )
+<td style="display:none" id="log_$log.hashCode()" rowspan="$span">
+<!-- DEBUG $log $log.getChildrenBy( "" ) $log.getChildren() -->
+<iframe scrolling="yes" width="600px" height="100%" src="../$log.getLink()#content" name="statdocSubFrame_${log.hashCode()}" title="Log File" style="height: 100%; width: 600px; overflow-x:scroll; overflow-y:scroll; -ms-overflow-x:scroll; -ms-overflow-y:scroll;"></iframe>
+</td>
+#end
+#end
+<td style="display:none" id="rawframe" rowspan="$span">
+<iframe scrolling="yes" width="600px" height="100%" src="../$item.getLink()#content" name="statdocSubFrame_raw" title="Log File" style="height: 100%; width: 600px; overflow-x:scroll; overflow-y:scroll; -ms-overflow-x:scroll; -ms-overflow-y:scroll;"></iframe>
+</td>
+</tr>
+#foreach( $line in $file.getChildrenBy("cmd:") )
+#set ( $uniqueId = "cmd_${line.hashCode()}" )
+#if ( "$color" == "altColor" ) #set( $color = "rowColor" ) #else #set( $color = "altColor" ) #end
+#set( $ind = 2 * $line.get("indent") )
+#if ( "$!{line.getSummary()}" != "" )
+<tr>
+<td class="colFirst" style="width:30px"></td>
+<td class="colLast" style="padding-left:${ind}em"><div class="cmd_comment">$!{line.getSummary()}</div></td>
+</tr>
+#end
+<tr class="$!line.getType().replaceAll(":","_") $color">
+<td class="colFirst" style="width:30px;text-align:right;">
+<a name="$line.getLine()" title="$line.getCommand()"><!-- -->
+    #warningIcon($line)$line.getLine()</a>#*
+    *#&nbsp;<a onclick='toggle("$uniqueId");' title="$line.getCommand()">[+]</a>
+</td>
+<td class="colLast" style="padding-left:${ind}em">
+#cmdLine( $line $uniqueId ) 
+</td>
+</tr>
+#end
+</table>
+</li>
+</ul>
+#end
+
+#*
+
+CONTENT
+
+*#
+#if ( $file.hasContent() )
+<a name="content"><!--   --></a>
+<!-- ========== CONTENT =========== -->
+<ul class="blockList">
+<li class="blockList">
+<ul class="blockList">
+<li class="blockList">
+<h3>Content</h3>
+<pre>
+$file.getContent()
+</pre>
+</li>
+</ul>
+</li>
+</ul>
+#end
+
+#*
+
+TOKENS
+
+*#
+<ul class="blockList">
+<li class="blockList">
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========== TOKENS =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Tokens</h3>
+#foreach( $child in $file.getChildrenBy("token") )
+#set( $fs = $child.getChildren().size() + 6 )
+#if ( $fs > 24 ) #set( $fs = 24 ) #end
+#if ( $fs > 6 )
+<span style="font-size: ${fs}pt;"><a class="tokens" href="../${child.getLink()}">$child.getName()</a></span>&nbsp;&nbsp;
+#end
+#end
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+#parse( "item-footer.vm" )
