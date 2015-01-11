@@ -1,0 +1,6 @@
+javadoc/
+statdoc/
+target/
+.DS_Store
+lib/stata-sfi.jar
+*~
