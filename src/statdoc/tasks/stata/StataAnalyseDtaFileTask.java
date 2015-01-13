@@ -78,6 +78,13 @@ public class StataAnalyseDtaFileTask implements Task {
             File output = new File(hub.outputDir, "derived/analyse_dta_"
                     + file.getName() + "_" + id +".smcl");
 
+            // stop execution if no Stata exec
+            if ( hub.getStataPath() == null ) {
+                dtaFileItem.addWarning( "Please provde a valid Stata "
+                        + "executatble in statdoc.properties." );
+                return;
+            }
+            
             if (!output.exists()) {
 
                 cmd =  c + " \""

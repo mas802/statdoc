@@ -265,13 +265,15 @@ public class Statdoc {
             i++;
         }
         if ( !(new File(stataPath)).exists() ) {
+            System.err.println(" ");
             System.err.println("No installations of Stata found, please edit");
             System.err.println("the statadoc.properties file and add the path");
             System.err.println("of a Stata executable on this system to the");
             System.err.println("statdoc.stata.path property.");
-            return;
+            System.err.println(" ");
+        } else {
+            hub.setStataPath(stataPath);
         }
-        hub.setStataPath(stataPath);
 
         /*
          * set commands for stata
