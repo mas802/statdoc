@@ -19,7 +19,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +56,7 @@ import statdoc.utils.TemplateUtil;
  */
 public class Statdoc {
 
-    private final static String version = "alpha";
+    private final static String version = "v0.9.0-beta";
 
     // directory for all the files from initialroot
     private static final String[] dirs = new String[] { "overview", "files",
@@ -192,10 +195,10 @@ public class Statdoc {
         System.out.println("output: " + outputDir.getAbsolutePath());
         System.out.println("Version " + version);
         System.out.println("Please be patient...");
-        System.out.println();
+        System.out.println( " " );
         System.out.println("STATDOC: Copyright 2014-2015, Markus Schaffner");
         System.out.println("Apache License, Version 2.0");
-        System.out.println();
+        System.out.println( " " );
  
         hub.sourceDir = sourceDir;
         hub.outputDir = outputDir;
@@ -260,16 +263,16 @@ public class Statdoc {
                 "stata").split("[\\s]*,[\\s]*");
         String stataPath = "unset";
         int i = 0;
-        while (!(new File(stataPath)).exists() && stataProgs.length > i) {
+        while (!(new File(stataPath)).canExecute() && stataProgs.length > i) {
             stataPath = stataProgs[i];
             i++;
         }
-        if ( !(new File(stataPath)).exists() ) {
+        if ( !(new File(stataPath)).canExecute() ) {
             System.err.println(" ");
             System.err.println("No installations of Stata found, please edit");
             System.err.println("the statadoc.properties file and add the path");
-            System.err.println("of a Stata executable on this system to the");
-            System.err.println("statdoc.stata.path property.");
+            System.err.println("of a Stata 13 executable on this system to");
+            System.err.println("the statdoc.stata.path property.");
             System.err.println(" ");
         } else {
             hub.setStataPath(stataPath);
@@ -354,12 +357,12 @@ public class Statdoc {
 
         me.taskQueue.shutdown();
 
-        System.out.println();
+        System.out.println( " " );
         System.out.println( hub.stats() );
-        System.out.println();
+        System.out.println( " " );
         System.out.println("All done, copy the following URL into your browser:");
         System.out.println("file://" + hub.outputDir.getAbsolutePath() + "/index.html");
-        System.out.println();
+        System.out.println( " " );
     }
 
 }

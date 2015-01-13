@@ -456,7 +456,7 @@ public class StataUtils {
         
         TemplateUtil.getInstance().evalVMtoFile( tempDir.resolve(templateName+".do").toFile(), templateName+".do.vm", data);
         
-        ps = rt.exec( stataexe + " -s -q do " + templateName + ".do", null, tempDir.toFile() );
+        ps = rt.exec( new String[] {stataexe, "-s", "-q",  "do", templateName + ".do"}, null, tempDir.toFile() );
         ps.waitFor();
         
         Files.copy( tempDir.resolve( templateName + ".smcl"), outputDir.toPath(), StandardCopyOption.REPLACE_EXISTING);

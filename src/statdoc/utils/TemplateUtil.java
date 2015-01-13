@@ -110,6 +110,23 @@ public class TemplateUtil {
             e.printStackTrace();
         }
 
+        
+        /*
+         * work around for the 
+         * "The requested operation cannot be performed 
+         * on a file with a user-mapped section open."
+         * Exception
+         * 
+         */
+        if ( !f.canWrite() ) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        
         /*
          * Now have the template engine process your template using the data
          * placed into the context. Think of it as a 'merge' of the template and
@@ -128,10 +145,8 @@ public class TemplateUtil {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }        
         
-        
-
     }
 
     // velocity template evaluation
