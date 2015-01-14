@@ -28,6 +28,7 @@ public class TokenItem extends Item {
     
     protected TokenItem( String token ) {
         this.token = token;
+        this.link = 
         this.type = "token";
         
         this.name = token;
@@ -35,9 +36,18 @@ public class TokenItem extends Item {
         
     }
 
+    public String getClean() {
+        String clean = token.replaceAll("[^a-zA-Z0-9-]", "_");
+        return clean;
+    }
+ 
+    public String getGroup() {
+        return getClean().substring(0,1).toLowerCase();
+    }
+    
     @Override
     public String getLink() {
-        String link = "tokens/" + token.replaceAll("[^a-zA-Z0-9-]", "_") + ".html";
+        String link = "tokens/" + getGroup() + ".html#" + getClean();
         Collection<Item> items = getChildren();
         if ( items.size() == 1 ) {
             Item i = items.iterator().next();

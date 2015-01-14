@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -92,16 +93,19 @@ public class GenerateTokeninfoTask implements Task {
 
         Map<String, TokenItem> tokenMap = itemHolder.getTokens();
 
-        /*
-         * only add TokenItem that have more than one child.
-         */
-        ArrayList<Item> arr = new ArrayList<Item>();
-        for (Item item : tokenMap.values()) {
-            Collection<Item> children = item.getChildren();
-            if (children.size() > 1 || item.getType().startsWith("match:")) {
-                arr.add(item);
+        Map<String,Item> itemMap = new TreeMap<String,Item>();
+        for (TokenItem item : tokenMap.values()) {
+            String key = item.getGroup();
+            if ( !itemMap.containsKey(key)) {
+                itemMap.put(key, new Item(key,key,"tokens/" + key + ".html"));
             }
+            itemMap.get(key).addChild(item);
         }
+
+        /*
+         * make into array
+         */
+        ArrayList<Item> arr = new ArrayList<Item>(itemMap.values());
 
         for (int i = 0; i < arr.size(); i++) {
 
@@ -117,7 +121,7 @@ public class GenerateTokeninfoTask implements Task {
                 data.put("next", arr.get(i + 1));
             }
 
-            File f = new File(rootDir, item.getLink() + "");
+            File f = new File(rootDir, item.getLink() );
             taskList.execute(new GeneralVMTask("token-item.vm", f, data));
         }
 

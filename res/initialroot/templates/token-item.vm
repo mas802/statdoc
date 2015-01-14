@@ -10,7 +10,7 @@
 <li class="blockList">
 <hr>
 <br>
-<pre><span class="strong">${item.getName()}</span>
+<pre><span class="strong">Tokens starting with ${item.getName()}</span>
 </pre>
 </li>
 </ul>
@@ -37,11 +37,13 @@
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+#foreach( $titem in $item.getChildren() )
 <!-- ========== LINKS =========== -->
 <ul class="blockList">
 <li class="blockList">
-<h3>Tokens</h3>
-#set( $map = $item.getChildrenMap() )
+<a name="$titem.getClean()"><!-- --></a>
+<h3>$titem.getName()</h3>
+#set( $map = $titem.getChildrenMap() )
 #foreach( $type in $map.keySet() )
 <a name="$type"><!--   --></a>
 #if ( $type.startsWith("cmd:") ) 
@@ -64,6 +66,7 @@
 #end
 </li>
 </ul>
+#end
 </div>
 </div>
 <!-- ========= END OF CLASS DATA ========= -->

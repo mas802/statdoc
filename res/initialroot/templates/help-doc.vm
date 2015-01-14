@@ -168,9 +168,8 @@ CRITICAL TO 1.0
 - upload to github
 - implement downloadable Stata package
 + Write a proper help doc (uptodate).
-- readme.md
++ readme.md
 - clean javadoc
-- Stata Journal Article
 
 BUGS
 - StataParseDoFileTask is inaccurate if variable named after keyword (eg weight)
@@ -242,7 +241,7 @@ IDEAS
 - run parsed do files that output to line dependen log files
 
 PROBLEMS
-- deal with too many files
++ deal with too many files (reduced tokens to one page per starting letter)
 - deal with large files for read in
 - htmlCompressor
 
