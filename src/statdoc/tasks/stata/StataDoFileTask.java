@@ -50,17 +50,19 @@ public class StataDoFileTask implements Task {
     File file;
     File rootDir;
     ThreadPoolExecutor taskList;
+    private StatdocItemHub hub;
     String type;
 
     private MatchItem currentIn;
     private MatchItem currentOut;
 
     public StataDoFileTask(File rootDir, File file, String type,
-            ThreadPoolExecutor taskList) {
+            StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
         this.rootDir = rootDir;
         this.taskList = taskList;
         this.type = type;
+        this.hub = hub;
     }
 
     @Override
@@ -68,8 +70,6 @@ public class StataDoFileTask implements Task {
 
         Thread.currentThread().setName(
                 " Stata parse do file task for file: " + file);
-
-        StatdocItemHub hub = StatdocItemHub.getInstance();
 
         FileItem fileItem = hub.createFile(file, rootDir, type);
 
@@ -315,7 +315,7 @@ public class StataDoFileTask implements Task {
                     // deal with it if it is the first doc
                     // TODO make the 10 a config issue
                     if (!firstDoc && docRange[0] < 10) {
-                        StatdocItemHub.getInstance().addDocToItem(fileItem,
+                        hub.addDocToItem(fileItem,
                                 currentDoc, docRange);
                         firstDoc = true;
                         currentDoc = null;
@@ -387,8 +387,6 @@ public class StataDoFileTask implements Task {
     private CmdItem parseLine(String currentCmd, FileItem fileItem,
             Integer[] cmdRange, String currentDoc, String currentComment,
             Integer[] docRange, int indent) {
-
-        StatdocItemHub hub = StatdocItemHub.getInstance();
 
         Map<String, Object> info = new TreeMap<String, Object>();
 

@@ -36,27 +36,27 @@ public class GenerateTokeninfoTask implements Task {
 
     File rootDir;
     ThreadPoolExecutor taskList;
-
-    public GenerateTokeninfoTask(File rootDir, ThreadPoolExecutor taskList) {
+    StatdocItemHub hub;
+    
+    public GenerateTokeninfoTask(File rootDir, StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.rootDir = rootDir;
         this.taskList = taskList;
+        this.hub = hub;
     }
 
     @Override
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
 
-        StatdocItemHub itemHolder = StatdocItemHub.getInstance();
-
-        TemplateUtil tu = TemplateUtil.getInstance();
+         TemplateUtil tu = TemplateUtil.getInstance();
 
         {
             Item tokens = new Item("tokens", "tokens", "tokens/tokens-summary.html", "tokens:summary");
 
             Map<String, Object> data = new TreeMap<String, Object>(
-                    itemHolder.getGlobals());
+                    hub.getGlobals());
             TreeSet<TokenItem> ts = new TreeSet<TokenItem>();
-            ts.addAll(itemHolder.getTokens().values());
+            ts.addAll(hub.getTokens().values());
 
             TreeSet<TokenItem> freqtmp = new TreeSet<TokenItem>(
                     new Comparator<Item>() {
@@ -69,7 +69,7 @@ public class GenerateTokeninfoTask implements Task {
                                     .compareTo(o2.getFullName());
                         }
                     });
-            freqtmp.addAll(itemHolder.getTokens().values());
+            freqtmp.addAll(hub.getTokens().values());
 
             List<Item> freq = new ArrayList<Item>();
             int counter = 0;
@@ -91,7 +91,7 @@ public class GenerateTokeninfoTask implements Task {
             tu.evalVMtoFile(f2, "tokens-frame.vm", data);
         }
 
-        Map<String, TokenItem> tokenMap = itemHolder.getTokens();
+        Map<String, TokenItem> tokenMap = hub.getTokens();
 
         Map<String,Item> itemMap = new TreeMap<String,Item>();
         for (TokenItem item : tokenMap.values()) {
@@ -111,7 +111,7 @@ public class GenerateTokeninfoTask implements Task {
 
             Item item = arr.get(i);
             Map<String, Object> data = new TreeMap<String, Object>(
-                    itemHolder.getGlobals());
+                    hub.getGlobals());
             data.put("item", item);
             data.put("section", "tokens");
             if (i > 0) {

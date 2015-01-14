@@ -28,16 +28,16 @@ import statdoc.items.StatdocItemHub;
 public class MatchingTask implements Task {
 
     ThreadPoolExecutor taskList;
+    StatdocItemHub hub;
 
-    public MatchingTask(ThreadPoolExecutor taskList) {
+    public MatchingTask(StatdocItemHub hub, ThreadPoolExecutor taskList) {
+        this.hub = hub;
         this.taskList = taskList;
     }
 
     @Override
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
-
-        StatdocItemHub hub = StatdocItemHub.getInstance();
 
         hub.resolveMatches();
  

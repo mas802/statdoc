@@ -16,12 +16,10 @@
 package statdoc.items;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import statdoc.tasks.stata.StataRunner;
 import statdoc.utils.NaturalComparator;
 
 /**
@@ -71,9 +68,6 @@ public class StatdocItemHub {
     private Map<String, Object> globals = new TreeMap<String, Object>();
     private String stataPath;
     private Map<String, String[]> stataCmdTypes;
-
-    @Deprecated
-    Map<String, StataRunner> engineMap = new HashMap<String, StataRunner>();
 
     /* 
      * GETTER / SETTERS and data access
@@ -618,28 +612,6 @@ public class StatdocItemHub {
         return outter;
     }
 
-    /*
-     * STATS ENGINES (currently only stata)
-     */
-
-    @Deprecated
-    synchronized public StataRunner getEngine(FileItem dtaFile) {
-        if (engineMap.containsKey(dtaFile.getFullName())) {
-            return engineMap.get(dtaFile.getFullName());
-        } else {
-            // System.out.println("request new engine " + dtaFile);
-            StataRunner stataRunner = null;
-            try {
-                stataRunner = new StataRunner(getStataPath(), dtaFile);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            engineMap.put(dtaFile.getFullName(), stataRunner);
-            return stataRunner;
-        }
-    }
-
     public String stats() {
         return "Variables: " + vars.size() + "  | Files: " + files.size()
                 + "  | Tokens: " + tokens.size();
@@ -647,7 +619,6 @@ public class StatdocItemHub {
 
     /*
      * GUT CODE FOR SINGLETON IN A THREADED ENVIRONMENT
-     */
 
     static class Holder {
         static volatile StatdocItemHub instance = new StatdocItemHub();
@@ -656,5 +627,6 @@ public class StatdocItemHub {
     public static StatdocItemHub getInstance() {
         return Holder.instance;
     }
+     */
 
 }

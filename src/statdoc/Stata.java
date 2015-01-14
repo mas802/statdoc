@@ -97,7 +97,7 @@ public class Stata {
             SFIToolkit.errorln("error" + e.getMessage() );
             e.printStackTrace();
         }
-        SFIToolkit.displayln("test " + StatdocItemHub.getInstance().stats());
+        // SFIToolkit.displayln("test " + StatdocItemHub.getInstance().stats());
         return 0;
     }
     

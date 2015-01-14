@@ -134,7 +134,7 @@ public class Statdoc {
         
         long starttime = System.currentTimeMillis();
 
-        final StatdocItemHub hub = StatdocItemHub.getInstance();
+        final StatdocItemHub hub = new StatdocItemHub();
 
         // default values, current directory, output into statdoc
         // do not initialise
@@ -297,7 +297,7 @@ public class Statdoc {
         // start of the first round of just reading in all files
         // and processing all files
         me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(sourceDir, generalProp,
-                me.taskQueue));
+                hub, me.taskQueue));
 
         /*
         // work through second stage file producing
@@ -306,7 +306,7 @@ public class Statdoc {
         */
         
         // resolve all matchings
-        me.workQueue("Stage 2b (resolve matching)", new MatchingTask(me.taskQueue));
+        me.workQueue("Stage 2b (resolve matching)", new MatchingTask(hub, me.taskQueue));
 
         // set up map for overview files
         Item overview = new Item("overview", "overview",
@@ -343,10 +343,10 @@ public class Statdoc {
 
         // build the rest
         me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir,
-                me.taskQueue));
+                hub, me.taskQueue));
         me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir,
-                me.taskQueue));
-        me.taskQueue.execute(new GenerateVariableinfoTask(me.taskQueue));
+                hub, me.taskQueue));
+        me.taskQueue.execute(new GenerateVariableinfoTask(hub, me.taskQueue));
 
         // work through second stage file producing
         me.workQueue("Stage 3 (templates)");

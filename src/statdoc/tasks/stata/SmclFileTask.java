@@ -38,14 +38,16 @@ public class SmclFileTask implements Task {
     File file;
     File rootDir;
     ThreadPoolExecutor taskList;
+    private StatdocItemHub hub;
     String type;
 
     public SmclFileTask(File rootDir, File file, String type,
-            ThreadPoolExecutor taskList) {
+            StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
         this.rootDir = rootDir;
         this.taskList = taskList;
         this.type = type;
+        this.hub = hub;
     }
 
     @Override
@@ -54,9 +56,7 @@ public class SmclFileTask implements Task {
                 " Text File Task for File: " + file + " - "
                         + Thread.currentThread().getName());
 
-        StatdocItemHub itemHolder = StatdocItemHub.getInstance();
-
-        FileItem fi = itemHolder.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file, rootDir, type);
 
         try {
             String content = new String(Files.readAllBytes(Paths.get(file

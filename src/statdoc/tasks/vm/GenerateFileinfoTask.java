@@ -32,18 +32,18 @@ public class GenerateFileinfoTask implements Task {
 
     File rootDir;
     ThreadPoolExecutor taskList;
-
-    public GenerateFileinfoTask(File filesDir,     ThreadPoolExecutor taskList) {
+    StatdocItemHub hub;
+    
+    public GenerateFileinfoTask(File filesDir,  StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.rootDir = filesDir;
         this.taskList = taskList;
+        this.hub = hub;
     }
 
     @Override
     public void run() {
 	Thread.currentThread().setName("Run " + this.getClass() );
 	
-        StatdocItemHub hub = StatdocItemHub.getInstance();
-
         TemplateUtil tu = TemplateUtil.getInstance();
 
         {

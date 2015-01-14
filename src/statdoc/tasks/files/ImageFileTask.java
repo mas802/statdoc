@@ -34,13 +34,15 @@ public class ImageFileTask implements Task {
     File file;
     File rootDir;
     ThreadPoolExecutor taskList;
+    StatdocItemHub hub;
     String type;
 
     public ImageFileTask(File rootDir, File file, String type,
-            ThreadPoolExecutor taskList) {
+            StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
         this.rootDir = rootDir;
         this.taskList = taskList;
+        this.hub = hub;
         this.type = type;
     }
 
@@ -48,9 +50,7 @@ public class ImageFileTask implements Task {
     public void run() {
         Thread.currentThread().setName("Image File Task for File: " + file);
 
-        StatdocItemHub itemHolder = StatdocItemHub.getInstance();
-
-        FileItem fi = itemHolder.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file, rootDir, type);
 
         fi.setContent("<img src=\"../" + fi.getFileLink() + "\" width=\"90%\">");
 

@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Pattern;
 
+import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 
 /**
@@ -41,6 +42,7 @@ public class UpdateDirTask implements Task {
 
     private File rootDir = null;
     private ThreadPoolExecutor taskQueue;
+    private StatdocItemHub hub;
     private List<Pattern> exclude = new ArrayList<Pattern>();
 
     private class TaskEntry {
@@ -52,8 +54,9 @@ public class UpdateDirTask implements Task {
     
     @SuppressWarnings("unchecked")
     public UpdateDirTask(File dir, Properties properties, 
-            ThreadPoolExecutor taskQueue) {
+            StatdocItemHub hub, ThreadPoolExecutor taskQueue) {
         this.rootDir = dir;
+        this.hub = hub;
 
         /*
          * set excludes
@@ -113,7 +116,7 @@ public class UpdateDirTask implements Task {
                 TaskEntry te = taskMap.get(suffix);
                     Task task;
                     try {
-                        task = te.taskClass.getConstructor(File.class, File.class, String.class, taskQueue.getClass()).newInstance(rootDir,f,te.type,taskQueue);
+                        task = te.taskClass.getConstructor(File.class, File.class, String.class, hub.getClass(), taskQueue.getClass()).newInstance(rootDir,f,te.type,hub,taskQueue);
                         taskQueue.execute(task);
                     } catch (InstantiationException | IllegalAccessException
                             | IllegalArgumentException
@@ -123,7 +126,7 @@ public class UpdateDirTask implements Task {
                         e.printStackTrace();
                     }
             } else {
-                taskQueue.execute(new OtherFileTask( rootDir, f, "file:general", taskQueue));
+                taskQueue.execute(new OtherFileTask( rootDir, f, "file:general", hub, taskQueue));
             }
         }
     	Thread.currentThread().setName("Thread " + Thread.currentThread().getId() );

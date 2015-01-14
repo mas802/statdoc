@@ -25,12 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import statdoc.items.CmdItem;
-import statdoc.items.FileItem;
-import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
 import statdoc.tasks.files.TextFileTask;
-import statdoc.tasks.stata.StataDoFileTask;
 import statdoc.tasks.stata.StataUtils;
 
 @RunWith(JUnit4.class)
@@ -42,12 +38,12 @@ public class ParseDoFileTest {
 //        File file = new File("testfile.do");
          File file = new File("/Users/mas/Dropbox/Public/cameron/t2_mcloop.do");
 
-        StatdocItemHub hub = StatdocItemHub.getInstance();
+        StatdocItemHub hub = new StatdocItemHub();
         Map<String,String[]> map = new HashMap<String,String[]>();
         map.put("none", new String[] {"none"} );
         hub.setStataCmdTypes( map );
         TextFileTask t1 = new TextFileTask(new File(""), file, "file:script",
-                null);
+               hub,  null);
 
         t1.run();
 

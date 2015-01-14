@@ -38,22 +38,22 @@ public class StataAnalyseDtaFileTask implements Task {
     File file;
     File rootDir;
     ThreadPoolExecutor taskList;
+    private StatdocItemHub hub;
     String type;
 
     public StataAnalyseDtaFileTask(File rootDir, File file, String type,
-            ThreadPoolExecutor taskList) {
+            StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
         this.rootDir = rootDir;
         this.taskList = taskList;
         this.type = type;
+        this.hub = hub;
     }
 
     @Override
     public void run() {
         Thread.currentThread().setName(
                 " Stata data File Task for File: " + file);
-
-        StatdocItemHub hub = StatdocItemHub.getInstance();
 
         FileItem dtaFileItem = hub.createFile(file, rootDir, type);
 
