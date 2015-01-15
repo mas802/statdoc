@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 
 public class Console extends WindowAdapter implements WindowListener,
         ActionListener {
@@ -51,6 +52,10 @@ public class Console extends WindowAdapter implements WindowListener,
 
         textArea = new JTextArea();
         textArea.setEditable(false);
+
+        DefaultCaret caret = (DefaultCaret) textArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        
         JButton button = new JButton("stop/close");
 
         frame.getContentPane().setLayout(new BorderLayout());

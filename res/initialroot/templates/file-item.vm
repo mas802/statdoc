@@ -202,10 +202,10 @@ CmdItem (for file:script)
 <tr>
 <th class="colFirst" style="width:30px" scope="col">#</th>
 <th class="colLast" width="100%" scope="col">content
-<span style="float: right;">&nbsp;<a title="Raw Source" href="javascript:toggle('rawframe');">raw</a>
+<!-- <span style="float: right;">&nbsp;<a title="Raw Source" onclick="toggle('rawframe');setIframeHeight('rawframe');">raw</a> -->
 #foreach( $match in $file.getChildrenByBy( "cmd:outputcmd:log", "match:output:file:log" ) )
 #foreach( $log in $match.getChildren() )
-<span style="float: right;">&nbsp;<a title="$log.getFullName()" href="javascript:toggle('log_$log.hashCode()');">log</a>
+<span style="float: right;">&nbsp;<a title="$log.getFullName()" onclick="toggle('log_$log.hashCode()');setIframeHeight('log_$log.hashCode()');">log</a>
 </span>
 #end
 #end
@@ -213,15 +213,17 @@ CmdItem (for file:script)
 #set( $span =  $file.getChildrenBy("cmd:").size() * 2 )
 #foreach( $match in $file.getChildrenByBy( "cmd:outputcmd:log", "match:output:file:log" ) )
 #foreach( $log in $match.getChildren() )
-<td style="display:none" id="log_$log.hashCode()" rowspan="$span">
+<td style="display:none;" id="log_$log.hashCode()" rowspan="$span" height="100%">
 <!-- DEBUG $log $log.getChildrenBy( "" ) $log.getChildren() -->
 <iframe scrolling="yes" width="600px" height="100%" src="../$log.getLink()#content" name="statdocSubFrame_${log.hashCode()}" title="Log File" style="height: 100%; width: 600px; overflow-x:scroll; overflow-y:scroll; -ms-overflow-x:scroll; -ms-overflow-y:scroll;"></iframe>
 </td>
 #end
 #end
-<td style="display:none" id="rawframe" rowspan="$span">
-<iframe scrolling="yes" width="600px" height="100%" src="../$item.getLink()#content" name="statdocSubFrame_raw" title="Log File" style="height: 100%; width: 600px; overflow-x:scroll; overflow-y:scroll; -ms-overflow-x:scroll; -ms-overflow-y:scroll;"></iframe>
+<!--
+<td style="display:none;" id="rawframe" rowspan="$span" height="100%">
+<iframe scrolling="yes" width="600px" height="100%" src="../$item.getLink()#content" name="statdocSubFrame_raw" title="Raw File" style="height: 100%; width: 600px; overflow-x:scroll; overflow-y:scroll; -ms-overflow-x:scroll; -ms-overflow-y:scroll;"></iframe>
 </td>
+-->
 </tr>
 #foreach( $line in $file.getChildrenBy("cmd:") )
 #set ( $uniqueId = "cmd_${line.hashCode()}" )

@@ -81,3 +81,7 @@ function toggle(id) {
 	      e.style( "display", "none" );
 	   }
 }
+
+function setIframeHeight(target) {
+    d3.select('#'+target).select('iframe').style( 'height', d3.select('#'+target).style( 'height' ));
+}
