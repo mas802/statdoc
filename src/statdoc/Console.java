@@ -8,6 +8,13 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
+/**
+ * Main entry point for jar file execution, opens a JFrame to display the out
+ * and error streams.
+ * 
+ * @author Markus Schaffner
+ * 
+ */
 public class Console extends WindowAdapter implements WindowListener,
         ActionListener {
 
@@ -55,7 +62,7 @@ public class Console extends WindowAdapter implements WindowListener,
 
         DefaultCaret caret = (DefaultCaret) textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        
+
         JButton button = new JButton("stop/close");
 
         frame.getContentPane().setLayout(new BorderLayout());
@@ -66,21 +73,20 @@ public class Console extends WindowAdapter implements WindowListener,
 
         frame.addWindowListener(this);
         button.addActionListener(this);
-
     }
 
     public synchronized void windowClosed(WindowEvent evt) {
-        this.notifyAll(); // stop all threads
+        this.notifyAll();
         System.exit(0);
     }
 
     public synchronized void windowClosing(WindowEvent evt) {
-        frame.setVisible(false); // default behaviour of JFrame	
+        frame.setVisible(false);
         frame.dispose();
     }
 
     public synchronized void actionPerformed(ActionEvent evt) {
-        this.notifyAll(); // stop all threads
+        this.notifyAll();
         System.exit(0);
     }
 

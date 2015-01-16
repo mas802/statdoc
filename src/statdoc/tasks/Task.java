@@ -19,7 +19,7 @@ package statdoc.tasks;
  * An interface to mark Statdoc tasks.
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public interface Task extends Runnable {
 

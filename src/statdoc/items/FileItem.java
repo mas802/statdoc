@@ -19,14 +19,14 @@ import java.io.File;
 
 /**
  * An Item to hold a link to a file.
- *  
+ * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class FileItem extends Item {
 
     private static final long serialVersionUID = 1L;
-    
+
     private File file;
     private File rootDir;
 
@@ -37,12 +37,12 @@ public class FileItem extends Item {
         this.name = file.getName();
         this.link = "files/"
                 + this.file.getAbsolutePath().trim()
-                .replace("" + rootDir.getAbsolutePath(), "")
-                .replaceAll("[\\\\\\/]", "_") + ".html";
+                        .replace("" + rootDir.getAbsolutePath(), "")
+                        .replaceAll("[\\\\\\/]", "_") + ".html";
         this.fullName = this.file.getAbsolutePath().trim()
-                .replace("" + rootDir.getAbsolutePath().trim(), "");;
+                .replace("" + rootDir.getAbsolutePath().trim(), "");
+        ;
     }
-
 
     public File getFile() {
         return file;

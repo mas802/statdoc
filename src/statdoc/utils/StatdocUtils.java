@@ -18,7 +18,7 @@ package statdoc.utils;
 public class StatdocUtils {
 
     public static String stringToRegex(String wildcard) {
-        
+
         StringBuffer s = new StringBuffer(wildcard.length());
         // s.append("^.*?");
         for (int i = 0, is = wildcard.length(); i < is; i++) {

@@ -25,19 +25,19 @@ import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 
 /**
- * A task to read html files, it is very similar to TextFileTask
- * except that it replaces all < and > with there html entity counterpart
+ * A task to read html files, it is very similar to TextFileTask except that it
+ * replaces all < and > with there html entity counterpart
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class HtmlFileTask implements Task {
 
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
-    StatdocItemHub hub;
-    String type;
+    private StatdocItemHub hub;
+    private String type;
 
     public HtmlFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
@@ -59,18 +59,19 @@ public class HtmlFileTask implements Task {
         try {
             String content = new String(Files.readAllBytes(Paths.get(file
                     .toURI())));
-            
+
             // TODO think if this is good or bad
             content = content.replaceAll("<", "&lt;");
             content = content.replaceAll(">", "&gt;");
-            
+
             fi.setContent(content);
         } catch (Exception e) {
             System.err.println("Error for: " + file + " - "
                     + Thread.currentThread().getName());
             e.printStackTrace();
 
-            fi.addWarning("There was and error processing this file: " + e.getMessage() );
+            fi.addWarning("There was and error processing this file: "
+                    + e.getMessage());
         }
 
         Thread.currentThread().setName(

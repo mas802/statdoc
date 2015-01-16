@@ -23,19 +23,19 @@ import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 
 /**
- * Process a Image file, currently provides a link to the orginal file
- * as content.
+ * Process a Image file, currently provides a link to the orginal file as
+ * content.
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class ImageFileTask implements Task {
 
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
-    StatdocItemHub hub;
-    String type;
+    private StatdocItemHub hub;
+    private String type;
 
     public ImageFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {

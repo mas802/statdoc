@@ -22,11 +22,11 @@
 <li><a onclick='toggle("$uniqueId");' title="File group $item.getFullName()"  target="classFrame" >+ $item.getAbbrevName(25) [$item.getChildren().size()]</a></li>
 <div id="$uniqueId" style="display: none;">
 #foreach( $gitem in $item.getChildren() )
-<li style="background: ${gitem.myColor()};">&nbsp;&nbsp;<a href="../${gitem.getLink()}" title="$gitem.getFullName()"  target="classFrame" >$gitem.getAbbrevName(30)</a></li>
+<li style="background: ${gitem.myColor()};">&nbsp;&nbsp;<a href="../${gitem.getLink()}" title="$gitem.getFullName()"  target="classFrame" >$gitem.getAbbrevName(30)</a>#warningIcon($gitem)</li>
 #end
 </div>
 #else
-<li style="background: ${item.myColor()};"><a href="../${item.getLink()}" title="$item.getFullName()"  target="classFrame" >$item.getAbbrevName(30)</a></li>
+<li style="background: ${item.myColor()};"><a href="../${item.getLink()}" title="$item.getFullName()"  target="classFrame" >$item.getAbbrevName(30)</a>#warningIcon($item)</li>
 #end
 #end
 </ul>

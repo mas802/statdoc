@@ -15,6 +15,12 @@
  */
 package statdoc.items;
 
+/**
+ * Variable information.
+ * 
+ * @author Markus Schaffner
+ *
+ */
 public class VariableItem extends Item {
     
     /**

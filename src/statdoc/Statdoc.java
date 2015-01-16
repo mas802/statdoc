@@ -19,10 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -125,13 +122,6 @@ public class Statdoc {
      */
     public static void main(String[] args) throws IOException {
 
-        try {
-            Thread.sleep(2);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
         long starttime = System.currentTimeMillis();
 
         final StatdocItemHub hub = new StatdocItemHub();
@@ -195,11 +185,11 @@ public class Statdoc {
         System.out.println("output: " + outputDir.getAbsolutePath());
         System.out.println("Version " + version);
         System.out.println("Please be patient...");
-        System.out.println( " " );
+        System.out.println(" ");
         System.out.println("STATDOC: Copyright 2014-2015, Markus Schaffner");
         System.out.println("Apache License, Version 2.0");
-        System.out.println( " " );
- 
+        System.out.println(" ");
+
         hub.sourceDir = sourceDir;
         hub.outputDir = outputDir;
 
@@ -254,7 +244,8 @@ public class Statdoc {
             }
         }
 
-        hub.setGlobal("project", generalProp.getProperty( "statdoc.project", sourceDir.getCanonicalFile().getName() ) );
+        hub.setGlobal("project", generalProp.getProperty("statdoc.project",
+                sourceDir.getCanonicalFile().getName()));
 
         /*
          * Set the stata command
@@ -267,7 +258,7 @@ public class Statdoc {
             stataPath = stataProgs[i];
             i++;
         }
-        if ( !(new File(stataPath)).canExecute() ) {
+        if (!(new File(stataPath)).canExecute()) {
             System.err.println(" ");
             System.err.println("No installations of Stata found, please edit");
             System.err.println("the statadoc.properties file and add the path");
@@ -296,17 +287,18 @@ public class Statdoc {
 
         // start of the first round of just reading in all files
         // and processing all files
-        me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(sourceDir, generalProp,
-                hub, me.taskQueue));
+        me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(
+                sourceDir, generalProp, hub, me.taskQueue));
 
         /*
         // work through second stage file producing
         me.workQueue("Stage 2a (parsing script files)", new InitiateScriptFilesParsingTask(
                 me.taskQueue));
         */
-        
+
         // resolve all matchings
-        me.workQueue("Stage 2b (resolve matching)", new MatchingTask(hub, me.taskQueue));
+        me.workQueue("Stage 2b (resolve matching)", new MatchingTask(hub,
+                me.taskQueue));
 
         // set up map for overview files
         Item overview = new Item("overview", "overview",
@@ -342,10 +334,10 @@ public class Statdoc {
                 "overview/help-doc.html"), "help-doc.vm", datah));
 
         // build the rest
-        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir,
-                hub, me.taskQueue));
-        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir,
-                hub, me.taskQueue));
+        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir, hub,
+                me.taskQueue));
+        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir, hub,
+                me.taskQueue));
         me.taskQueue.execute(new GenerateVariableinfoTask(hub, me.taskQueue));
 
         // work through second stage file producing
@@ -357,12 +349,14 @@ public class Statdoc {
 
         me.taskQueue.shutdown();
 
-        System.out.println( " " );
-        System.out.println( hub.stats() );
-        System.out.println( " " );
-        System.out.println("All done, copy the following URL into your browser:");
-        System.out.println("file://" + hub.outputDir.getAbsolutePath() + "/index.html");
-        System.out.println( " " );
+        System.out.println(" ");
+        System.out.println(hub.stats());
+        System.out.println(" ");
+        System.out
+                .println("All done, copy the following URL into your browser:");
+        System.out.println("file://" + hub.outputDir.getAbsolutePath()
+                + "/index.html");
+        System.out.println(" ");
     }
 
 }

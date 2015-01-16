@@ -17,44 +17,52 @@ package statdoc.items;
 
 import java.util.Collection;
 
+/**
+ * Holds token information
+ * 
+ * Main functionality is to provide a group (currently first letter) level
+ * identifier.
+ * 
+ * @author Markus Schaffner
+ * 
+ */
 public class TokenItem extends Item {
-    
+
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
-    
+
     private String token;
-    
-    protected TokenItem( String token ) {
+
+    protected TokenItem(String token) {
         this.token = token;
-        this.link = 
-        this.type = "token";
-        
+        this.link = this.type = "token";
+
         this.name = token;
         this.fullName = token;
-        
+
     }
 
     public String getClean() {
         String clean = token.replaceAll("[^a-zA-Z0-9-]", "_");
         return clean;
     }
- 
+
     public String getGroup() {
-        return getClean().substring(0,1).toLowerCase();
+        return getClean().substring(0, 1).toLowerCase();
     }
-    
+
     @Override
     public String getLink() {
         String link = "tokens/" + getGroup() + ".html#" + getClean();
         Collection<Item> items = getChildren();
-        if ( items.size() == 1 ) {
+        if (items.size() == 1) {
             Item i = items.iterator().next();
-            if ( !i.getType().startsWith("match")) {
+            if (!i.getType().startsWith("match")) {
                 link = i.getLink();
             }
-        } 
+        }
         return link;
     }
 }

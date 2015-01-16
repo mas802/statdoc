@@ -17,9 +17,7 @@ package statdoc.tasks.vm;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,13 +30,20 @@ import statdoc.items.TokenItem;
 import statdoc.tasks.Task;
 import statdoc.utils.TemplateUtil;
 
+/**
+ * Task to dispatch tasks for tokens info.
+ * 
+ * @author Markus Schaffner
+ * 
+ */
 public class GenerateTokeninfoTask implements Task {
 
     File rootDir;
     ThreadPoolExecutor taskList;
     StatdocItemHub hub;
-    
-    public GenerateTokeninfoTask(File rootDir, StatdocItemHub hub, ThreadPoolExecutor taskList) {
+
+    public GenerateTokeninfoTask(File rootDir, StatdocItemHub hub,
+            ThreadPoolExecutor taskList) {
         this.rootDir = rootDir;
         this.taskList = taskList;
         this.hub = hub;
@@ -48,10 +53,11 @@ public class GenerateTokeninfoTask implements Task {
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
 
-         TemplateUtil tu = TemplateUtil.getInstance();
+        TemplateUtil tu = TemplateUtil.getInstance();
 
         {
-            Item tokens = new Item("tokens", "tokens", "tokens/tokens-summary.html", "tokens:summary");
+            Item tokens = new Item("tokens", "tokens",
+                    "tokens/tokens-summary.html", "tokens:summary");
 
             Map<String, Object> data = new TreeMap<String, Object>(
                     hub.getGlobals());
@@ -93,11 +99,11 @@ public class GenerateTokeninfoTask implements Task {
 
         Map<String, TokenItem> tokenMap = hub.getTokens();
 
-        Map<String,Item> itemMap = new TreeMap<String,Item>();
+        Map<String, Item> itemMap = new TreeMap<String, Item>();
         for (TokenItem item : tokenMap.values()) {
             String key = item.getGroup();
-            if ( !itemMap.containsKey(key)) {
-                itemMap.put(key, new Item(key,key,"tokens/" + key + ".html"));
+            if (!itemMap.containsKey(key)) {
+                itemMap.put(key, new Item(key, key, "tokens/" + key + ".html"));
             }
             itemMap.get(key).addChild(item);
         }
@@ -121,7 +127,7 @@ public class GenerateTokeninfoTask implements Task {
                 data.put("next", arr.get(i + 1));
             }
 
-            File f = new File(rootDir, item.getLink() );
+            File f = new File(rootDir, item.getLink());
             taskList.execute(new GeneralVMTask("token-item.vm", f, data));
         }
 

@@ -21,6 +21,12 @@ import java.util.Map;
 import statdoc.tasks.Task;
 import statdoc.utils.TemplateUtil;
 
+/**
+ * A task to process a vm template.
+ * 
+ * @author Markus Schaffner
+ * 
+ */
 public class GeneralVMTask implements Task {
 
     String template;
@@ -41,13 +47,16 @@ public class GeneralVMTask implements Task {
 
     @Override
     public void run() {
-        Thread.currentThread().setName("Run " + this.getClass() + " f: " + target.getName() + " t: " + template );
-	
+        Thread.currentThread().setName(
+                "Run " + this.getClass() + " f: " + target.getName() + " t: "
+                        + template);
+
         TemplateUtil tu = TemplateUtil.getInstance();
 
         tu.evalVMtoFile(target, template, data);
-        
-        Thread.currentThread().setName("Thread " + Thread.currentThread().getId() );
+
+        Thread.currentThread().setName(
+                "Thread " + Thread.currentThread().getId());
     }
 
 }

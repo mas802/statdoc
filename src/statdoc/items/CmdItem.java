@@ -19,28 +19,31 @@ package statdoc.items;
  * An Item representing a line in a script file.
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class CmdItem extends Item {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     private String command;
     private FileItem fileItem;
     private Integer[] range;
-    
-    public CmdItem( String line, String command, FileItem fileItem, Integer[] range ) {
-        this( line, command, "cmd:default", fileItem, range );
+
+    public CmdItem(String line, String command, FileItem fileItem,
+            Integer[] range) {
+        this(line, command, "cmd:default", fileItem, range);
     }
-    
-    public CmdItem( String line, String command, String type, FileItem fileItem, Integer[] range ) {
+
+    public CmdItem(String line, String command, String type, FileItem fileItem,
+            Integer[] range) {
         this.command = command;
-        this.range = new Integer[] {range[0], range[1]};
+        this.range = new Integer[] { range[0], range[1] };
 
         this.content = line;
         this.type = type;
         this.name = fileItem.getFullName() + ":" + getLine();
-        this.fullName = fileItem.getFullName() + ":" + getLine()+" (" + getCommand() + ")";
+        this.fullName = fileItem.getFullName() + ":" + getLine() + " ("
+                + getCommand() + ")";
         this.link = fileItem.getLink() + "#" + getLine();
         this.fileItem = fileItem;
     }
@@ -50,11 +53,11 @@ public class CmdItem extends Item {
     }
 
     public String getLine() {
-        return ""+range[0];
+        return "" + range[0];
     }
-    
+
     public FileItem getFileItem() {
         return this.fileItem;
     }
-    
+
 }

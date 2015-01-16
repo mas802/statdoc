@@ -28,7 +28,7 @@ import statdoc.items.StatdocItemHub;
 public class MatchingTask implements Task {
 
     ThreadPoolExecutor taskList;
-    StatdocItemHub hub;
+    private StatdocItemHub hub;
 
     public MatchingTask(StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.hub = hub;

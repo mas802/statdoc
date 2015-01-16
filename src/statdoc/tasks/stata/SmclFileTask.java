@@ -27,19 +27,19 @@ import statdoc.tasks.Task;
 /**
  * A task to read in Smcl files (stata proprietary log format).
  * 
- * Reads in the content and replaces the smcl formating with
- * html tags using StataUtils.smcl2html().
+ * Reads in the content and replaces the smcl formating with html tags using
+ * StataUtils.smcl2html().
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class SmclFileTask implements Task {
 
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
-    String type;
+    private String type;
 
     public SmclFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
@@ -61,16 +61,17 @@ public class SmclFileTask implements Task {
         try {
             String content = new String(Files.readAllBytes(Paths.get(file
                     .toURI())));
-            
+
             content = StataUtils.smcl2html(content, false);
-            
+
             fi.setContent(content);
         } catch (Exception e) {
             System.err.println("Error for: " + file + " - "
                     + Thread.currentThread().getName());
             e.printStackTrace();
 
-            fi.addWarning("There was and error processing this file: " + e.getMessage() );
+            fi.addWarning("There was and error processing this file: "
+                    + e.getMessage());
         }
 
         Thread.currentThread().setName(

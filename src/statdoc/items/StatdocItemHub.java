@@ -403,8 +403,9 @@ public class StatdocItemHub {
             } else {
                 m.addWarning("item could not be resolved");
                 if (m != null && m.containsKey("term")) {
-                    String stripterm = m.get("term").toString().replaceAll("[^a-zA-Z0-9_]", "").trim();
-                    TokenItem ti = createToken( stripterm, "match");
+                    String stripterm = m.get("term").toString()
+                            .replaceAll("[^a-zA-Z0-9_]", "").trim();
+                    TokenItem ti = createToken(stripterm, "match");
                     ti.addChild(origin);
                     m.addChild(ti);
                     // origin.addChild(ti);

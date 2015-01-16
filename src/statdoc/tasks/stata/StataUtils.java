@@ -32,13 +32,13 @@ import statdoc.utils.TemplateUtil;
 /**
  * general utils to deal with Stata
  * 
- * in particular this class allows to convert smcl into various
- * formats like txt and html.
+ * in particular this class allows to convert smcl into various formats like txt
+ * and html.
  * 
  * Futhermore it allows tokenising of Stata specific Strings
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class StataUtils {
 
@@ -51,7 +51,6 @@ public class StataUtils {
     public static final char M5 = (char) 18; // italic
     public static final char M6 = (char) 19; // unassigned
     public static final char M7 = (char) 20; // unassigned
-    
 
     static String[][] rules = new String[][] {
             // new String[] { "\\{txt\\}end of do-file[\r|\n]+", "" },
@@ -68,15 +67,15 @@ public class StataUtils {
             new String[] { "\\{bf:(.*?)\\}", M4 + "$1" + M0 },
             new String[] { "\\{it:(.*?)\\}", M5 + "$1" + M0 },
 
-            new String[] { "\\{inp(ut)?\\}",  "" + M0 + M1 },
-            new String[] { "\\{t[e]?xt\\}",   "" + M0 },
+            new String[] { "\\{inp(ut)?\\}", "" + M0 + M1 },
+            new String[] { "\\{t[e]?xt\\}", "" + M0 },
             new String[] { "\\{res(ult)?\\}", "" + M0 + M3 },
-            new String[] { "\\{err(or)?\\}",  "" + M0 + M2 },
+            new String[] { "\\{err(or)?\\}", "" + M0 + M2 },
 
-            new String[] { "\\{inp(ut)?:(.*?)\\}",  M1 + "$1" + M0 },
-            new String[] { "\\{t[e]?xt:(.*?)\\}",   M0 + "$1" + M0 },
+            new String[] { "\\{inp(ut)?:(.*?)\\}", M1 + "$1" + M0 },
+            new String[] { "\\{t[e]?xt:(.*?)\\}", M0 + "$1" + M0 },
             new String[] { "\\{res(ult)?:(.*?)\\}", M3 + "$1" + M0 },
-            new String[] { "\\{err(or)?:(.*?)\\}",  M2 + "$1" + M0 },
+            new String[] { "\\{err(or)?:(.*?)\\}", M2 + "$1" + M0 },
 
             new String[] { "\\{com(mand)?\\}", "" + M0 + M1 },
 
@@ -105,65 +104,67 @@ public class StataUtils {
     // ""},
     };
 
-    private static Map<Pattern,String> map = new HashMap<Pattern,String>();
+    private static Map<Pattern, String> map = new HashMap<Pattern, String>();
 
-    synchronized static Map<Pattern,String> getPatternMap() {
-        
-        if ( map.isEmpty() ) {
+    synchronized static Map<Pattern, String> getPatternMap() {
+
+        if (map.isEmpty()) {
             for (String[] s : rules) {
-                map.put(Pattern.compile(s[0]),s[1]);
+                map.put(Pattern.compile(s[0]), s[1]);
             }
-            
+
             // hline and space
             String s = "";
             String sp = "";
             for (int i = 1; i < 80; i++) {
                 s = s + "-";
-                map.put(Pattern.compile( "\\{hline " + i + "\\}"), s);
+                map.put(Pattern.compile("\\{hline " + i + "\\}"), s);
                 sp = sp + " ";
-                map.put(Pattern.compile( "\\{space " + i + "\\}" ), sp);
+                map.put(Pattern.compile("\\{space " + i + "\\}"), sp);
                 // c = c.replaceAll("\\{col "+i+"\\}","");
             }
             map.put(Pattern.compile("\\{hline\\}"), s);
             map.put(Pattern.compile("\\{\\.-\\}"), s);
         }
-        
+
         return map;
     }
-    
+
     private static final Pattern pright = Pattern.compile("\\{right:(.*?)\\}");
     private static final Pattern pcol = Pattern.compile("\\{col ([0-9]*?)\\}");
+
     // TODO ralign
     //private static final Pattern pralign = Pattern.compile("\\{ralign:(.*?)\\}");
-    
+
     /**
      * utility method to replace scml commands with their hidden counterparts
      * 
-     * @param content A smcl string
-     * @param ignoreCommands a boolean whether to process the commands given or not
+     * @param content
+     *            A smcl string
+     * @param ignoreCommands
+     *            a boolean whether to process the commands given or not
      * 
-     * @return the smcl string with all formating replaced by hidden tokens (M0,M1,M2,M3)
+     * @return the smcl string with all formating replaced by hidden tokens
+     *         (M0,M1,M2,M3)
      */
     static public String smcl2hidden(String content, boolean ignoreCommands) {
         StringBuilder r = new StringBuilder();
 
         for (Map.Entry<Pattern, String> e : getPatternMap().entrySet()) {
-//            content = StringUtils.replace( content, s[0], s[1]);
+            //            content = StringUtils.replace( content, s[0], s[1]);
             content = e.getKey().matcher(content).replaceAll(e.getValue());
         }
-   
+
         for (String c : content.split("\n")) {
 
             // break if line starts with a dot an flag is set
             if (ignoreCommands
-                    && ((c.startsWith(". ") || 
-                        (c.length() > 3 && 
-                            (c.charAt(0) == 28 && c.charAt(1) == 29 && c
-                            .charAt(2) == '.') || c.matches("^["+M0+"][ ]*[\\d]+["+M0+"]["+M1+"]\\. .*" )
-                            )))) {
+                    && ((c.startsWith(". ") || (c.length() > 3
+                            && (c.charAt(0) == 28 && c.charAt(1) == 29 && c
+                                    .charAt(2) == '.') || c.matches("^[" + M0
+                            + "][ ]*[\\d]+[" + M0 + "][" + M1 + "]\\. .*"))))) {
                 // do nothing, i.e. do not process command lines
             } else {
-
 
                 // fix columns
                 Matcher m = pcol.matcher(c);
@@ -175,9 +176,11 @@ public class StataUtils {
                     // System.out.println(n);
 
                     int x = c.indexOf(match);
-                    int charCount = c.substring(0, x)
-                            .replaceAll("[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]", "")
-                            .length();
+                    int charCount = c
+                            .substring(0, x)
+                            .replaceAll(
+                                    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
+                                    "").length();
                     x = x - charCount;
 
                     String replace = "";
@@ -200,9 +203,11 @@ public class StataUtils {
                     // System.out.println(n);
 
                     int x = c.indexOf(match);
-                    int charCount = c.substring(0, x)
-                            .replaceAll("[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]", "")
-                            .length();
+                    int charCount = c
+                            .substring(0, x)
+                            .replaceAll(
+                                    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
+                                    "").length();
                     x = x - charCount;
                     n = 80 - charCount - n + 1;
 
@@ -228,13 +233,15 @@ public class StataUtils {
      * a utility method to replace smcl formating with html tags
      * 
      * will use smcl2hidden as a workhorse
-     *  
-     * @param content the smcl string
-     * @param hideCommands boolean of whether to process command lines
-     * @return a html formated string 
+     * 
+     * @param content
+     *            the smcl string
+     * @param hideCommands
+     *            boolean of whether to process command lines
+     * @return a html formated string
      */
     static public String smcl2html(String content, boolean hideCommands) {
-        String result = "<span>"+smcl2hidden(content, hideCommands);
+        String result = "<span>" + smcl2hidden(content, hideCommands);
 
         result = result.replaceAll("" + M0 + M0,
                 "</span><span class=\"st_txt\">");
@@ -249,21 +256,15 @@ public class StataUtils {
         result = result.replaceAll("" + M0 + M5,
                 "</span><span class=\"st_it\">");
 
-        result = result.replaceAll("" + M0,
-                "</span><span class=\"st_txt\">");
-        result = result.replaceAll("" + M1,
-                "</span><span class=\"st_inp\">");
-        result = result.replaceAll("" + M2,
-                "</span><span class=\"st_err\">");
-        result = result.replaceAll("" + M3,
-                "</span><span class=\"st_res\">");
-        result = result.replaceAll("" + M4,
-                "</span><span class=\"st_bf\">");
-        result = result.replaceAll("" + M5,
-                "</span><span class=\"st_it\">");
+        result = result.replaceAll("" + M0, "</span><span class=\"st_txt\">");
+        result = result.replaceAll("" + M1, "</span><span class=\"st_inp\">");
+        result = result.replaceAll("" + M2, "</span><span class=\"st_err\">");
+        result = result.replaceAll("" + M3, "</span><span class=\"st_res\">");
+        result = result.replaceAll("" + M4, "</span><span class=\"st_bf\">");
+        result = result.replaceAll("" + M5, "</span><span class=\"st_it\">");
 
         result = result + "</span>";
-        
+
         return result;
     }
 
@@ -271,10 +272,12 @@ public class StataUtils {
      * a utility method to remoce smcl formating
      * 
      * will use smcl2hidden as a workhorse
-     *  
-     * @param content the smcl string
-     * @param hideCommands boolean of whether to process command lines
-     * @return plain txt string 
+     * 
+     * @param content
+     *            the smcl string
+     * @param hideCommands
+     *            boolean of whether to process command lines
+     * @return plain txt string
      */
     public static String smcl2plain(String content, boolean hideCommands) {
         String result = smcl2hidden(content, hideCommands);
@@ -294,8 +297,10 @@ public class StataUtils {
      * makes sure that round and square brackets are balanced on either side of
      * the split i.e. does not split within brackets
      * 
-     * @param str String to split
-     * @param splt split marker
+     * @param str
+     *            String to split
+     * @param splt
+     *            split marker
      * @return an array of one or two elements
      */
     public static String[] splitSave(String str, String splt) {
@@ -311,7 +316,7 @@ public class StataUtils {
                 resolved = true;
             } else {
                 currentpos = newpos + currentpos;
-                String strs = str.substring(0,currentpos);
+                String strs = str.substring(0, currentpos);
                 int a = balanceChars(strs, "(", ")");
                 int c = balanceChars(strs, "[", "]");
                 int e = countChar(strs, "\"");
@@ -328,66 +333,64 @@ public class StataUtils {
         if (pos == -1) {
             result = new String[] { str };
         } else {
-            result = new String[] { str.substring(0, pos), str.substring(pos+splt.length()) };
+            result = new String[] { str.substring(0, pos),
+                    str.substring(pos + splt.length()) };
         }
 
         return result;
     }
 
-    
     public static int countChar(String string, String c) {
         int counter = 0;
-        for (int i = 0; i < string.length()-(c.length()-1); i++) {
+        for (int i = 0; i < string.length() - (c.length() - 1); i++) {
             boolean check = true;
             for (int j = 0; j < c.length(); j++) {
-                if (string.charAt(i+j) != c.charAt(j)) {
+                if (string.charAt(i + j) != c.charAt(j)) {
                     check = false;
                     break;
                 }
             }
-            if ( check ) {
+            if (check) {
                 counter++;
             }
         }
         return counter;
     }
 
-
-    
-    
     public static int balanceChars(String string, String c, String d) {
-        
-        return countChar(string, c)-countChar(string, d);
+
+        return countChar(string, c) - countChar(string, d);
     }
-    
-//    private static final Pattern BOUNDARYSPLIT = Pattern
-//            .compile("[ ]+");
+
+    //    private static final Pattern BOUNDARYSPLIT = Pattern
+    //            .compile("[ ]+");
 
     public static Set<String> parametersCleanSplit(String parameter) {
-        
+
         // remove all non stata special characters including brackets
-        parameter = parameter.replaceAll("[^a-zA-Z0-9\\(\\*\\?`'$\\{\\}_ ]", " ");
-        
+        parameter = parameter.replaceAll("[^a-zA-Z0-9\\(\\*\\?`'$\\{\\}_ ]",
+                " ");
+
         Set<String> s = new HashSet<String>();
-        
+
         String[] params = parameter.split("[\\s]+");
-        
+
         // deal with no space after opening brackets
-        for ( int i = 0; i<params.length; i++ ) {
+        for (int i = 0; i < params.length; i++) {
             String p = params[i];
             // remove brackets from the start
             p = p.replaceAll("^\\(", "");
-            if ( p.length() > 1 ) {
+            if (p.length() > 1) {
                 int pos = p.indexOf('(');
-                if ( pos > -1 ) {
-                    s.add(p.substring(0,pos+1));
-                    s.add(p.substring(pos+1));
+                if (pos > -1) {
+                    s.add(p.substring(0, pos + 1));
+                    s.add(p.substring(pos + 1));
                 } else {
                     s.add(p);
                 }
             }
         }
-        
+
         return s;
     }
 
@@ -400,7 +403,7 @@ public class StataUtils {
         // remove all residual special characters
         wildcard = wildcard.replaceAll("[\\$\\{\\}`']", " ");
         wildcard = wildcard.trim();
-        
+
         StringBuffer s = new StringBuffer(wildcard.length());
         // s.append("^.*?");
         for (int i = 0, is = wildcard.length(); i < is; i++) {
@@ -425,7 +428,7 @@ public class StataUtils {
             case ']':
             case '$':
             case '^':
-//            case '.':
+                //            case '.':
             case '{':
             case '}':
             case '|':
@@ -441,8 +444,9 @@ public class StataUtils {
         return (s.toString());
     }
 
-    
-    public static String runTemplate(String templateName, String stataexe, Map<String, Object> data, File outputDir) throws IOException, InterruptedException {
+    public static String runTemplate(String templateName, String stataexe,
+            Map<String, Object> data, File outputDir) throws IOException,
+            InterruptedException {
 
         Runtime rt = Runtime.getRuntime();
 
@@ -451,23 +455,27 @@ public class StataUtils {
         // BufferedWriter out;
 
         // System.out.println( statacmd );
-        
-        Path tempDir = Files.createTempDirectory("statdoc" );
-        
-        TemplateUtil.getInstance().evalVMtoFile( tempDir.resolve(templateName+".do").toFile(), templateName+".do.vm", data);
+
+        Path tempDir = Files.createTempDirectory("statdoc");
+
+        TemplateUtil.getInstance().evalVMtoFile(
+                tempDir.resolve(templateName + ".do").toFile(),
+                templateName + ".do.vm", data);
 
         // FIXME horrible, horrible horrible implementation for Windose
-        if ( stataexe.toLowerCase().endsWith(".exe" )) {
-            ps = rt.exec( new String[] {stataexe, "-q", "-e", "-s",  "do", templateName + ".do"}, null, tempDir.toFile() );
+        if (stataexe.toLowerCase().endsWith(".exe")) {
+            ps = rt.exec(new String[] { stataexe, "-q", "-e", "-s", "do",
+                    templateName + ".do" }, null, tempDir.toFile());
             ps.waitFor();
         } else {
-            ps = rt.exec( new String[] {stataexe, "-q", "-s",  "do", templateName + ".do"}, null, tempDir.toFile() );
+            ps = rt.exec(new String[] { stataexe, "-q", "-s", "do",
+                    templateName + ".do" }, null, tempDir.toFile());
             ps.waitFor();
-        }        
-        
-        
-        Files.copy( tempDir.resolve( templateName + ".smcl"), outputDir.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        
+        }
+
+        Files.copy(tempDir.resolve(templateName + ".smcl"), outputDir.toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
+
         return "";
     }
 }

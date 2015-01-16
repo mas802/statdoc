@@ -15,9 +15,9 @@
  */
 package statdoc.tasks.files;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileReader;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.FileItem;
@@ -30,23 +30,26 @@ import statdoc.tasks.Task;
  * TODO could cap the file if too large (e.g. 1000 lines)
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class TextFileTask implements Task {
 
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
-    StatdocItemHub hub;
-    String type;
+    private StatdocItemHub hub;
+    private String type;
+
+    // TODO, make this a config property
+    private int maxlines = 1000;
 
     public TextFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
         this.rootDir = rootDir;
         this.taskList = taskList;
-        this.hub = hub;
         this.type = type;
+        this.hub = hub;
     }
 
     @Override
@@ -58,16 +61,35 @@ public class TextFileTask implements Task {
         FileItem fi = hub.createFile(file, rootDir, type);
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get(file
-                    .toURI())));
-            
-            fi.setContent(content);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            StringBuilder sb = new StringBuilder();
+
+            int counter = 0;
+
+            String line;
+            while ((line = reader.readLine()) != null && counter < maxlines) {
+                // hub.checkAndAddMetadata(fi, line);
+                sb.append(line);
+                sb.append("\n");
+                counter++;
+            }
+
+            reader.close();
+
+            fi.setContent(sb.toString());
+
+            if (counter == maxlines) {
+                fi.addWarning("The reading of this file has been clipped at 1000 lines.");
+            }
+
         } catch (Exception e) {
             System.err.println("Error for: " + file + " - "
                     + Thread.currentThread().getName());
             e.printStackTrace();
 
-            fi.addWarning("There was and error processing this file: " + e.getMessage() );
+            fi.addWarning("There was and error processing this file: "
+                    + e.getMessage());
         }
 
         Thread.currentThread().setName(

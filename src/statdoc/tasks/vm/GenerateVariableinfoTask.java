@@ -27,13 +27,20 @@ import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 import statdoc.utils.TemplateUtil;
 
+/**
+ * Task to dispatch tasks for variables info.
+ * 
+ * @author Markus Schaffner
+ * 
+ */
 public class GenerateVariableinfoTask implements Task {
 
     // File variableDir;
     ThreadPoolExecutor taskList;
     StatdocItemHub hub;
-    
-    public GenerateVariableinfoTask( StatdocItemHub hub, ThreadPoolExecutor taskList) {
+
+    public GenerateVariableinfoTask(StatdocItemHub hub,
+            ThreadPoolExecutor taskList) {
         // this.variableDir = dir;
         this.taskList = taskList;
         this.hub = hub;
@@ -41,17 +48,19 @@ public class GenerateVariableinfoTask implements Task {
 
     @Override
     public void run() {
-	Thread.currentThread().setName("Run " + this.getClass() );
-	
-        File variableDir = new File( hub.outputDir, "/variables" );
-        
+        Thread.currentThread().setName("Run " + this.getClass());
+
+        File variableDir = new File(hub.outputDir, "/variables");
+
         TemplateUtil tu = TemplateUtil.getInstance();
 
         {
-            Item vars = new Item("variables", "variables", "variables/variables-summary.html", "variables:summary");
-            
+            Item vars = new Item("variables", "variables",
+                    "variables/variables-summary.html", "variables:summary");
+
             // produce variables/variables-summary.html
-            Map<String, Object> data = new TreeMap<String, Object>(hub.getGlobals());
+            Map<String, Object> data = new TreeMap<String, Object>(
+                    hub.getGlobals());
             TreeSet<String> ts = new TreeSet<String>();
             ts.addAll(hub.getVariables().keySet());
             data.put("section", "variables");
@@ -65,32 +74,35 @@ public class GenerateVariableinfoTask implements Task {
             File f2 = new File(variableDir, "variables-frame.html");
             tu.evalVMtoFile(f2, "variables-frame.vm", data);
         }
-        
-        Map<String,Item> varMap = hub.getVariables();
-        
-        ArrayList<String> arr = new ArrayList<String>( hub.getVariables().keySet() );
-        for (int i = 0; i<arr.size(); i++) {
+
+        Map<String, Item> varMap = hub.getVariables();
+
+        ArrayList<String> arr = new ArrayList<String>(hub.getVariables()
+                .keySet());
+        for (int i = 0; i < arr.size(); i++) {
             String var = arr.get(i);
 
-            Item varGroup = varMap.get(var); 
-            
+            Item varGroup = varMap.get(var);
+
             // produce files/[file].html
-            Map<String, Object> data = new TreeMap<String, Object>(hub.getGlobals());
+            Map<String, Object> data = new TreeMap<String, Object>(
+                    hub.getGlobals());
             data.put("section", "variables");
             data.put("item", varGroup);
-            if ( i>0 ) {
-                data.put("prev", varMap.get(arr.get(i-1)));
+            if (i > 0) {
+                data.put("prev", varMap.get(arr.get(i - 1)));
             }
-            if ( i<(arr.size()-1) ) {
-                data.put("next", varMap.get(arr.get(i+1)));
+            if (i < (arr.size() - 1)) {
+                data.put("next", varMap.get(arr.get(i + 1)));
             }
 
-            File f = new File(variableDir, var + ".html" );
+            File f = new File(variableDir, var + ".html");
 
             taskList.execute(new GeneralVMTask("variable-item.vm", f, data));
         }
 
-	Thread.currentThread().setName("Thread " + Thread.currentThread().getId() );
+        Thread.currentThread().setName(
+                "Thread " + Thread.currentThread().getId());
     }
 
 }

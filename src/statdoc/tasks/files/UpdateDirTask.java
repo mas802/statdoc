@@ -30,13 +30,13 @@ import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 
 /**
- * Main entry point into the directory tree parser, sets of additional tasks
- * for each file found.
+ * Main entry point into the directory tree parser, sets of additional tasks for
+ * each file found.
  * 
  * TODO maybe resolve the File Task assignment in a config file.
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class UpdateDirTask implements Task {
 
@@ -49,12 +49,12 @@ public class UpdateDirTask implements Task {
         String type;
         Class<Task> taskClass;
     }
-    
+
     Map<String, TaskEntry> taskMap = new HashMap<String, UpdateDirTask.TaskEntry>();
-    
+
     @SuppressWarnings("unchecked")
-    public UpdateDirTask(File dir, Properties properties, 
-            StatdocItemHub hub, ThreadPoolExecutor taskQueue) {
+    public UpdateDirTask(File dir, Properties properties, StatdocItemHub hub,
+            ThreadPoolExecutor taskQueue) {
         this.rootDir = dir;
         this.hub = hub;
 
@@ -63,12 +63,12 @@ public class UpdateDirTask implements Task {
          */
         String[] exclude = properties.getProperty("statdoc.files.exclude", "")
                 .split("[\\s]*,[\\s]*");
-        
-        for ( String s : exclude ) {
-            Pattern p = Pattern.compile(".*"+s+".*");
+
+        for (String s : exclude) {
+            Pattern p = Pattern.compile(".*" + s + ".*");
             this.exclude.add(p);
         }
- 
+
         // setup services from properties file
         ClassLoader cl;
         cl = UpdateDirTask.class.getClassLoader();
@@ -76,11 +76,11 @@ public class UpdateDirTask implements Task {
             for (Map.Entry<Object, Object> p : properties.entrySet()) {
                 String key = p.getKey().toString();
                 if (key.startsWith("statdoc.file.")) {
-                    
+
                     String param = key.substring(8);
-                    String name = param.substring(param.lastIndexOf('.')+1);
+                    String name = param.substring(param.lastIndexOf('.') + 1);
                     String classstr = p.getValue().toString();
-                    
+
                     TaskEntry te = new TaskEntry();
                     te.type = param.replaceAll("\\.", ":");
                     te.taskClass = (Class<Task>) cl.loadClass(classstr);
@@ -95,8 +95,8 @@ public class UpdateDirTask implements Task {
 
     @Override
     public void run() {
-	Thread.currentThread().setName("Run " + this.getClass() );
-	
+        Thread.currentThread().setName("Run " + this.getClass());
+
         List<File> files = new ArrayList<File>();
 
         getAllFiles(rootDir, files);
@@ -106,30 +106,33 @@ public class UpdateDirTask implements Task {
             String filename = f.getAbsolutePath().toLowerCase();
 
             // System.out.println(filename);
-            
+
             int i = filename.lastIndexOf(".");
-            String suffix = filename.substring(i+1);
-            
+            String suffix = filename.substring(i + 1);
+
             // System.out.println(suffix);
-            
-            if ( taskMap.containsKey(suffix) ) {
+
+            if (taskMap.containsKey(suffix)) {
                 TaskEntry te = taskMap.get(suffix);
-                    Task task;
-                    try {
-                        task = te.taskClass.getConstructor(File.class, File.class, String.class, hub.getClass(), taskQueue.getClass()).newInstance(rootDir,f,te.type,hub,taskQueue);
-                        taskQueue.execute(task);
-                    } catch (InstantiationException | IllegalAccessException
-                            | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException
-                            | SecurityException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                Task task;
+                try {
+                    task = te.taskClass.getConstructor(File.class, File.class,
+                            String.class, hub.getClass(), taskQueue.getClass())
+                            .newInstance(rootDir, f, te.type, hub, taskQueue);
+                    taskQueue.execute(task);
+                } catch (InstantiationException | IllegalAccessException
+                        | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             } else {
-                taskQueue.execute(new OtherFileTask( rootDir, f, "file:general", hub, taskQueue));
+                taskQueue.execute(new OtherFileTask(rootDir, f, "file:general",
+                        hub, taskQueue));
             }
         }
-    	Thread.currentThread().setName("Thread " + Thread.currentThread().getId() );
+        Thread.currentThread().setName(
+                "Thread " + Thread.currentThread().getId());
 
     }
 
@@ -139,16 +142,17 @@ public class UpdateDirTask implements Task {
             @Override
             public boolean accept(File name) {
                 boolean accept = true;
-                
-                for ( Pattern p:exclude ) {
-                    accept = accept && !p.matcher(name.getAbsolutePath()).matches();
+
+                for (Pattern p : exclude) {
+                    accept = accept
+                            && !p.matcher(name.getAbsolutePath()).matches();
                 }
                 return accept;
             }
         });
         // System.out.println(sDir);
         for (File file : faFiles) {
-            if (file.isDirectory() ) {
+            if (file.isDirectory()) {
                 getAllFiles(file, result);
             } else {
                 result.add(file);

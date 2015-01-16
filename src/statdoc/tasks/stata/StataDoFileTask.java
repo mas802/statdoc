@@ -46,12 +46,11 @@ public class StataDoFileTask implements Task {
         Commands, DocBlock, CommentBlock, MataBlock
     }
 
-//    FileItem fileItem;
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
-    String type;
+    private String type;
 
     private MatchItem currentIn;
     private MatchItem currentOut;
@@ -76,17 +75,17 @@ public class StataDoFileTask implements Task {
         try {
             String content = new String(Files.readAllBytes(Paths.get(file
                     .toURI())));
-            
+
             fileItem.setContent(content);
         } catch (Exception e) {
             System.err.println("Error for: " + file + " - "
                     + Thread.currentThread().getName());
             e.printStackTrace();
 
-            fileItem.addWarning("There was and error processing this file: " + e.getMessage() );
+            fileItem.addWarning("There was and error processing this file: "
+                    + e.getMessage());
         }
 
-        
         currentIn = hub.createMatch("initIn", "file:data");
         currentOut = hub.createMatch("initOut", "file:data");
 
@@ -262,25 +261,23 @@ public class StataDoFileTask implements Task {
                     if (trimLine.startsWith("end ") || trimLine.equals("end")) {
                         indent--;
                     }
-                    
+
                     CmdItem cmdItem = parseLine(currentCmd, fileItem, cmdRange,
                             currentDoc, currentComment, docRange, indent);
 
                     // check index bounds
-                    if ( indent < 0 ) {
-                        String warn = "Indent out of bounds on line " 
+                    if (indent < 0) {
+                        String warn = "Indent out of bounds on line "
                                 + cmdRange[1] + " check the syntax.";
-                        fileItem.addWarning( warn );
-                        cmdItem.addWarning( warn );
+                        fileItem.addWarning(warn);
+                        cmdItem.addWarning(warn);
                         indent = 0;
                     }
-
 
                     if (cmdItem.get("command").toString()
                             .matches("prog(r(a(m)?)?)?")) {
                         String p = cmdItem.get("parameters").toString().trim();
-                        if (!p.startsWith("drop") 
-                                && !p.startsWith("dir")
+                        if (!p.startsWith("drop") && !p.startsWith("dir")
                                 && !p.startsWith("list")
                                 && !p.startsWith("plugin")) {
                             indent++;
@@ -315,8 +312,7 @@ public class StataDoFileTask implements Task {
                     // deal with it if it is the first doc
                     // TODO make the 10 a config issue
                     if (!firstDoc && docRange[0] < 10) {
-                        hub.addDocToItem(fileItem,
-                                currentDoc, docRange);
+                        hub.addDocToItem(fileItem, currentDoc, docRange);
                         firstDoc = true;
                         currentDoc = null;
                     }
@@ -382,7 +378,7 @@ public class StataDoFileTask implements Task {
      * @param currentDoc
      * @param currentComment
      * @param docRange
-     * @return
+     * @return the generated item for the line
      */
     private CmdItem parseLine(String currentCmd, FileItem fileItem,
             Integer[] cmdRange, String currentDoc, String currentComment,
@@ -526,7 +522,7 @@ public class StataDoFileTask implements Task {
 
             fileItem.addChild("match:input:data", in);
             cmdItem.addChild("match:input:data", in);
-        } else if ( type.equals("cmd:outputcmd") && command.startsWith("save")) {
+        } else if (type.equals("cmd:outputcmd") && command.startsWith("save")) {
             // use, set that MatchItem accordingly
             // currentOut = hub.createMatch( "file:data" );
             String cmdfile;
@@ -585,8 +581,8 @@ public class StataDoFileTask implements Task {
             cmdItem.addChild("match:run:file", run);
         }
 
-        for (String field : new String[] { "prefix", "parameters", "if", "in", "weight",
-                "options" }) {
+        for (String field : new String[] { "prefix", "parameters", "if", "in",
+                "weight", "options" }) {
             if (cmdItem.containsKey(field)) {
                 Set<String> params = StataUtils.parametersCleanSplit(cmdItem
                         .get(field).toString());
@@ -618,7 +614,7 @@ public class StataDoFileTask implements Task {
 
     private static String commandType(String command, Map<String, String[]> map) {
         String type = "cmd:other";
-        for (String r : map.keySet() ) {
+        for (String r : map.keySet()) {
             for (String t : map.get(r)) {
                 if (command.equals(t)) {
                     type = "cmd:" + r;

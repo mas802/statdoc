@@ -28,13 +28,20 @@ import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 import statdoc.utils.TemplateUtil;
 
+/**
+ * Task to dispatch tasks for files info.
+ * 
+ * @author Markus Schaffner
+ *
+ */
 public class GenerateFileinfoTask implements Task {
 
-    File rootDir;
+    private File rootDir;
     ThreadPoolExecutor taskList;
-    StatdocItemHub hub;
-    
-    public GenerateFileinfoTask(File filesDir,  StatdocItemHub hub, ThreadPoolExecutor taskList) {
+    private StatdocItemHub hub;
+
+    public GenerateFileinfoTask(File filesDir, StatdocItemHub hub,
+            ThreadPoolExecutor taskList) {
         this.rootDir = filesDir;
         this.taskList = taskList;
         this.hub = hub;
@@ -42,21 +49,23 @@ public class GenerateFileinfoTask implements Task {
 
     @Override
     public void run() {
-	Thread.currentThread().setName("Run " + this.getClass() );
-	
+        Thread.currentThread().setName("Run " + this.getClass());
+
         TemplateUtil tu = TemplateUtil.getInstance();
 
         {
             // get an item with grouped children
-            Item files = new Item("files", "files", "files/files-summary.html", "files:summary");
-            for(Item item:hub.getFiles()) {
+            Item files = new Item("files", "files", "files/files-summary.html",
+                    "files:summary");
+            for (Item item : hub.getFiles()) {
                 files.addChild(item);
             }
-            
+
             // produce files/files-summary.html
-            Map<String, Object> data = new TreeMap<String, Object>(hub.getGlobals());
+            Map<String, Object> data = new TreeMap<String, Object>(
+                    hub.getGlobals());
             data.put("files", hub.getFiles());
-            data.put("typeMap", StatdocItemHub.getItemTypeMap( hub.getFiles() ));
+            data.put("typeMap", StatdocItemHub.getItemTypeMap(hub.getFiles()));
             data.put("filesItem", files);
             data.put("item", files);
             data.put("section", "files");
@@ -69,29 +78,32 @@ public class GenerateFileinfoTask implements Task {
         }
 
         ArrayList<FileItem> arr = new ArrayList<FileItem>(hub.getFiles());
-        for (int i = 0; i<arr.size(); i++) {
+        for (int i = 0; i < arr.size(); i++) {
             FileItem fi = arr.get(i);
-            
-            Map<String, Object> data = new TreeMap<String, Object>(hub.getGlobals());
+
+            Map<String, Object> data = new TreeMap<String, Object>(
+                    hub.getGlobals());
             data.put("item", fi);
             data.put("section", "files");
-            if ( i>0 ) {
-                data.put("prev", arr.get(i-1));
+            if (i > 0) {
+                data.put("prev", arr.get(i - 1));
             }
-            if ( i<(arr.size()-1) ) {
-                data.put("next", arr.get(i+1));
+            if (i < (arr.size() - 1)) {
+                data.put("next", arr.get(i + 1));
             }
-            
-            if ( fi.getType().startsWith("file:data")) {
-                Collection<Item> grouped = StatdocItemHub.groupMap( fi.getChildrenBy("variable:"), 3, 3, "group");
+
+            if (fi.getType().startsWith("file:data")) {
+                Collection<Item> grouped = StatdocItemHub.groupMap(
+                        fi.getChildrenBy("variable:"), 3, 3, "group");
                 data.put("groupedVars", grouped);
             }
-            
-            File f = new File(rootDir, fi.getLink() + "" );
+
+            File f = new File(rootDir, fi.getLink() + "");
             taskList.execute(new GeneralVMTask("file-item.vm", f, data));
         }
 
-	Thread.currentThread().setName("Thread " + Thread.currentThread().getId() );
+        Thread.currentThread().setName(
+                "Thread " + Thread.currentThread().getId());
     }
 
 }

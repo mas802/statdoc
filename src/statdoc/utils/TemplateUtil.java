@@ -61,13 +61,15 @@ public class TemplateUtil {
             p.setProperty("file.resource.loader.path", basepath);
             // p.setProperty("file.resource.loader.cache", "false");
 
-            
             p.setProperty("velocimacro.library.autoreload", "false");
             p.setProperty("file.resource.loader.cache", "true");
-            p.setProperty("file.resource.loader.modificationCheckInterval", "-1");
+            p.setProperty("file.resource.loader.modificationCheckInterval",
+                    "-1");
             p.setProperty("parser.pool.size", "50");
-            p.setProperty("velocimacro.permissions.allow.inline.to.replace.global", "false");
-            
+            p.setProperty(
+                    "velocimacro.permissions.allow.inline.to.replace.global",
+                    "false");
+
             p.setProperty("runtime.log.logsystem.class",
                     "org.apache.velocity.runtime.log.NullLogSystem");
 
@@ -92,11 +94,11 @@ public class TemplateUtil {
         for (Map.Entry<String, Object> a : data.entrySet()) {
             context.put(a.getKey(), a.getValue());
         }
-        
-         /*
-         * get the Template object. This is the parsed version of your template
-         * input file.
-         */
+
+        /*
+        * get the Template object. This is the parsed version of your template
+        * input file.
+        */
 
         Template template = null;
 
@@ -110,7 +112,6 @@ public class TemplateUtil {
             e.printStackTrace();
         }
 
-        
         /*
          * work around for the 
          * "The requested operation cannot be performed 
@@ -118,15 +119,14 @@ public class TemplateUtil {
          * Exception
          * 
          */
-        if ( !f.canWrite() ) {
+        if (!f.canWrite()) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        
-        
+
         /*
          * Now have the template engine process your template using the data
          * placed into the context. Think of it as a 'merge' of the template and
@@ -145,8 +145,8 @@ public class TemplateUtil {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }        
-        
+        }
+
     }
 
     // velocity template evaluation
@@ -163,11 +163,11 @@ public class TemplateUtil {
         for (Map.Entry<String, Object> a : data.entrySet()) {
             context.put(a.getKey(), a.getValue());
         }
-        
-         /*
-         * get the Template object. This is the parsed version of your template
-         * input file.
-         */
+
+        /*
+        * get the Template object. This is the parsed version of your template
+        * input file.
+        */
 
         Template template = null;
 
@@ -200,10 +200,9 @@ public class TemplateUtil {
             e.printStackTrace();
         }
 
-        
-//        HtmlCompressor compressor = new HtmlCompressor();
-//        String compressedHtml = compressor.compress(writer.toString());       
-        
+        //        HtmlCompressor compressor = new HtmlCompressor();
+        //        String compressedHtml = compressor.compress(writer.toString());       
+
         return writer.toString();
     }
 

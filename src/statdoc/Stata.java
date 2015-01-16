@@ -19,87 +19,69 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import statdoc.items.StatdocItemHub;
-
 import com.stata.sfi.SFIToolkit;
 
 /**
- * Main class of Statdoc and entry into the execution .
- * 
- * Should read the configuration and initiate the main tasks . Has control over
- * the dispensation of threads.
+ * Initiates the Statdoc main class from within Stata and displays the results
+ * in the Stata window.
  * 
  * @author Markus Schaffner
  * 
  */
 public class Stata {
 
-    private static class Interceptor extends PrintStream
-    {
-        public Interceptor(OutputStream out)
-        {
+    private static class Interceptor extends PrintStream {
+        public Interceptor(OutputStream out) {
             super(out, true);
         }
-        
+
         @Override
-        public void print(String s)
-        {
+        public void print(String s) {
             SFIToolkit.displayln(s);
             int i = SFIToolkit.pollnow();
-            if ( i != 0 ) {
+            if (i != 0) {
                 throw new RuntimeException("canceled");
             }
             super.print(i + ":" + s);
         }
     }
 
-    private static class ErrorInterceptor extends PrintStream
-    {
-        public ErrorInterceptor(OutputStream out)
-        {
+    private static class ErrorInterceptor extends PrintStream {
+        public ErrorInterceptor(OutputStream out) {
             super(out, true);
         }
-        
+
         @Override
-        public void print(String s)
-        {
+        public void print(String s) {
             SFIToolkit.errorln(s);
             int i = SFIToolkit.pollnow();
-            if ( i != 0 ) {
+            if (i != 0) {
                 throw new RuntimeException("canceled");
             }
             super.print(i + ":" + s);
         }
     }
-    
-    public static int run(String [] args) {
+
+    public static int run(String[] args) {
         SFIToolkit.pollstd();
-        
+
         PrintStream origOut = System.out;
         PrintStream interceptor = new Interceptor(origOut);
-        System.setOut(interceptor);// just add the interceptor
-       
+        System.setOut(interceptor);
+
         PrintStream origOutE = System.err;
         PrintStream interceptorE = new ErrorInterceptor(origOutE);
-        System.setErr(interceptorE);// just add the interceptor
-       
-        /*
-        String[] s = new String[] {
-                "-o", "/Users/mas/statdoc/",
-                "-s", "/Users/mas/Dropbox/Public/cameron/"
-        };
-        */
-        
+        System.setErr(interceptorE);
+
         try {
             Statdoc.main(args);
             SFIToolkit.pollnow();
         } catch (IOException e) {
-            SFIToolkit.errorln("error" + e.getMessage() );
+            SFIToolkit.errorln("error" + e.getMessage());
             e.printStackTrace();
         }
-        // SFIToolkit.displayln("test " + StatdocItemHub.getInstance().stats());
         return 0;
     }
-    
-    // javacall statdoc.Stata run
+
+    // use with javacall statdoc.Stata run
 }

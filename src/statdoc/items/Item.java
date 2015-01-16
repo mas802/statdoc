@@ -28,18 +28,18 @@ import statdoc.utils.NaturalComparator;
 import statdoc.utils.StatdocUtils;
 
 /**
- * Item is the key class for all elements of analysis and provides a flexible 
- * container for information about an item and its children/relatives. It 
- * extends a TreeMap to hold arbitrary key value information and has a 
- * number of fields to store information with relevance for sorting out
- * the interdependence between Items.
+ * Item is the key class for all elements of analysis and provides a flexible
+ * container for information about an item and its children/relatives. It
+ * extends a TreeMap to hold arbitrary key value information and has a number of
+ * fields to store information with relevance for sorting out the
+ * interdependence between Items.
  * 
- * Subclass of Item should be lean and avoid to duplicate/Override methods
- * that could be handled more generally here. The are mainly Marker classes
- * and provide very specialized information.
+ * Subclass of Item should be lean and avoid to duplicate/Override methods that
+ * could be handled more generally here. The are mainly Marker classes and
+ * provide very specialized information.
  * 
  * @author Markus Schaffner
- *
+ * 
  */
 public class Item extends TreeMap<String, Object> implements Comparable<Item> {
 
@@ -60,7 +60,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     protected String content;
 
     protected List<String> warnings = new ArrayList<String>();
-    
+
     // avoid raw subclassing
     protected Item() {
 
@@ -80,8 +80,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     /*
      * GETTERS and SETTERS
      */
-    
-    
+
     public String getName() {
         return name;
     }
@@ -138,7 +137,6 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         this.type = type;
     }
 
-    
     public String getDescription() {
         return description;
     }
@@ -146,14 +144,13 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     public void setDescription(String description) {
         this.description = description;
     }
-    
 
     /*
      * CODE TO HANDLE DISPLAY (outputs HTML)
      */
-    
-    private Map<String,String> matched = new HashMap<String, String>();
-    
+
+    private Map<String, String> matched = new HashMap<String, String>();
+
     /**
      * Return property as linked HTML with matches. This function returns the
      * requested property after all tokens that can be appropriately matched
@@ -161,67 +158,72 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * 
      * @return A linked HTML string of the property requested.
      */
-     public String getMatched(String property) {
-        String matchToken = ""+(char)17+"";
+    public String getMatched(String property) {
+        String matchToken = "" + (char) 17 + "";
 
-        if ( matched.containsKey( property + "_matched") ) {
-            return matched.get( property + "_matched" );
+        if (matched.containsKey(property + "_matched")) {
+            return matched.get(property + "_matched");
         } else {
-        String result = this.get(property).toString();
+            String result = this.get(property).toString();
 
-        ArrayList<String> replace = new ArrayList<String>();
-        int counter = 0;
-        
-        for (Item item : this.getChildrenBy("match:")) {
-            MatchItem m = (MatchItem) item;
+            ArrayList<String> replace = new ArrayList<String>();
+            int counter = 0;
 
-            if (m.containsKey("term") && (!m.containsKey("field") || m.get("field").equals(property)) ) {
-                String term = m.get("term").toString().trim();
-                
-                if (!term.equals("")) {
-                    term = StatdocUtils.stringToRegex(term);
-                    Collection<Item> links = m.getChildren();
+            for (Item item : this.getChildrenBy("match:")) {
+                MatchItem m = (MatchItem) item;
 
-                    Pattern pattern = Pattern.compile("(?<=[\\W]|^)" + term + "(?:(?=[\\W]|$)|(?<=\\())");
-                    
-                    if (links.size() == 1) {
-                        String linkStr = "ERROR";
-                        for (Item link : links) {
-                            linkStr = "<a href=\"../" + link.getLink() + "\">"
-                                    + term + "</a>";
+                if (m.containsKey("term")
+                        && (!m.containsKey("field") || m.get("field").equals(
+                                property))) {
+                    String term = m.get("term").toString().trim();
+
+                    if (!term.equals("")) {
+                        term = StatdocUtils.stringToRegex(term);
+                        Collection<Item> links = m.getChildren();
+
+                        Pattern pattern = Pattern.compile("(?<=[\\W]|^)" + term
+                                + "(?:(?=[\\W]|$)|(?<=\\())");
+
+                        if (links.size() == 1) {
+                            String linkStr = "ERROR";
+                            for (Item link : links) {
+                                linkStr = "<a href=\"../" + link.getLink()
+                                        + "\">" + term + "</a>";
+                            }
+                            result = pattern.matcher(result).replaceAll(
+                                    matchToken + counter + matchToken);
+                            replace.add(linkStr);
+                            counter++;
+                        } else if (links.size() > 1) {
+                            // TODO this could be handled better/differently
+                            String linkStr = "ERROR (m)";
+                            String title = "<a title=\"multiple matches: ";
+                            for (Item link : links) {
+                                // title = title + " " + link.getFullName();
+                                linkStr = " href=\"../" + link.getLink()
+                                        + "\">" + term + "</a>";
+                            }
+                            linkStr = title + "\"" + linkStr;
+                            result = pattern.matcher(result).replaceAll(
+                                    matchToken + counter + matchToken);
+                            replace.add(linkStr);
+                            counter++;
+                        } else {
+                            throw new RuntimeException("no children in " + m
+                                    + " " + m.get("term"));
                         }
-                        result = pattern.matcher(result).replaceAll( 
-                                matchToken + counter + matchToken );
-                        replace.add(linkStr);
-                        counter++;
-                    } else if (links.size() > 1) {
-                        // TODO this could be handled better/differently
-                        String linkStr = "ERROR (m)";
-                        String title = "<a title=\"multiple matches: ";
-                        for (Item link : links) {
-                            // title = title + " " + link.getFullName();
-                            linkStr = " href=\"../" + link.getLink() + "\">"
-                                    + term + "</a>";
-                        }
-                        linkStr = title + "\"" + linkStr;
-                        result = pattern.matcher(result).replaceAll( 
-                                matchToken + counter + matchToken );
-                        replace.add(linkStr);
-                        counter++;
-                    } else {
-                        throw new RuntimeException("no children in " + m  + " " + m.get("term") );
                     }
                 }
             }
-        }
-        
-        for ( int i = 0; i<replace.size(); i++ ) {
-            result = result.replaceAll(matchToken + i + matchToken, replace.get(i));
-        }
-        
-        matched.put( property + "_matched", result);
-        
-        return result;
+
+            for (int i = 0; i < replace.size(); i++) {
+                result = result.replaceAll(matchToken + i + matchToken,
+                        replace.get(i));
+            }
+
+            matched.put(property + "_matched", result);
+
+            return result;
         }
     }
 
@@ -249,12 +251,11 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         return result;
     }
 
-
     /**
      * returns the fullname of the item abbreviated to length
      * 
-     * this method will try to preserve more of the end, rather
-     * than the beginning as teh two related methods.
+     * this method will try to preserve more of the end, rather than the
+     * beginning as teh two related methods.
      * 
      * @param length
      *            to abbreviate to
@@ -276,7 +277,6 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         }
         return result;
     }
-    
 
     /**
      * returns the property of the item abbreviated to length
@@ -286,7 +286,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return abbreviated property of the item
      */
     public String getAbbrevProperty(String key, int length) {
-        String result = get( key ).toString();
+        String result = get(key).toString();
         if (result.length() > length) {
             if (length < 5) {
                 result = result.substring(0, length);
@@ -301,7 +301,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         }
         return result;
     }
-    
+
     /**
      * Retrieve the color of this class, the color might be calculated if
      * needed.
@@ -390,11 +390,10 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         return result;
     }
 
-
     /*
      * CHILDREN (in a MVC pattern the access methods might be moved into the hub)
      */
-    
+
     /**
      * Children are links to other items, they can be set either as a link just
      * with the type or as a custom type of link (not sure yet if that is
@@ -438,7 +437,8 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     /**
      * gets a collection of filtered children
      * 
-     * @param args filter(s)
+     * @param args
+     *            filter(s)
      * @return a filtered set of items
      */
     public final Collection<Item> getChildrenBy(String... args) {
@@ -456,27 +456,30 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     /**
      * gets the filtered children of a subset of children
      * 
-     * @param filter the first level filter (e.g. match:)
-     * @param args teh second level filter(s)
+     * @param filter
+     *            the first level filter (e.g. match:)
+     * @param args
+     *            the second level filter(s)
      * @return a filtered set of items
      */
     public final Collection<Item> getChildrenByBy(String filter, String... args) {
         Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
 
         for (String link : children.keySet()) {
-             if (link.startsWith(filter)) {
-        	 for( Item item: children.get(link) ) {
-        	     result.addAll(item.getChildrenBy(args));
-        	 }
-             }
+            if (link.startsWith(filter)) {
+                for (Item item : children.get(link)) {
+                    result.addAll(item.getChildrenBy(args));
+                }
+            }
         }
         return result;
     }
 
     /**
-     * provides stacked result of filtered children 
+     * provides stacked result of filtered children
      * 
-     * @param args filter the children
+     * @param args
+     *            filter the children
      * @return a collection with single and grouped children
      */
     public final Collection<Item> getGroupedChildrenBy(String... args) {
@@ -504,8 +507,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     public Map<String, Collection<Item>> getChildrenMap() {
         return this.children;
     }
-  
-    
+
     /*
      * GUT CODE FOR COMPARE AND SUCH 
      */
@@ -520,7 +522,6 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         // TODO check the getFullName() is always unique
         return this.getFullName().compareTo(item.getFullName());
     }
-
 
     @Override
     public int hashCode() {
@@ -537,4 +538,4 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         return (this == obj);
     }
 
- }
+}

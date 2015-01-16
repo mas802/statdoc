@@ -35,11 +35,11 @@ import statdoc.tasks.Task;
  */
 public class StataAnalyseDtaFileTask implements Task {
 
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
-    String type;
+    private String type;
 
     public StataAnalyseDtaFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
@@ -59,7 +59,7 @@ public class StataAnalyseDtaFileTask implements Task {
 
         try {
             String cmd = null;
-            
+
             String c = "use ";
             String t = "stata";
             if (file.getName().endsWith("csv")) {
@@ -76,25 +76,26 @@ public class StataAnalyseDtaFileTask implements Task {
             long id = file.lastModified();
             dtaFileItem.put("lastmodified", id);
             File output = new File(hub.outputDir, "derived/analyse_dta_"
-                    + file.getName() + "_" + id +".smcl");
+                    + file.getName() + "_" + id + ".smcl");
 
             // stop execution if no Stata exec
-            if ( hub.getStataPath() == null ) {
-                dtaFileItem.addWarning( "Please provde a valid Stata "
-                        + "executatble in statdoc.properties." );
+            if (hub.getStataPath() == null) {
+                dtaFileItem.addWarning("Please provde a valid Stata "
+                        + "executatble in statdoc.properties.");
                 return;
             }
-            
+
             if (!output.exists()) {
 
-                cmd =  c + " \""
-                        + dtaFileItem.getFile().getAbsolutePath() + "\"";
+                cmd = c + " \"" + dtaFileItem.getFile().getAbsolutePath()
+                        + "\"";
 
                 // System.out.println( cmd );
-                
+
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put("loadCommand", cmd);
-                StataUtils.runTemplate("analyse-dta", hub.getStataPath(), data, output);
+                StataUtils.runTemplate("analyse-dta", hub.getStataPath(), data,
+                        output);
             }
 
             BufferedReader reader = new BufferedReader(new FileReader(output));
@@ -124,8 +125,7 @@ public class StataAnalyseDtaFileTask implements Task {
                 }
             }
 
-            currentItem.setContent(StataUtils.smcl2html(sb.toString(),
-                    true));
+            currentItem.setContent(StataUtils.smcl2html(sb.toString(), true));
 
             reader.close();
         } catch (Exception ex) {

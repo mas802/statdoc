@@ -33,11 +33,11 @@ import statdoc.tasks.Task;
  */
 public class OtherFileTask implements Task {
 
-    File file;
-    File rootDir;
+    private File file;
+    private File rootDir;
     ThreadPoolExecutor taskList;
-    StatdocItemHub hub;
-    String type;
+    private StatdocItemHub hub;
+    private String type;
 
     public OtherFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
@@ -54,9 +54,13 @@ public class OtherFileTask implements Task {
 
         FileItem fi = hub.createFile(file, rootDir, type);
 
-        // set tokens, probably not much to do here
-        fi.addWarning("This file type is not recognised, contact the developers if you think it should.");
-
+        if ( type.equals("general:other") ) {
+            // set tokens, probably not much to do here
+            fi.addWarning("This file type is not recognised, "
+                    + "you can add an appropriate statdoc.file... entry to "
+                    + "statdoc.properties to change this.");
+        }
+        
         Thread.currentThread().setName(
                 "Thread " + Thread.currentThread().getId());
     }
