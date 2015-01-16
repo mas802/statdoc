@@ -83,5 +83,6 @@ function toggle(id) {
 }
 
 function setIframeHeight(target) {
-    d3.select('#'+target).select('iframe').style( 'height', d3.select('#'+target).style( 'height' ));
+//    alert( document.getElementById(target).offsetHeight );
+    d3.select('#'+target).select('iframe').style( 'height', document.getElementById(target).offsetHeight + "px" );
 }

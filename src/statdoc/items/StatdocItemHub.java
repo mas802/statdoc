@@ -616,17 +616,4 @@ public class StatdocItemHub {
         return "Variables: " + vars.size() + "  | Files: " + files.size()
                 + "  | Tokens: " + tokens.size();
     }
-
-    /*
-     * GUT CODE FOR SINGLETON IN A THREADED ENVIRONMENT
-
-    static class Holder {
-        static volatile StatdocItemHub instance = new StatdocItemHub();
-    }
-
-    public static StatdocItemHub getInstance() {
-        return Holder.instance;
-    }
-     */
-
 }
