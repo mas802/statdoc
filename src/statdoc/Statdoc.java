@@ -53,7 +53,7 @@ import statdoc.utils.TemplateUtil;
  */
 public class Statdoc {
 
-    private final static String version = "v0.9.0-beta";
+    private final static String version = "v0.9.1-beta.snapshot";
 
     // directory for all the files from initialroot
     private static final String[] dirs = new String[] { "overview", "files",

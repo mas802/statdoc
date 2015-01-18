@@ -35,14 +35,14 @@ public class ParseDoFileTest {
     @Test
     public void testDo() {
 
-//        File file = new File("testfile.do");
-         File file = new File("/Users/mas/Dropbox/Public/cameron/t2_mcloop.do");
+        File file = new File("test/statdoc/tests/testfile.do");
+//         File file = new File("/Users/mas/Dropbox/Public/cameron/t2_mcloop.do");
 
         StatdocItemHub hub = new StatdocItemHub();
         Map<String,String[]> map = new HashMap<String,String[]>();
         map.put("none", new String[] {"none"} );
         hub.setStataCmdTypes( map );
-        TextFileTask t1 = new TextFileTask(new File(""), file, "file:script",
+        TextFileTask t1 = new TextFileTask(new File("tests/statdoc/tests"), file, "file:script",
                hub,  null);
 
         t1.run();

@@ -54,7 +54,7 @@ public class OtherFileTask implements Task {
 
         FileItem fi = hub.createFile(file, rootDir, type);
 
-        if ( type.equals("general:other") ) {
+        if ( type.equals("file:general") ) {
             // set tokens, probably not much to do here
             fi.addWarning("This file type is not recognised, "
                     + "you can add an appropriate statdoc.file... entry to "
