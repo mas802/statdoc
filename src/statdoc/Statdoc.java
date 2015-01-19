@@ -38,6 +38,7 @@ import statdoc.items.StatdocItemHub;
 import statdoc.tasks.MatchingTask;
 import statdoc.tasks.Task;
 import statdoc.tasks.files.UpdateDirTask;
+import statdoc.tasks.stata.StataUtils;
 import statdoc.tasks.vm.GeneralVMTask;
 import statdoc.tasks.vm.GenerateFileinfoTask;
 import statdoc.tasks.vm.GenerateTokeninfoTask;
@@ -261,13 +262,8 @@ public class Statdoc {
          */
         String[] stataProgs = generalProp.getProperty("statdoc.stata.path",
                 "stata").split("[\\s]*,[\\s]*");
-        String stataPath = "unset";
-        int i = 0;
-        while (!(new File(stataPath)).canExecute() && stataProgs.length > i) {
-            stataPath = stataProgs[i];
-            i++;
-        }
-        if (!(new File(stataPath)).canExecute()) {
+        File stataPath = StataUtils.resolveStataPath(stataProgs, System.getProperty("os.name", "generic"));
+        if (!stataPath.canExecute() || stataPath.isDirectory()) {
             System.err.println(" ");
             System.err.println("No installations of Stata found, please edit");
             System.err.println("the statadoc.properties file and add the path");
@@ -275,7 +271,7 @@ public class Statdoc {
             System.err.println("the statdoc.stata.path property.");
             System.err.println(" ");
         } else {
-            hub.setStataPath(stataPath);
+            hub.setStataPath(stataPath.getAbsolutePath());
         }
 
         /*
