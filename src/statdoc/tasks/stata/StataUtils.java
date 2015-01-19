@@ -444,7 +444,7 @@ public class StataUtils {
         return (s.toString());
     }
 
-    public static String runTemplate(String templateName, String stataexe,
+    public static String runTemplate(final String templateName, String stataexe,
             Map<String, Object> data, File outputDir) throws IOException,
             InterruptedException {
 
@@ -456,7 +456,7 @@ public class StataUtils {
 
         // System.out.println( statacmd );
 
-        Path tempDir = Files.createTempDirectory("statdoc");
+        final Path tempDir = Files.createTempDirectory("statdoc");
 
         TemplateUtil.getInstance().evalVMtoFile(
                 tempDir.resolve(templateName + ".do").toFile(),
@@ -476,6 +476,19 @@ public class StataUtils {
         Files.copy(tempDir.resolve(templateName + ".smcl"), outputDir.toPath(),
                 StandardCopyOption.REPLACE_EXISTING);
 
+        /* 
+         * shutdown hook to get temp files and directory deleted 
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                tempDir.resolve(templateName + ".do").toFile().delete();
+                tempDir.resolve(templateName + ".smcl").toFile().delete();
+                tempDir.toFile().delete();
+            }
+       });
+        
         return "";
     }
 }

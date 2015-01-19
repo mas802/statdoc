@@ -31,6 +31,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.velocity.texen.util.FileUtil;
+
 import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
 import statdoc.tasks.MatchingTask;
@@ -131,6 +133,7 @@ public class Statdoc {
         File sourceDir = new File(".");
         File outputDir = new File("statdoc");
         boolean initialise = false;
+        boolean derivedClear = false;
 
         boolean ok = true;
         for (int i = 0; i < args.length; i++) {
@@ -151,6 +154,8 @@ public class Statdoc {
                 }
             } else if (args[i].equals("-i") || args[i].equals("--initialise")) {
                 initialise = true;
+            } else if (args[i].equals("-d") || args[i].equals("--derived-clear")) {
+        	derivedClear = true;
             } else if (args[i].contains("=")) {
                 // parse later when properties are set up  
             } else {
@@ -208,6 +213,10 @@ public class Statdoc {
             dir.mkdir();
         }
 
+        if ( derivedClear ) {
+            for(File file: new File( hub.outputDir, "derived" ).listFiles()) file.delete();
+        }
+        
         for (String file : files) {
             InputStream f = Statdoc.class.getResourceAsStream("/initialroot/"
                     + file);
