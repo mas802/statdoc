@@ -11,6 +11,14 @@
 
 $loadCommand
 
+describe, short
+
+local N = r(N)
+local variables = r(k)
+
+di "@N `N'"
+di "@variables `variables'"
+
 datasignature
 local datasig = "`r(datasignature)'"
 
@@ -23,6 +31,23 @@ if ( !_rc ) {
 }
 
 notes _dta
+
+qui {
+// check if there are too many observations
+// and cut down if necessary
+local sample = max(floor(${maxvarobs}/`variables'),30)
+notes search "@statdoc.full"
+if ( r(found) == 1 | `N' > `sample' ) {
+    noi di "@_subsample `sample'"
+    
+    tempvar r n
+    gen `r' = uniform()
+    sort `r'
+    gen `n' = _n
+    drop if _n > `sample'
+    drop `n' `r'
+}
+}
 
 foreach var of varlist * {
 
@@ -265,40 +290,6 @@ cap noi {
         }
     }
     }
-/*
-    local bin = int(min(sqrt(`nobs'),30))
-    local h = (`max'-`min')/`bin'
-    tempvar hist
-    gen `hist' = (round((`var' - `min' - `h'/2 ) / `h')*`h') + `min' + `h'/2
-    di `bin' "  " `h' " " `min' " " `max'
-    qui tab `hist', matcell(histh) matrow(histw)
-    forvalues i=1/`bin' {
-        if ( `i' == 1 ) {
-            noi di "@histh " _continue
-        }
-        noi di histh[`i',1] _continue
-        if ( `i' == `bin' ) {
-            noi di ""
-        }
-        else {
-            noi di ", " _continue
-        }
-    }
-    forvalues i=1/`bin' {
-        if ( `i' == 1 ) {
-            noi di "@histw " _continue
-        }
-        noi di histw[`i',1] _continue
-        if ( `i' == `bin' ) {
-            noi di ""
-        }
-        else {
-            noi di ", " _continue
-        }
-    }
-    drop `hist'
-	}
-	*/
 }
 
 noi di "@type `type'"

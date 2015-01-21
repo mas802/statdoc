@@ -101,14 +101,14 @@ MACRO displayItemLink to display a short (max 35 char) link to an item, usually 
 #foreach( $sitem in $item.getChildren() )
 #if ( "$scolor" == "altColor" ) #set( $scolor = "rowColor" ) #else #set( $scolor = "altColor" ) #end
 <tr class="$scolor">
-<td class="colFirst" style="text-align: right;"><a href="../${sitem.getLink()}" title="File $sitem.getName()">$sitem.getFullName()</a>#warningIcon($sitem)</td>
+<td class="colFirst" style="text-align: right;"><a href="../${sitem.getLink()}" title="File $sitem.getName()"  target="classFrame" >$sitem.getFullName()</a>#warningIcon($sitem)</td>
 <td class="colLast">$!{sitem.getDescription()}</td>
 </tr>
 #end
 </tbody>
 #else
 <tr class="$color">
-<td class="colFirst" style="text-align: right;"><a href="../${item.getLink()}" title="File $item.getName()">$item.getFullName()</a>#warningIcon($item)</td>
+<td class="colFirst" style="text-align: right;"><a href="../${item.getLink()}"  target="classFrame" title="File $item.getName()">$item.getFullName()</a>#warningIcon($item)</td>
 <td class="colLast">$!{item.getDescription()}</td>
 </tr>
 #end
@@ -271,8 +271,8 @@ $!str <span class="cmd$key">$!line.getMatched( $key )</span>
 <tr class="$gvarcolor"  style="background: ${var.myColor()};">
 <td class="colFirst"><a name="$data.getName()"><!--   --></a><a name="$var.getName()"><!--   --></a>
 $!{indent}<a href='javascript:toggle("$uniqueId");' title="Show more">[+]</a>
-<a href="../$var.getLink()#$data.getName()" title="Variable $var.getName()">$var.getName()</a><br>
-$!{indent}&nbsp;&nbsp;&nbsp;&nbsp;<i>@<a href="../$data.getLink()#${var.getName()}" title="Data $data.getName()">$data.getAbbrevName(32)</a></i></td>
+<a href="../$var.getLink()#$data.getName()"  target="classFrame" title="Variable $var.getName()">$var.getName()</a><br>
+$!{indent}&nbsp;&nbsp;&nbsp;&nbsp;<i>@<a href="../$data.getLink()#${var.getName()}"  target="classFrame" title="Data $data.getName()">$data.getAbbrevName(32)</a></i></td>
 #variable_tds( $var )
 </tr>
 <tr id="$uniqueId" class="$varcolor" style="display:none; background: ${var.myColor()};">
@@ -397,7 +397,7 @@ $warning
 #macro( warningIcon $warnitem )
 #if( $warnitem.getWarnings().size() > 0 ) 
 #foreach( $warning in $warnitem.getWarnings() )
-<a class="warning" href="../${warnitem.getLink()}\#warnings" title="${warning}">&#9888;</a>
+<a class="warning" href="../${warnitem.getLink()}\#warnings"  target="classFrame" title="${warning}">&#9888;</a>
 #end
 #end
 #end

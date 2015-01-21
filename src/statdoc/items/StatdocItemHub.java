@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -57,6 +58,8 @@ public class StatdocItemHub {
     private Map<String, Item> vars = new TreeMap<String, Item>();
     private List<MatchItem> matches = new ArrayList<MatchItem>();
 
+    private Properties prop = null;
+    
     /*
      * fields with general information/resources
      */
@@ -72,7 +75,14 @@ public class StatdocItemHub {
     /* 
      * GETTER / SETTERS and data access
      */
+    public Properties getProp() {
+	return prop;
+    }
 
+    public void setProp(Properties prop) {
+	this.prop = prop;
+    }
+    
     public void setGlobal(String key, Object value) {
         globals.put(key, value);
     }
@@ -617,4 +627,5 @@ public class StatdocItemHub {
         return "Variables: " + vars.size() + "  | Files: " + files.size()
                 + "  | Tokens: " + tokens.size();
     }
+
 }

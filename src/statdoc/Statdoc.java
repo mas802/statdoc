@@ -257,6 +257,8 @@ public class Statdoc {
         hub.setGlobal("project", generalProp.getProperty("statdoc.project",
                 sourceDir.getCanonicalFile().getName()));
 
+        hub.setProp(generalProp);
+        
         /*
          * Set the stata command
          */

@@ -94,6 +94,7 @@ public class StataAnalyseDtaFileTask implements Task {
 
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put("loadCommand", cmd);
+                data.put("maxvarobs", hub.getProp().getProperty("statdoc.stata.maxvarobs", ""+Integer.MAX_VALUE));
                 StataUtils.runTemplate("analyse-dta", hub.getStataPath(), data,
                         output);
             }
@@ -106,7 +107,8 @@ public class StataAnalyseDtaFileTask implements Task {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("=====")) {
+                // System.out.println(line);
+        	if (line.startsWith("=====")) {
 
                     currentItem.setContent(StataUtils.smcl2html(sb.toString(),
                             true));
@@ -116,6 +118,15 @@ public class StataAnalyseDtaFileTask implements Task {
                     currentItem = hub.createVariable(var, "variable:" + t,
                             dtaFileItem);
                     dtaFileItem.addChild(currentItem);
+
+                    // add a subsample warning
+                    if ( dtaFileItem.containsKey("_subsample") ) {
+                	currentItem.addWarning( "These statistics are based on"
+                		+ " a random subsample of " 
+                		+ dtaFileItem.get("_subsample") 
+                		+ " observations." );
+                    }            
+                    
                 } else {
 
                     hub.checkAndAddMetadata(currentItem,
@@ -127,7 +138,19 @@ public class StataAnalyseDtaFileTask implements Task {
 
             currentItem.setContent(StataUtils.smcl2html(sb.toString(), true));
 
-            reader.close();
+            if ( dtaFileItem.containsKey("_subsample") ) {
+        	dtaFileItem.addWarning( "All statistics are based on a random"
+        		+ " subsample of " + dtaFileItem.get("_subsample") 
+        		+ " observations. You can change this by increasing"
+        		+ " <code>statdoc.stata.maxvarobs</code> in"
+        		+ " <code>statdoc.properties</code> or"
+        		+ " by setting a <code>@statdoc.full</code> flag "
+        		+ " for the dataset with"
+        		+ " <code>notes _dta:@statdoc.full</code>." );
+            }            
+            
+reader.close();
+            
         } catch (Exception ex) {
             dtaFileItem.addWarning("There was a problem with running Stata: "
                     + ex.getMessage());
