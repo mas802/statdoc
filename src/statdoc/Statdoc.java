@@ -135,6 +135,7 @@ public class Statdoc {
         File outputDir = new File("statdoc");
         boolean initialise = false;
         boolean derivedClear = false;
+        boolean clear = false;
 
         boolean ok = true;
         for (int i = 0; i < args.length; i++) {
@@ -157,6 +158,8 @@ public class Statdoc {
                 initialise = true;
             } else if (args[i].equals("-d") || args[i].equals("--derived-clear")) {
         	derivedClear = true;
+            } else if (args[i].equals("-c") || args[i].equals("--clear")) {
+        	clear = true;
             } else if (args[i].contains("=")) {
                 // parse later when properties are set up  
             } else {
@@ -212,6 +215,9 @@ public class Statdoc {
         for (String file : dirs) {
             File dir = new File(hub.outputDir, file);
             dir.mkdir();
+            if ( clear ) {
+                for(File files: dir.listFiles()) files.delete();
+            }
         }
 
         if ( derivedClear ) {

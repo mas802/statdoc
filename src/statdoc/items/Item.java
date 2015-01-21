@@ -67,14 +67,14 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     }
 
     public Item(String name, String fullName, String link) {
-        this(name, fullName, link, "internal:none");
+	this(name, fullName, link, "internal:none");
     }
 
     public Item(String name, String fullName, String link, String type) {
-        this.name = name;
-        this.fullName = fullName;
-        this.link = link;
-        this.type = type;
+	this.name = name;
+	this.fullName = fullName;
+	this.link = link;
+	this.type = type;
     }
 
     /*
@@ -82,27 +82,27 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      */
 
     public String getName() {
-        return name;
+	return name;
     }
 
     public String getFullName() {
-        return fullName;
+	return fullName;
     }
 
     public String getLink() {
-        return link;
+	return link;
     }
 
     public String getType() {
-        return type;
+	return type;
     }
 
     public String getSummary() {
-        return summary;
+	return summary;
     }
 
     public void setSummary(String summary) {
-        this.summary = summary;
+	this.summary = summary;
     }
 
     /*
@@ -110,11 +110,11 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      */
 
     public void addWarning(String htmlWarning) {
-        warnings.add(htmlWarning);
+	warnings.add(htmlWarning);
     }
 
     public List<String> getWarnings() {
-        return warnings;
+	return warnings;
     }
 
     /*
@@ -122,27 +122,27 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      */
 
     public boolean hasContent() {
-        return (content != null);
+	return (content != null);
     }
 
     public String getContent() {
-        return content;
+	return content;
     }
 
     public void setContent(String content) {
-        this.content = content;
+	this.content = content;
     }
 
     public void setType(String type) {
-        this.type = type;
+	this.type = type;
     }
 
     public String getDescription() {
-        return description;
+	return description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+	this.description = description;
     }
 
     /*
@@ -159,72 +159,72 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return A linked HTML string of the property requested.
      */
     public String getMatched(String property) {
-        String matchToken = "" + (char) 17 + "";
+	String matchToken = "" + (char) 17 + "";
 
-        if (matched.containsKey(property + "_matched")) {
-            return matched.get(property + "_matched");
-        } else {
-            String result = this.get(property).toString();
+	if (matched.containsKey(property + "_matched")) {
+	    return matched.get(property + "_matched");
+	} else {
+	    String result = this.get(property).toString();
 
-            ArrayList<String> replace = new ArrayList<String>();
-            int counter = 0;
+	    ArrayList<String> replace = new ArrayList<String>();
+	    int counter = 0;
 
-            for (Item item : this.getChildrenBy("match:")) {
-                MatchItem m = (MatchItem) item;
+	    for (Item item : this.getChildrenBy("match:")) {
+		MatchItem m = (MatchItem) item;
 
-                if (m.containsKey("term")
-                        && (!m.containsKey("field") || m.get("field").equals(
-                                property))) {
-                    String term = m.get("term").toString().trim();
+		if (m.containsKey("term")
+			&& (!m.containsKey("field") || m.get("field").equals(
+				property))) {
+		    String term = m.get("term").toString().trim();
 
-                    if (!term.equals("")) {
-                        term = StatdocUtils.stringToRegex(term);
-                        Collection<Item> links = m.getChildren();
+		    if (!term.equals("")) {
+			term = StatdocUtils.stringToRegex(term);
+			Collection<Item> links = m.getChildren();
 
-                        Pattern pattern = Pattern.compile("(?<=[\\W]|^)" + term
-                                + "(?:(?=[\\W]|$)|(?<=\\())");
+			Pattern pattern = Pattern.compile("(?<=[\\W]|^)" + term
+				+ "(?:(?=[\\W]|$)|(?<=\\())");
 
-                        if (links.size() == 1) {
-                            String linkStr = "ERROR";
-                            for (Item link : links) {
-                                linkStr = "<a href=\"../" + link.getLink()
-                                        + "\">" + term + "</a>";
-                            }
-                            result = pattern.matcher(result).replaceAll(
-                                    matchToken + counter + matchToken);
-                            replace.add(linkStr);
-                            counter++;
-                        } else if (links.size() > 1) {
-                            // TODO this could be handled better/differently
-                            String linkStr = "ERROR (m)";
-                            String title = "<a title=\"multiple matches: ";
-                            for (Item link : links) {
-                                // title = title + " " + link.getFullName();
-                                linkStr = " href=\"../" + link.getLink()
-                                        + "\">" + term + "</a>";
-                            }
-                            linkStr = title + "\"" + linkStr;
-                            result = pattern.matcher(result).replaceAll(
-                                    matchToken + counter + matchToken);
-                            replace.add(linkStr);
-                            counter++;
-                        } else {
-                            throw new RuntimeException("no children in " + m
-                                    + " " + m.get("term"));
-                        }
-                    }
-                }
-            }
+			if (links.size() == 1) {
+			    String linkStr = "ERROR";
+			    for (Item link : links) {
+				linkStr = "<a href=\"../" + link.getLink()
+					+ "\">" + term + "</a>";
+			    }
+			    result = pattern.matcher(result).replaceAll(
+				    matchToken + counter + matchToken);
+			    replace.add(linkStr);
+			    counter++;
+			} else if (links.size() > 1) {
+			    // TODO this could be handled better/differently
+			    String linkStr = "ERROR (m)";
+			    String title = "<a title=\"multiple matches: ";
+			    for (Item link : links) {
+				// title = title + " " + link.getFullName();
+				linkStr = " href=\"../" + link.getLink()
+					+ "\">" + term + "</a>";
+			    }
+			    linkStr = title + "\"" + linkStr;
+			    result = pattern.matcher(result).replaceAll(
+				    matchToken + counter + matchToken);
+			    replace.add(linkStr);
+			    counter++;
+			} else {
+			    throw new RuntimeException("no children in " + m
+				    + " " + m.get("term"));
+			}
+		    }
+		}
+	    }
 
-            for (int i = 0; i < replace.size(); i++) {
-                result = result.replaceAll(matchToken + i + matchToken,
-                        replace.get(i));
-            }
+	    for (int i = 0; i < replace.size(); i++) {
+		result = result.replaceAll(matchToken + i + matchToken,
+			replace.get(i));
+	    }
 
-            matched.put(property + "_matched", result);
+	    matched.put(property + "_matched", result);
 
-            return result;
-        }
+	    return result;
+	}
     }
 
     /**
@@ -235,20 +235,20 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return abbreviated name of the item
      */
     public String getAbbrevName(int length) {
-        String result = getName();
-        if (result.length() > length) {
-            if (length < 5) {
-                result = result.substring(0, length);
-            } else {
-                // 2/3 at the start
-                int start = (2 * length) / 3;
-                // make sure to capture a bit at the end
-                int end = result.length() - (length - start - 2);
-                result = result.substring(0, start) + ".."
-                        + result.substring(end);
-            }
-        }
-        return result;
+	String result = getName();
+	if (result.length() > length) {
+	    if (length < 5) {
+		result = result.substring(0, length);
+	    } else {
+		// 2/3 at the start
+		int start = (2 * length) / 3;
+		// make sure to capture a bit at the end
+		int end = result.length() - (length - start - 2);
+		result = result.substring(0, start) + ".."
+			+ result.substring(end);
+	    }
+	}
+	return result;
     }
 
     /**
@@ -262,20 +262,20 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return abbreviated name of the item
      */
     public String getAbbrevFullName(int length) {
-        String result = getFullName();
-        if (result.length() > length) {
-            if (length < 5) {
-                result = result.substring(0, length);
-            } else {
-                // 1/3 at the start
-                int start = (1 * length) / 3;
-                // make sure to capture a bit at the end
-                int end = result.length() - (length - start - 2);
-                result = result.substring(0, start) + ".."
-                        + result.substring(end);
-            }
-        }
-        return result;
+	String result = getFullName();
+	if (result.length() > length) {
+	    if (length < 5) {
+		result = result.substring(0, length);
+	    } else {
+		// 1/3 at the start
+		int start = (1 * length) / 3;
+		// make sure to capture a bit at the end
+		int end = result.length() - (length - start - 2);
+		result = result.substring(0, start) + ".."
+			+ result.substring(end);
+	    }
+	}
+	return result;
     }
 
     /**
@@ -286,20 +286,20 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return abbreviated property of the item
      */
     public String getAbbrevProperty(String key, int length) {
-        String result = get(key).toString();
-        if (result.length() > length) {
-            if (length < 5) {
-                result = result.substring(0, length);
-            } else {
-                // 2/3 at the start
-                int start = (2 * length) / 3;
-                // make sure to capture a bit at the end
-                int end = result.length() - (length - start - 2);
-                result = result.substring(0, start) + ".."
-                        + result.substring(end);
-            }
-        }
-        return result;
+	String result = get(key).toString();
+	if (result.length() > length) {
+	    if (length < 5) {
+		result = result.substring(0, length);
+	    } else {
+		// 2/3 at the start
+		int start = (2 * length) / 3;
+		// make sure to capture a bit at the end
+		int end = result.length() - (length - start - 2);
+		result = result.substring(0, start) + ".."
+			+ result.substring(end);
+	    }
+	}
+	return result;
     }
 
     /**
@@ -309,10 +309,10 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return the color of this class
      */
     public String myColor() {
-        if (this.color == null) {
-            this.color = calcColor();
-        }
-        return this.color;
+	if (this.color == null) {
+	    this.color = calcColor();
+	}
+	return this.color;
     }
 
     /**
@@ -321,77 +321,78 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return a color that can be used in a css style expression
      */
     public String calcColor() {
-        String result = "#ffffff";
+	String result = "#ffffff";
 
-        if (type.startsWith("file:data")) {
-            result = "#eeeeff";
-        } else if (type.startsWith("cmd:manipulate")) {
-            result = "#ffffff";
-        } else if (type.startsWith("cmd:estcmd")) {
-            result = "#FFCC99";
-        } else if (type.startsWith("cmd:statcmd")) {
-            result = "#FFFF99";
-        } else if (type.startsWith("cmd:systemcmd")) {
-            result = "#eeeeef";
-        } else if (type.startsWith("cmd:comment")) {
-            result = "#EFF4D7";
-        } else if (type.startsWith("cmd:other")) {
-            result = "#ffcccc";
-        } else if (type.startsWith("cmd:")) {
-            result = "#CCCCFF";
-        } else if (type.startsWith("file:script")) {
-            // manipulate 255 255 255
-            // est FFCC99 255 201 153
-            // stat FFFF99 255 255 153
+	if (type.startsWith("file:data")) {
+	    result = "#eeeeff";
+	} else if (type.startsWith("cmd:manipulate")) {
+	    result = "#ffffff";
+	} else if (type.startsWith("cmd:estcmd")) {
+	    result = "#FFCC99";
+	} else if (type.startsWith("cmd:statcmd")) {
+	    result = "#FFFF99";
+	} else if (type.startsWith("cmd:systemcmd")) {
+	    result = "#eeeeef";
+	} else if (type.startsWith("cmd:comment")) {
+	    result = "#EFF4D7";
+	} else if (type.startsWith("cmd:other")) {
+	    result = "#ffcccc";
+	} else if (type.startsWith("cmd:")) {
+	    result = "#CCCCFF";
+	} else if (type.startsWith("file:script")) {
+	    // manipulate 255 255 255
+	    // est FFCC99 255 201 153
+	    // stat FFFF99 255 255 153
 
-            // here is where the action is
-            int cmanipulate = getChildrenBy("cmd:manipulate").size();
-            int cestcmd = getChildrenBy("cmd:estcmd").size();
-            int cstatcmd = getChildrenBy("cmd:statcmd").size();
+	    // here is where the action is
+	    int cmanipulate = getChildrenBy("cmd:manipulate").size();
+	    int cestcmd = getChildrenBy("cmd:estcmd").size();
+	    int cstatcmd = getChildrenBy("cmd:statcmd").size();
 
-            int total = cmanipulate + cestcmd + cstatcmd;
+	    int total = cmanipulate + cestcmd + cstatcmd;
 
-            int r = 238;
-            int b = 238;
-            int g = 238;
-            if (total > 0) {
-                r = 255;
-                g = 201 + ((cmanipulate + cstatcmd) * (255 - 201)) / total;
-                b = 153 + (cmanipulate * (255 - 153)) / total;
-            }
+	    int r = 238;
+	    int b = 238;
+	    int g = 238;
+	    if (total > 0) {
+		r = 255;
+		g = 201 + ((cmanipulate + cstatcmd) * (255 - 201)) / total;
+		b = 153 + (cmanipulate * (255 - 153)) / total;
+	    }
 
-            result = "#" + Integer.toHexString(r) + Integer.toHexString(g)
-                    + Integer.toHexString(b);
-        } else if (type.startsWith("variable:")) {
-            // manipulate 255 255 255
-            // est FFCC99 255 201 153
-            // stat FFFF99 255 255 153
+	    result = "#" + Integer.toHexString(r) + Integer.toHexString(g)
+		    + Integer.toHexString(b);
+	} else if (type.startsWith("variable:")) {
+	    // manipulate 255 255 255
+	    // est FFCC99 255 201 153
+	    // stat FFFF99 255 255 153
 
-            // here is where the action is
-            int cmanipulate = getChildrenBy("match:cmd:manipulate").size();
-            int cestcmd = getChildrenBy("match:cmd:estcmd").size();
-            int cstatcmd = getChildrenBy("match:cmd:statcmd").size();
+	    // here is where the action is
+	    int cmanipulate = getChildrenBy("match:cmd:manipulate").size();
+	    int cestcmd = getChildrenBy("match:cmd:estcmd").size();
+	    int cstatcmd = getChildrenBy("match:cmd:statcmd").size();
 
-            int total = cmanipulate + cestcmd + cstatcmd;
+	    int total = cmanipulate + cestcmd + cstatcmd;
 
-            int r = 238;
-            int g = 238;
-            int b = 255;
-            if (total > 0) {
-                r = 255;
-                g = 201 + ((cmanipulate + cstatcmd) * (255 - 201)) / total;
-                b = 153 + (cmanipulate * (255 - 153)) / total;
-            }
+	    int r = 238;
+	    int g = 238;
+	    int b = 255;
+	    if (total > 0) {
+		r = 255;
+		g = 201 + ((cmanipulate + cstatcmd) * (255 - 201)) / total;
+		b = 153 + (cmanipulate * (255 - 153)) / total;
+	    }
 
-            result = "#" + Integer.toHexString(r) + Integer.toHexString(g)
-                    + Integer.toHexString(b);
-        }
+	    result = "#" + Integer.toHexString(r) + Integer.toHexString(g)
+		    + Integer.toHexString(b);
+	}
 
-        return result;
+	return result;
     }
 
     /*
-     * CHILDREN (in a MVC pattern the access methods might be moved into the hub)
+     * CHILDREN (in a MVC pattern the access methods might be moved into the
+     * hub)
      */
 
     /**
@@ -409,29 +410,31 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
     boolean dirtyChildren = true;
 
     public final void addChild(String link, Item child) {
-        if (children.containsKey(link)) {
-            children.get(link).add(child);
-        } else {
-            Collection<Item> ts = new TreeSet<Item>(NaturalComparator.INSTANCE);
-            ts.add(child);
-            children.put(link, ts);
-        }
-        dirtyChildren = true;
-        childrenSet = null;
+	if (children.containsKey(link)) {
+	    children.get(link).add(child);
+	} else {
+	    Collection<Item> ts = new TreeSet<Item>(NaturalComparator.INSTANCE);
+	    ts.add(child);
+	    children.put(link, ts);
+	}
+	dirtyChildren = true;
+	childrenSet = null;
     }
 
     public final void addChild(Item child) {
-        addChild(child.getType(), child);
+	addChild(child.getType(), child);
     }
 
-    public Collection<Item> getChildren() {
-        if (childrenSet == null) {
-            childrenSet = new TreeSet<Item>(NaturalComparator.INSTANCE);
-            for (Collection<Item> group : children.values()) {
-                childrenSet.addAll(group);
-            }
-        }
-        return childrenSet;
+    synchronized public Collection<Item> getChildren() {
+	synchronized (children) {
+	    if (childrenSet == null) {
+		childrenSet = new TreeSet<Item>(NaturalComparator.INSTANCE);
+		for (Collection<Item> group : children.values()) {
+		    childrenSet.addAll(group);
+		}
+	    }
+	}
+	return childrenSet;
     }
 
     /**
@@ -442,15 +445,15 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return a filtered set of items
      */
     public final Collection<Item> getChildrenBy(String... args) {
-        Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
-        for (String link : children.keySet()) {
-            for (String arg : args) {
-                if (link.startsWith(arg)) {
-                    result.addAll(children.get(link));
-                }
-            }
-        }
-        return result;
+	Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
+	for (String link : children.keySet()) {
+	    for (String arg : args) {
+		if (link.startsWith(arg)) {
+		    result.addAll(children.get(link));
+		}
+	    }
+	}
+	return result;
     }
 
     /**
@@ -463,16 +466,16 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return a filtered set of items
      */
     public final Collection<Item> getChildrenByBy(String filter, String... args) {
-        Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
+	Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
 
-        for (String link : children.keySet()) {
-            if (link.startsWith(filter)) {
-                for (Item item : children.get(link)) {
-                    result.addAll(item.getChildrenBy(args));
-                }
-            }
-        }
-        return result;
+	for (String link : children.keySet()) {
+	    if (link.startsWith(filter)) {
+		for (Item item : children.get(link)) {
+		    result.addAll(item.getChildrenBy(args));
+		}
+	    }
+	}
+	return result;
     }
 
     /**
@@ -483,49 +486,49 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      * @return a collection with single and grouped children
      */
     public final Collection<Item> getGroupedChildrenBy(String... args) {
-        if (dirtyChildren) {
-            groupedChildren.clear();
-            for (String link : children.keySet()) {
-                Collection<Item> cs = children.get(link);
-                Collection<Item> gc = StatdocItemHub.groupMap(cs, 3, 3,
-                        "group:" + link);
-                groupedChildren.put(link, gc);
-            }
-            dirtyChildren = false;
-        }
-        Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
-        for (String link : groupedChildren.keySet()) {
-            for (String arg : args) {
-                if (link.startsWith(arg)) {
-                    result.addAll(groupedChildren.get(link));
-                }
-            }
-        }
-        return result;
+	if (dirtyChildren) {
+	    groupedChildren.clear();
+	    for (String link : children.keySet()) {
+		Collection<Item> cs = children.get(link);
+		Collection<Item> gc = StatdocItemHub.groupMap(cs, 3, 3,
+			"group:" + link);
+		groupedChildren.put(link, gc);
+	    }
+	    dirtyChildren = false;
+	}
+	Collection<Item> result = new TreeSet<Item>(NaturalComparator.INSTANCE);
+	for (String link : groupedChildren.keySet()) {
+	    for (String arg : args) {
+		if (link.startsWith(arg)) {
+		    result.addAll(groupedChildren.get(link));
+		}
+	    }
+	}
+	return result;
     }
 
     public Map<String, Collection<Item>> getChildrenMap() {
-        return this.children;
+	return this.children;
     }
 
     /*
-     * GUT CODE FOR COMPARE AND SUCH 
+     * GUT CODE FOR COMPARE AND SUCH
      */
 
     @Override
     public String toString() {
-        return this.getName();
+	return this.getName();
     }
 
     @Override
     public int compareTo(Item item) {
-        // TODO check the getFullName() is always unique
-        return this.getFullName().compareTo(item.getFullName());
+	// TODO check the getFullName() is always unique
+	return this.getFullName().compareTo(item.getFullName());
     }
 
     @Override
     public int hashCode() {
-        return hashObject.hashCode() + super.hashCode();
+	return hashObject.hashCode() + super.hashCode();
     }
 
     /**
@@ -535,7 +538,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      */
     @Override
     public boolean equals(Object obj) {
-        return (this == obj);
+	return (this == obj);
     }
 
 }
