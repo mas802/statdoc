@@ -327,7 +327,7 @@ public class StatdocItemHub {
                 /*
                  * check data files first
                  * 
-                 * FIXME secon condition: && regex.matches("\\.\\*\\\\.[a-zA-Z].*")
+                 * FIXME second condition: && regex.matches("\\.\\*\\\\.[a-zA-Z].*")
                  */
                 if (targetType.startsWith("file")  ) {
                     Pattern pattern = Pattern.compile(".*" + regex + ".*");

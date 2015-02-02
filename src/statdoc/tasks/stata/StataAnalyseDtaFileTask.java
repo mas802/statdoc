@@ -108,13 +108,14 @@ public class StataAnalyseDtaFileTask implements Task {
             String line;
             while ((line = reader.readLine()) != null) {
                 // System.out.println(line);
-        	if (line.startsWith("=====")) {
+        	String cleanline = StataUtils.smcl2plain(line, true).trim(); 
+        	if (cleanline.startsWith("=====")) {
 
                     currentItem.setContent(StataUtils.smcl2html(sb.toString(),
                             true));
 
                     sb = new StringBuilder();
-                    String var = line.replaceAll("=====", "");
+                    String var = cleanline.replaceAll("=====", "");
                     currentItem = hub.createVariable(var, "variable:" + t,
                             dtaFileItem);
                     dtaFileItem.addChild(currentItem);
@@ -130,7 +131,7 @@ public class StataAnalyseDtaFileTask implements Task {
                 } else {
 
                     hub.checkAndAddMetadata(currentItem,
-                            StataUtils.smcl2plain(line, true));
+                            cleanline);
                     sb.append(line);
                     sb.append("\n");
                 }
