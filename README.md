@@ -31,8 +31,15 @@ data sets (thousands of variables, millions of observations) this process might
 take quite some time.
 
 You can also invoke Statdoc from the command line or directly from within Stata
-(under development).
+(experimental). 
 
+```
+net from https://dl.dropboxusercontent.com/u/12198759/ado/
+net install statdoc
+
+cd <the/root/directory/of/your/project> // VERY IMPORTANT
+statdoc
+```
 
 how to code
 ===========
