@@ -36,7 +36,11 @@ You can also invoke Statdoc from the command line or directly from within Stata
 ```
 net from https://dl.dropboxusercontent.com/u/12198759/ado/
 net install statdoc
+```
 
+You will have to restart Stata at this point.
+
+```
 cd <the/root/directory/of/your/project> // VERY IMPORTANT
 statdoc
 ```
