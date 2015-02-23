@@ -66,11 +66,14 @@ public class StataAnalyseDtaFileTask implements Task {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "csv";
-            }
-            if (file.getName().endsWith("raw")) {
+            } else if (file.getName().endsWith("raw")) {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "raw";
+            } else if (file.getName().endsWith("xls") || file.getName().endsWith("xlsx")) {
+                dtaFileItem.put("_runCommand", "import excel ");
+                c = "import excel ";
+                t = "excel";
             }
 
             long id = file.lastModified();
