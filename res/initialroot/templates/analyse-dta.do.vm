@@ -298,7 +298,12 @@ noi di "@class `class'"
 noi di "@N_unique `unique'"
 noi di "@N `total'"
 
+noi di as res " "
+noi di "_@NOTES"
+
 noi notes `var'
+
+noi di as res " "
 }
 
 

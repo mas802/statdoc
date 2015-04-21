@@ -369,7 +369,7 @@ $vartds.getAbbrevProperty('values', 50)
 #else
 <td class="colLast">(x&#772;=$!{vartds.get("mean").trim()},&nbsp;$!{vartds.get("sd").trim()})&nbsp;[$!{vartds.get("min").trim()},$!{vartds.get("max").trim()}]</td>
 #end
-<td class="colLast">$!{vartds.get("label")}</td>
+<td class="colLast">$!{vartds.get("label")} $!{vartds.getSummary()}</td>
 #end
 
 #*
