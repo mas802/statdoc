@@ -31,8 +31,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.velocity.texen.util.FileUtil;
-
 import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
 import statdoc.tasks.MatchingTask;

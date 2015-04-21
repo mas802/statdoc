@@ -395,7 +395,11 @@ public class StataDoFileTask implements Task {
         // Disect the command
         String commandAndParameters;
 
-        String[] parts = StataUtils.splitSave(currentCmd.trim(), ",");
+        String[] parts = StataUtils.splitSave(currentCmd.trim(), "//");
+        if (parts.length > 1) {
+            info.put("comment", "//"+parts[1]);
+        }
+        parts = StataUtils.splitSave(parts[0].trim(), ",");
         if (parts.length > 1) {
             info.put("options", parts[1]);
         }

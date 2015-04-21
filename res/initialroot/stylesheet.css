@@ -548,6 +548,10 @@ padding: 1px;
     /* font-style:italic; */
     color: #333333;
 }
+.cmdcomment {
+    color: #4F8A10;
+    background-color: #EFF4D7;
+}
 .cmd_comment {
     color: #4F8A10;
     background-color: #EFF4D7;

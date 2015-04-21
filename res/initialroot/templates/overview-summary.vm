@@ -63,7 +63,7 @@ FILES
 <div class="contentContainer">
 <ul class="blockList">
 <li class="blockList">
-#cmdLines($cmds.getChildrenBy( "cmd:estcmd", "cmd:statcmd" ) "All known estimations and descriptive statistics")
+#cmdLines($cmds.getChildrenBy( "cmd:estcmd" ) "All known estimations ")
 </li>
 </ul>
 ##cmdLines($cmds.getChildrenBy( "cmd:statcmd" ) "All known descriptive statistics")

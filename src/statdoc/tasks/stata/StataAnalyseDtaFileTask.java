@@ -66,11 +66,15 @@ public class StataAnalyseDtaFileTask implements Task {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "csv";
-            }
-            if (file.getName().endsWith("raw")) {
+            } else if (file.getName().endsWith("raw")) {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "raw";
+            } else if (file.getName().endsWith("xls")
+                    || file.getName().endsWith("xlsx")) {
+                dtaFileItem.put("_runCommand", "import excel ");
+                c = "import excel ";
+                t = "excel";
             }
 
             long id = file.lastModified();
@@ -113,18 +117,18 @@ public class StataAnalyseDtaFileTask implements Task {
             String notes = "";
             while ((line = reader.readLine()) != null) {
                 // System.out.println(line);
-
-                if (line.startsWith("=====")) {
+                String cleanline = StataUtils.smcl2plain(line, true).trim();
+                if (cleanline.startsWith("=====")) {
 
                     currentItem.setContent(StataUtils.smcl2html(sb.toString(),
                             true));
                     currentItem.setSummary(notes);
-                    
+
                     // start a new item
                     innotes = false;
                     notes = "";
                     sb = new StringBuilder();
-                    String var = line.replaceAll("=====", "");
+                    String var = cleanline.replaceAll("=====", "");
                     currentItem = hub.createVariable(var, "variable:" + t,
                             dtaFileItem);
                     dtaFileItem.addChild(currentItem);
@@ -137,16 +141,15 @@ public class StataAnalyseDtaFileTask implements Task {
                                 + " observations.");
                     }
 
-                } else if (line.startsWith("_@NOTES")) {
+                } else if (cleanline.startsWith("_@NOTES")) {
                     innotes = true;
-                } else if ( innotes ) {
+                } else if (innotes) {
                     notes += StataUtils.smcl2plain(line, true);
                     sb.append(line);
                     sb.append("\n");
                 } else {
 
-                    hub.checkAndAddMetadata(currentItem,
-                            StataUtils.smcl2plain(line, true));
+                    hub.checkAndAddMetadata(currentItem, cleanline);
                     sb.append(line);
                     sb.append("\n");
                 }
