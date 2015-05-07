@@ -70,7 +70,8 @@ public class StataAnalyseDtaFileTask implements Task {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "raw";
-            } else if (file.getName().endsWith("xls") || file.getName().endsWith("xlsx")) {
+            } else if (file.getName().endsWith("xls")
+                    || file.getName().endsWith("xlsx")) {
                 dtaFileItem.put("_runCommand", "import excel ");
                 c = "import excel ";
                 t = "excel";
@@ -97,7 +98,10 @@ public class StataAnalyseDtaFileTask implements Task {
 
                 Map<String, Object> data = new HashMap<String, Object>();
                 data.put("loadCommand", cmd);
-                data.put("maxvarobs", hub.getProp().getProperty("statdoc.stata.maxvarobs", ""+Integer.MAX_VALUE));
+                data.put(
+                        "maxvarobs",
+                        hub.getProp().getProperty("statdoc.stata.maxvarobs",
+                                "" + Integer.MAX_VALUE));
                 StataUtils.runTemplate("analyse-dta", hub.getStataPath(), data,
                         output);
             }
@@ -109,14 +113,20 @@ public class StataAnalyseDtaFileTask implements Task {
             Item currentItem = dtaFileItem;
 
             String line;
+            boolean innotes = false;
+            String notes = "";
             while ((line = reader.readLine()) != null) {
                 // System.out.println(line);
-        	String cleanline = StataUtils.smcl2plain(line, true).trim(); 
-        	if (cleanline.startsWith("=====")) {
+                String cleanline = StataUtils.smcl2plain(line, true).trim();
+                if (cleanline.startsWith("=====")) {
 
                     currentItem.setContent(StataUtils.smcl2html(sb.toString(),
                             true));
+                    currentItem.setSummary(notes);
 
+                    // start a new item
+                    innotes = false;
+                    notes = "";
                     sb = new StringBuilder();
                     String var = cleanline.replaceAll("=====", "");
                     currentItem = hub.createVariable(var, "variable:" + t,
@@ -124,17 +134,22 @@ public class StataAnalyseDtaFileTask implements Task {
                     dtaFileItem.addChild(currentItem);
 
                     // add a subsample warning
-                    if ( dtaFileItem.containsKey("_subsample") ) {
-                	currentItem.addWarning( "These statistics are based on"
-                		+ " a random subsample of " 
-                		+ dtaFileItem.get("_subsample") 
-                		+ " observations." );
-                    }            
-                    
+                    if (dtaFileItem.containsKey("_subsample")) {
+                        currentItem.addWarning("These statistics are based on"
+                                + " a random subsample of "
+                                + dtaFileItem.get("_subsample")
+                                + " observations.");
+                    }
+
+                } else if (cleanline.startsWith("_@NOTES")) {
+                    innotes = true;
+                } else if (innotes) {
+                    notes += StataUtils.smcl2plain(line, true);
+                    sb.append(line);
+                    sb.append("\n");
                 } else {
 
-                    hub.checkAndAddMetadata(currentItem,
-                            cleanline);
+                    hub.checkAndAddMetadata(currentItem, cleanline);
                     sb.append(line);
                     sb.append("\n");
                 }
@@ -142,19 +157,19 @@ public class StataAnalyseDtaFileTask implements Task {
 
             currentItem.setContent(StataUtils.smcl2html(sb.toString(), true));
 
-            if ( dtaFileItem.containsKey("_subsample") ) {
-        	dtaFileItem.addWarning( "All statistics are based on a random"
-        		+ " subsample of " + dtaFileItem.get("_subsample") 
-        		+ " observations. You can change this by increasing"
-        		+ " <code>statdoc.stata.maxvarobs</code> in"
-        		+ " <code>statdoc.properties</code> or"
-        		+ " by setting a <code>@statdoc.full</code> flag "
-        		+ " for the dataset with"
-        		+ " <code>notes _dta:@statdoc.full</code>." );
-            }            
-            
-reader.close();
-            
+            if (dtaFileItem.containsKey("_subsample")) {
+                dtaFileItem.addWarning("All statistics are based on a random"
+                        + " subsample of " + dtaFileItem.get("_subsample")
+                        + " observations. You can change this by increasing"
+                        + " <code>statdoc.stata.maxvarobs</code> in"
+                        + " <code>statdoc.properties</code> or"
+                        + " by setting a <code>@statdoc.full</code> flag "
+                        + " for the dataset with"
+                        + " <code>notes _dta:@statdoc.full</code>.");
+            }
+
+            reader.close();
+
         } catch (Exception ex) {
             dtaFileItem.addWarning("There was a problem with running Stata: "
                     + ex.getMessage());
