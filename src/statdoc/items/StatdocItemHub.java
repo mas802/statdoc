@@ -182,6 +182,7 @@ public class StatdocItemHub {
      */
 
     synchronized public TokenItem createToken(String token, String type) {
+        if ( token.length() == 0) throw new IllegalArgumentException( "empty token string" );
         TokenItem ti;
         if (this.tokens.containsKey(token)) {
             ti = this.tokens.get(token);
@@ -414,9 +415,9 @@ public class StatdocItemHub {
                 }
             } else {
                 m.addWarning("item could not be resolved");
-                if (m != null && m.containsKey("term")) {
-                    String stripterm = m.get("term").toString()
-                            .replaceAll("[^a-zA-Z0-9_]", "").trim();
+                String stripterm = m.get("term").toString()
+                        .replaceAll("[^a-zA-Z0-9_]", "").trim();
+                if (m != null && m.containsKey("term") && !stripterm.equals("")) {
                     TokenItem ti = createToken(stripterm, "match");
                     ti.addChild(origin);
                     m.addChild(ti);
