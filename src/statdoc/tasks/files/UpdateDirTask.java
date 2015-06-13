@@ -102,8 +102,10 @@ public class UpdateDirTask implements Task {
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
 
+      
         try {
             Files.walkFileTree(rootDir, new SimpleFileVisitor<Path>() {
+                
                 @Override
                 public FileVisitResult visitFile(Path file,
                         BasicFileAttributes attrs) throws IOException {
@@ -145,8 +147,28 @@ public class UpdateDirTask implements Task {
                                     .toFile(), file.toFile(), "file:general",
                                     hub, taskQueue));
                         }
-                    }
+                    } 
                     return FileVisitResult.CONTINUE;
+                }
+                
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir,
+                        BasicFileAttributes attrs) throws IOException {
+
+                    String filename = dir.toAbsolutePath().toString()
+                            .toLowerCase();
+
+                    boolean accept = true;
+
+                    for (Pattern p : exclude) {
+                        accept = accept && !p.matcher(filename).matches();
+                    }
+                    
+                    if ( accept ) {
+                    return super.preVisitDirectory(dir, attrs);
+                    } else {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
                 }
             });
         } catch (IOException e) {
