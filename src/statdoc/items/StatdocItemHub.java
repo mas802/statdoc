@@ -128,7 +128,7 @@ public class StatdocItemHub {
      */
 
     synchronized public FileItem createFile(File file, File rootDir, String type) {
-        FileItem fileItem = new FileItem(file, rootDir, type);
+        FileItem fileItem = new FileItem(file.toPath(), rootDir.toPath(), type);
 
         files.add(fileItem);
 
@@ -456,6 +456,9 @@ public class StatdocItemHub {
                     String key = tokens[0].substring(1);
                     String value = line.trim()
                             .substring(tokens[0].length() + 1);
+                    // TODO check if this is a problem
+                    value = value.replaceAll("\\\\","\\\\\\\\");
+                    
                     if (key.equals("summary")) {
                         item.setSummary(value);
                     } else if (key.equals("token")) {
