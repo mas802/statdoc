@@ -37,15 +37,13 @@ import statdoc.tasks.Task;
 public class StataAnalyseDtaFileTask implements Task {
 
     private Path file;
-    private Path rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
 
-    public StataAnalyseDtaFileTask(File rootDir, File file, String type,
+    public StataAnalyseDtaFileTask(Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
-        this.file = file.toPath();
-        this.rootDir = rootDir.toPath();
+        this.file = file;
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -56,7 +54,7 @@ public class StataAnalyseDtaFileTask implements Task {
         Thread.currentThread().setName(
                 " Stata data File Task for File: " + file);
 
-        FileItem dtaFileItem = hub.createFile(file, rootDir, type);
+        FileItem dtaFileItem = hub.createFile(file, type);
 
         try {
             String cmd = null;

@@ -15,7 +15,7 @@
  */
 package statdoc.tasks.files;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.FileItem;
@@ -33,16 +33,14 @@ import statdoc.tasks.Task;
  */
 public class OtherFileTask implements Task {
 
-    private File file;
-    private File rootDir;
+    private Path file;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
 
-    public OtherFileTask(File rootDir, File file, String type,
+    public OtherFileTask(Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
-        this.rootDir = rootDir;
         this.taskList = taskList;
         this.hub = hub;
         this.type = type;
@@ -52,7 +50,7 @@ public class OtherFileTask implements Task {
     public void run() {
         Thread.currentThread().setName("Other File Task for File: " + file);
 
-        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
+        FileItem fi = hub.createFile(file, type);
 
         if ( type.equals("file:general") ) {
             // set tokens, probably not much to do here

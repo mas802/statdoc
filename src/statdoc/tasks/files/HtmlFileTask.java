@@ -15,9 +15,8 @@
  */
 package statdoc.tasks.files;
 
-import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.FileItem;
@@ -33,16 +32,14 @@ import statdoc.tasks.Task;
  */
 public class HtmlFileTask implements Task {
 
-    private File file;
-    private File rootDir;
+    private Path file;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
 
-    public HtmlFileTask(File rootDir, File file, String type,
+    public HtmlFileTask( Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
-        this.rootDir = rootDir;
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -54,11 +51,10 @@ public class HtmlFileTask implements Task {
                 " Text File Task for File: " + file + " - "
                         + Thread.currentThread().getName());
 
-        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
+        FileItem fi = hub.createFile(file,  type);
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get(file
-                    .toURI())));
+            String content = new String(Files.readAllBytes(file));
 
             // TODO think if this is good or bad
             content = content.replaceAll("<", "&lt;");

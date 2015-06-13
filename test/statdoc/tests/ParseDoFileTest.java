@@ -47,8 +47,10 @@ public class ParseDoFileTest {
 	Map<String, String[]> map = new HashMap<String, String[]>();
 	map.put("none", new String[] { "none" });
 	hub.setStataCmdTypes(map);
-	TextFileTask t1 = new TextFileTask(new File("tests/statdoc/tests"),
-		file, "file:script", hub, null);
+	hub.sourceDir = new File("tests/statdoc/tests").toPath();
+	
+	TextFileTask t1 = new TextFileTask(
+		file.toPath(), "file:script", hub, null);
 
 	t1.run();
 
@@ -88,8 +90,9 @@ public class ParseDoFileTest {
 	    Map<String, String[]> map = new HashMap<String, String[]>();
 	    map.put("desc", new String[] { "sum" });
 	    hub.setStataCmdTypes(map);
-
-	    StataDoFileTask t2 = new StataDoFileTask(new File("/"), file, "cmd:stata:do", hub, null);
+	    hub.sourceDir = new File("/").toPath();
+	    
+	    StataDoFileTask t2 = new StataDoFileTask(file.toPath(), "cmd:stata:do", hub, null);
 		
 	    t2.run();
 

@@ -15,7 +15,6 @@
  */
 package statdoc.tasks.stata;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -36,15 +35,13 @@ import statdoc.tasks.Task;
 public class SmclFileTask implements Task {
 
     private Path file;
-    private Path rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
 
-    public SmclFileTask(File rootDir, File file, String type,
+    public SmclFileTask(Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
-        this.file = file.toPath();
-        this.rootDir = rootDir.toPath();
+        this.file = file;
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -56,7 +53,7 @@ public class SmclFileTask implements Task {
                 " Text File Task for File: " + file + " - "
                         + Thread.currentThread().getName());
 
-        FileItem fi = hub.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file, type);
 
         try {
             String content = new String(Files.readAllBytes(file

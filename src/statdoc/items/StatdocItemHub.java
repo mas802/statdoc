@@ -15,7 +15,6 @@
  */
 package statdoc.items;
 
-// import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,8 +127,8 @@ public class StatdocItemHub {
      * FILES
      */
 
-    synchronized public FileItem createFile(Path file, Path rootDir, String type) {
-        FileItem fileItem = new FileItem(file, rootDir, type);
+    synchronized public FileItem createFile(Path file, String type) {
+        FileItem fileItem = new FileItem(file, sourceDir, type);
 
         files.add(fileItem);
 

@@ -15,7 +15,7 @@
  */
 package statdoc.tasks.files;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.FileItem;
@@ -31,16 +31,14 @@ import statdoc.tasks.Task;
  */
 public class ImageFileTask implements Task {
 
-    private File file;
-    private File rootDir;
+    private Path file;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
 
-    public ImageFileTask(File rootDir, File file, String type,
+    public ImageFileTask(Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
-        this.rootDir = rootDir;
         this.taskList = taskList;
         this.hub = hub;
         this.type = type;
@@ -50,7 +48,7 @@ public class ImageFileTask implements Task {
     public void run() {
         Thread.currentThread().setName("Image File Task for File: " + file);
 
-        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
+        FileItem fi = hub.createFile(file, type);
 
         fi.setContent("<img src=\"../" + fi.getFileLink() + "\" width=\"90%\">");
 

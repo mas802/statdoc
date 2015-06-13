@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -47,7 +46,6 @@ public class StataDoFileTask implements Task {
     }
 
     private Path file;
-    private Path rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
@@ -55,10 +53,9 @@ public class StataDoFileTask implements Task {
     private MatchItem currentIn;
     private MatchItem currentOut;
 
-    public StataDoFileTask(File rootDir, File file, String type,
+    public StataDoFileTask(Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
-        this.file = file.toPath();
-        this.rootDir = rootDir.toPath();
+        this.file = file;
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -70,7 +67,7 @@ public class StataDoFileTask implements Task {
         Thread.currentThread().setName(
                 " Stata parse do file task for file: " + file);
 
-        FileItem fileItem = hub.createFile(file, rootDir, type);
+        FileItem fileItem = hub.createFile(file, type);
 
         try {
             String content = new String(Files.readAllBytes(file));

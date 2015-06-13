@@ -15,7 +15,6 @@
  */
 package statdoc.tasks.files;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileVisitResult;
@@ -127,11 +126,10 @@ public class UpdateDirTask implements Task {
                             TaskEntry te = taskMap.get(suffix);
                             Task task;
                             try {
-                                task = te.taskClass.getConstructor(File.class,
-                                        File.class, String.class,
+                                task = te.taskClass.getConstructor(Path.class, String.class,
                                         hub.getClass(), taskQueue.getClass())
-                                        .newInstance(rootDir.toFile(),
-                                                file.toFile(), te.type, hub,
+                                        .newInstance(
+                                                file, te.type, hub,
                                                 taskQueue);
                                 taskQueue.execute(task);
                             } catch (InstantiationException
@@ -143,8 +141,7 @@ public class UpdateDirTask implements Task {
                                 e.printStackTrace();
                             }
                         } else {
-                            taskQueue.execute(new OtherFileTask(rootDir
-                                    .toFile(), file.toFile(), "file:general",
+                            taskQueue.execute(new OtherFileTask(file, "file:general",
                                     hub, taskQueue));
                         }
                     } 

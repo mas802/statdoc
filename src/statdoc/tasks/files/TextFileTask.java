@@ -16,8 +16,8 @@
 package statdoc.tasks.files;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.FileItem;
@@ -34,8 +34,7 @@ import statdoc.tasks.Task;
  */
 public class TextFileTask implements Task {
 
-    private File file;
-    private File rootDir;
+    private Path file;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
@@ -43,10 +42,9 @@ public class TextFileTask implements Task {
     // TODO, make this a config property
     private int maxlines = 1000;
 
-    public TextFileTask(File rootDir, File file, String type,
+    public TextFileTask(Path file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
         this.file = file;
-        this.rootDir = rootDir;
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -58,10 +56,10 @@ public class TextFileTask implements Task {
                 " Text File Task for File: " + file + " - "
                         + Thread.currentThread().getName());
 
-        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
+        FileItem fi = hub.createFile(file, type);
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new FileReader(file.toFile()));
 
             StringBuilder sb = new StringBuilder();
 
