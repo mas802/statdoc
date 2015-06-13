@@ -299,7 +299,7 @@ public class Statdoc {
         // start of the first round of just reading in all files
         // and processing all files
         me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(
-                sourceDir, generalProp, hub, me.taskQueue));
+                sourceDir.toPath(), generalProp, hub, me.taskQueue));
 
         /*
         // work through second stage file producing

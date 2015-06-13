@@ -16,8 +16,13 @@
 package statdoc.tasks.files;
 
 import java.io.File;
-import java.io.FileFilter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +45,7 @@ import statdoc.tasks.Task;
  */
 public class UpdateDirTask implements Task {
 
-    private File rootDir = null;
+    private Path rootDir = null;
     private ThreadPoolExecutor taskQueue;
     private StatdocItemHub hub;
     private List<Pattern> exclude = new ArrayList<Pattern>();
@@ -53,7 +58,7 @@ public class UpdateDirTask implements Task {
     Map<String, TaskEntry> taskMap = new HashMap<String, UpdateDirTask.TaskEntry>();
 
     @SuppressWarnings("unchecked")
-    public UpdateDirTask(File dir, Properties properties, StatdocItemHub hub,
+    public UpdateDirTask(Path dir, Properties properties, StatdocItemHub hub,
             ThreadPoolExecutor taskQueue) {
         this.rootDir = dir;
         this.hub = hub;
@@ -97,66 +102,60 @@ public class UpdateDirTask implements Task {
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
 
-        List<File> files = new ArrayList<File>();
+        try {
+            Files.walkFileTree(rootDir, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file,
+                        BasicFileAttributes attrs) throws IOException {
+                    String filename = file.toAbsolutePath().toString()
+                            .toLowerCase();
 
-        getAllFiles(rootDir, files);
+                    boolean accept = true;
 
-        for (File f : files) {
-            // Figure out what to run
-            String filename = f.getAbsolutePath().toLowerCase();
+                    for (Pattern p : exclude) {
+                        accept = accept && !p.matcher(filename).matches();
+                    }
 
-            // System.out.println(filename);
+                    if (accept) {
 
-            int i = filename.lastIndexOf(".");
-            String suffix = filename.substring(i + 1);
+                        int i = filename.lastIndexOf(".");
+                        String suffix = filename.substring(i + 1);
 
-            // System.out.println(suffix);
-
-            if (taskMap.containsKey(suffix)) {
-                TaskEntry te = taskMap.get(suffix);
-                Task task;
-                try {
-                    task = te.taskClass.getConstructor(File.class, File.class,
-                            String.class, hub.getClass(), taskQueue.getClass())
-                            .newInstance(rootDir, f, te.type, hub, taskQueue);
-                    taskQueue.execute(task);
-                } catch (InstantiationException | IllegalAccessException
-                        | IllegalArgumentException | InvocationTargetException
-                        | NoSuchMethodException | SecurityException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                        if (taskMap.containsKey(suffix)) {
+                            TaskEntry te = taskMap.get(suffix);
+                            Task task;
+                            try {
+                                task = te.taskClass.getConstructor(File.class,
+                                        File.class, String.class,
+                                        hub.getClass(), taskQueue.getClass())
+                                        .newInstance(rootDir.toFile(),
+                                                file.toFile(), te.type, hub,
+                                                taskQueue);
+                                taskQueue.execute(task);
+                            } catch (InstantiationException
+                                    | IllegalAccessException
+                                    | IllegalArgumentException
+                                    | InvocationTargetException
+                                    | NoSuchMethodException | SecurityException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        } else {
+                            taskQueue.execute(new OtherFileTask(rootDir
+                                    .toFile(), file.toFile(), "file:general",
+                                    hub, taskQueue));
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
-            } else {
-                taskQueue.execute(new OtherFileTask(rootDir, f, "file:general",
-                        hub, taskQueue));
-            }
+            });
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
         Thread.currentThread().setName(
                 "Thread " + Thread.currentThread().getId());
 
-    }
-
-    public void getAllFiles(File sDir, List<File> result) {
-        File[] faFiles = sDir.listFiles(new FileFilter() {
-
-            @Override
-            public boolean accept(File name) {
-                boolean accept = true;
-
-                for (Pattern p : exclude) {
-                    accept = accept
-                            && !p.matcher(name.getAbsolutePath()).matches();
-                }
-                return accept;
-            }
-        });
-        // System.out.println(sDir);
-        for (File file : faFiles) {
-            if (file.isDirectory()) {
-                getAllFiles(file, result);
-            } else {
-                result.add(file);
-            }
-        }
     }
 }

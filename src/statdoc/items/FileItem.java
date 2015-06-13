@@ -15,7 +15,6 @@
  */
 package statdoc.items;
 
-import java.io.File;
 import java.nio.file.Path;
 
 
@@ -32,30 +31,17 @@ public class FileItem extends Item {
     private Path file;
     private Path rootDir;
 
-    protected FileItem(File fileOrg, File rootDir, String type) {
+    protected FileItem(Path file, Path rootDir, String type) {
         
-        this.file = fileOrg.toPath();
-        this.rootDir = rootDir.toPath();
+        this.file = file;
+        this.rootDir = rootDir;
         this.type = type;
         this.name = file.getFileName().toString();
         this.link = "files/"
-                + this.file.toAbsolutePath().toString().trim()
-                        .replace("" + rootDir.getAbsolutePath(), "")
+                + rootDir.relativize(file).toString()
                         .replaceAll("[\\\\\\/]", "_") + ".html";
-        this.fullName = this.file.toAbsolutePath().toString().trim()
-                .replace("" + rootDir.getAbsolutePath().trim(), "");
+        this.fullName = rootDir.relativize(file).toString();
         ;
-    }
-
-    /**
-     * returns the underlying file. Implementations should use to noi Path 
-     * instead.
-     * 
-     * @return the File object for this item
-     */
-    @Deprecated
-    public File getFile() {
-        return file.toFile();
     }
 
     /**

@@ -69,7 +69,9 @@ var svg = d3.select(id).append("svg")
       .attr("width", x.rangeBand() )
       .attr("y", function(d) { return y(frequency[d]); })
       .attr("height", function(d) { return height -  y(frequency[d]); })
-      .append("svg:title").text( function(d) { return names[d] + " ("+frequency[d]+")"; } );
+      .append("svg:title").text( function(d) { 
+        return names[d] + " ("+frequency[d]+")"; 
+        } );
 }
 
 function toggle(id) {
@@ -84,5 +86,6 @@ function toggle(id) {
 
 function setIframeHeight(target) {
 //    alert( document.getElementById(target).offsetHeight );
-    d3.select('#'+target).select('iframe').style( 'height', document.getElementById(target).offsetHeight + "px" );
+    d3.select('#'+target).select('iframe').style( 'height', 
+        document.getElementById(target).offsetHeight + "px" );
 }
