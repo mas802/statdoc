@@ -51,10 +51,10 @@ public class Console extends WindowAdapter implements WindowListener,
         // create all components and add them
         frame = new JFrame("Statdoc Console");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = new Dimension((int) (screenSize.width / 2),
-                (int) (screenSize.height / 2));
-        int x = (int) (frameSize.width / 2);
-        int y = (int) (frameSize.height / 2);
+        Dimension frameSize = new Dimension(screenSize.width / 2,
+                screenSize.height / 2);
+        int x = frameSize.width / 2;
+        int y = frameSize.height / 2;
         frame.setBounds(x, y, frameSize.width, frameSize.height);
 
         textArea = new JTextArea();
@@ -75,16 +75,19 @@ public class Console extends WindowAdapter implements WindowListener,
         button.addActionListener(this);
     }
 
+    @Override
     public synchronized void windowClosed(WindowEvent evt) {
         this.notifyAll();
         System.exit(0);
     }
 
+    @Override
     public synchronized void windowClosing(WindowEvent evt) {
         frame.setVisible(false);
         frame.dispose();
     }
 
+    @Override
     public synchronized void actionPerformed(ActionEvent evt) {
         this.notifyAll();
         System.exit(0);

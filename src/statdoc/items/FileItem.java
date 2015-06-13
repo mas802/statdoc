@@ -16,6 +16,8 @@
 package statdoc.items;
 
 import java.io.File;
+import java.nio.file.Path;
+
 
 /**
  * An Item to hold a link to a file.
@@ -27,36 +29,51 @@ public class FileItem extends Item {
 
     private static final long serialVersionUID = 1L;
 
-    private File file;
-    private File rootDir;
+    private Path file;
+    private Path rootDir;
 
-    protected FileItem(File file, File rootDir, String type) {
-        this.file = file;
-        this.rootDir = rootDir;
+    protected FileItem(File fileOrg, File rootDir, String type) {
+        
+        this.file = fileOrg.toPath();
+        this.rootDir = rootDir.toPath();
         this.type = type;
-        this.name = file.getName();
+        this.name = file.getFileName().toString();
         this.link = "files/"
-                + this.file.getAbsolutePath().trim()
+                + this.file.toAbsolutePath().toString().trim()
                         .replace("" + rootDir.getAbsolutePath(), "")
                         .replaceAll("[\\\\\\/]", "_") + ".html";
-        this.fullName = this.file.getAbsolutePath().trim()
+        this.fullName = this.file.toAbsolutePath().toString().trim()
                 .replace("" + rootDir.getAbsolutePath().trim(), "");
         ;
     }
 
+    /**
+     * returns the underlying file. Implementations should use to noi Path 
+     * instead.
+     * 
+     * @return the File object for this item
+     */
+    @Deprecated
     public File getFile() {
-        return file;
+        return file.toFile();
     }
 
+    /**
+     * returns the underlying noi path. 
+     * 
+     * @return the File object for this item
+     */
+    public Path getPath() {
+        return file;
+    }
+    
     /**
      * Get the link to the original file on the file system.
      * 
      * @return a relative or absolute path
      */
     public String getFileLink() {
-        return ".."
-                + this.file.getAbsolutePath().replace(
-                        "" + rootDir.getAbsolutePath(), "");
+        return rootDir.relativize(file).toString();
     }
 
 }

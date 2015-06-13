@@ -54,89 +54,97 @@ public class StataUtils {
     public static final char M7 = (char) 20; // unassigned
 
     static String[][] rules = new String[][] {
-	    // new String[] { "\\{txt\\}end of do-file[\r|\n]+", "" },
-	    // new String[] { "end of do-file[\r|\n]+", "" },
+            // new String[] { "\\{txt\\}end of do-file[\r|\n]+", "" },
+            // new String[] { "end of do-file[\r|\n]+", "" },
 
-	    new String[] { "\\{smcl\\}[\r|\n]+", "" + M0 },
-	    new String[] { "\\{ul (on)?(off)?\\}", "" + M0 },
+            new String[] { "\\{smcl\\}[\r|\n]*", "" + M0 },
+            new String[] { "\\{ul (on)?(off)?\\}", "" + M0 },
 
-	    new String[] { "\\{sf\\}", "" + M0 },
-	    new String[] { "\\{bf\\}", "" + M0 + M4 },
-	    new String[] { "\\{it\\}", "" + M0 + M5 },
+            new String[] { "\\{sf\\}", "" + M0 },
+            new String[] { "\\{bf\\}", "" + M0 + M4 },
+            new String[] { "\\{it\\}", "" + M0 + M5 },
 
-	    new String[] { "\\{sf:(.*?)\\}", M0 + "$1" + M0 },
-	    new String[] { "\\{bf:(.*?)\\}", M4 + "$1" + M0 },
-	    new String[] { "\\{it:(.*?)\\}", M5 + "$1" + M0 },
+            new String[] { "\\{sf:(.*?)\\}", M0 + "$1" + M0 },
+            new String[] { "\\{bf:(.*?)\\}", M4 + "$1" + M0 },
+            new String[] { "\\{it:(.*?)\\}", M5 + "$1" + M0 },
 
-	    new String[] { "\\{inp(ut)?\\}", "" + M0 + M1 },
-	    new String[] { "\\{t[e]?xt\\}", "" + M0 },
-	    new String[] { "\\{res(ult)?\\}", "" + M0 + M3 },
-	    new String[] { "\\{err(or)?\\}", "" + M0 + M2 },
+            new String[] { "\\{inp(ut)?\\}", "" + M0 + M1 },
+            new String[] { "\\{t[e]?xt\\}", "" + M0 },
+            new String[] { "\\{res(ult)?\\}", "" + M0 + M3 },
+            new String[] { "\\{err(or)?\\}", "" + M0 + M2 },
 
-	    new String[] { "\\{inp(ut)?:(.*?)\\}", M1 + "$1" + M0 },
-	    new String[] { "\\{t[e]?xt:(.*?)\\}", M0 + "$1" + M0 },
-	    new String[] { "\\{res(ult)?:(.*?)\\}", M3 + "$1" + M0 },
-	    new String[] { "\\{err(or)?:(.*?)\\}", M2 + "$1" + M0 },
+            new String[] { "\\{inp(ut)?:(.*?)\\}", M1 + "$1" + M0 },
+            new String[] { "\\{t[e]?xt:(.*?)\\}", M0 + "$1" + M0 },
+            new String[] { "\\{t[e]?xt(.*?)\\}", M0 + "$1" + M0 },
+            new String[] { "\\{res(ult)?:(.*?)\\}", M3 + "$1" + M0 },
+            new String[] { "\\{err(or)?:(.*?)\\}", M2 + "$1" + M0 },
 
-	    new String[] { "\\{com(mand)?\\}", "" + M0 + M1 },
+            new String[] { "\\{hilite:(.*?)\\}", M4 + "$1" + M0 },
 
-	    new String[] { "\\{search (.*?)\\}", M1 + "$1" + M0 },
+            new String[] { "\\{com(mand)?\\}", "" + M0 + M1 },
 
-	    // TODO, does this exist?
-	    new String[] { "\\{bt\\}", "" + M0 + M1 },
+            new String[] { "\\{bind:(.*?)\\}", "$1" },
 
-	    new String[] { "\\{c(har)? -\\(\\}", "{" }, // +(char)196},
-	    new String[] { "\\{c(har)? \\)-\\}", "}" }, // +(char)196},
-	    new String[] { "\\{c(har)? -\\}", "-" }, // +(char)196},
-	    new String[] { "\\{c(har)? \\|\\}", "|" }, // +(char)179},
-	    new String[] { "\\{c(har)? \\+\\}", "+" }, // +(char)197},
-	    new String[] { "\\{c(har)? TT\\}", "-" }, // +(char)194},
-	    new String[] { "\\{c(har)? BT\\}", "-" }, // +(char)193},
-	    new String[] { "\\{c(har)? LT\\}", "-" }, // +(char)195},
-	    new String[] { "\\{c(har)? RT\\}", "-" }, // +(char)180},
-	    new String[] { "\\{c(har)? TLC\\}", "-" }, // +(char)218},
-	    new String[] { "\\{c(har)? TRC\\}", "-" }, // +(char)191},
-	    new String[] { "\\{c(har)? BRC\\}", "-" }, // +(char)217},
-	    new String[] { "\\{c(har)? BLC\\}", "-" }, // +(char)192},
+            new String[] { "\\{search (.*?):(.*?)\\}", M1 + "$2" + M0 },
+            new String[] { "\\{search (.*?)\\}", M1 + "$1" + M0 },
 
-	    new String[] { "\\{p(.*?)\\}", "" },
-    // new String[]
-    // {"(\\{com\\}\\. )?[\r|\n]+\\{txt\\}end of do-file[\r|\n]+\\{smcl\\}[\r|\n]+",
-    // ""},
+            new String[] { "\\{cmd:(.*?)\\}", M4 + "$1" + M0 },
+
+            new String[] { "\\{help (.*?):(.*?)\\}", M4 + "$2" + M0 },
+
+            // TODO, does this exist?
+            new String[] { "\\{bt\\}", "" + M0 + M1 },
+
+            new String[] { "\\{c(har)? -\\(\\}", "{" }, // +(char)196},
+            new String[] { "\\{c(har)? \\)-\\}", "}" }, // +(char)196},
+            new String[] { "\\{c(har)? -\\}", "-" }, // +(char)196},
+            new String[] { "\\{c(har)? \\|\\}", "|" }, // +(char)179},
+            new String[] { "\\{c(har)? \\+\\}", "+" }, // +(char)197},
+            new String[] { "\\{c(har)? TT\\}", "-" }, // +(char)194},
+            new String[] { "\\{c(har)? BT\\}", "-" }, // +(char)193},
+            new String[] { "\\{c(har)? LT\\}", "-" }, // +(char)195},
+            new String[] { "\\{c(har)? RT\\}", "-" }, // +(char)180},
+            new String[] { "\\{c(har)? TLC\\}", "-" }, // +(char)218},
+            new String[] { "\\{c(har)? TRC\\}", "-" }, // +(char)191},
+            new String[] { "\\{c(har)? BRC\\}", "-" }, // +(char)217},
+            new String[] { "\\{c(har)? BLC\\}", "-" }, // +(char)192},
+
+            new String[] { "\\{p(.*?)\\}", "" },
+
+            new String[] { "\\{\\.\\.\\.\\}\n", "" },
+            
+            new String[] {"(\\{com\\}\\. )?[\r|\n]+\\{txt\\}end of do-file[\r|\n]+\\{smcl\\}[\r|\n]+", ""},
     };
 
     private static Map<Pattern, String> map = new HashMap<Pattern, String>();
 
     synchronized static Map<Pattern, String> getPatternMap() {
 
-	if (map.isEmpty()) {
-	    for (String[] s : rules) {
-		map.put(Pattern.compile(s[0]), s[1]);
-	    }
+        if (map.isEmpty()) {
+            for (String[] s : rules) {
+                map.put(Pattern.compile(s[0]), s[1]);
+            }
 
-	    // hline and space
-	    String s = "";
-	    String sp = "";
-	    for (int i = 1; i < 80; i++) {
-		s = s + "-";
-		map.put(Pattern.compile("\\{hline " + i + "\\}"), s);
-		sp = sp + " ";
-		map.put(Pattern.compile("\\{space " + i + "\\}"), sp);
-		// c = c.replaceAll("\\{col "+i+"\\}","");
-	    }
-	    map.put(Pattern.compile("\\{hline\\}"), s);
-	    map.put(Pattern.compile("\\{\\.-\\}"), s);
-	}
+            // hline and space
+            String s = "";
+            for (int i = 1; i < 80; i++) {
+                s = s + "-";
+            }
+            map.put(Pattern.compile("\\{hline\\}"), s);
+            map.put(Pattern.compile("\\{\\.-\\}"), s);
+        }
 
-	return map;
+        return map;
     }
 
     private static final Pattern pright = Pattern.compile("\\{right:(.*?)\\}");
     private static final Pattern pcol = Pattern.compile("\\{col ([0-9]*?)\\}");
-
-    // TODO ralign
-    // private static final Pattern pralign =
-    // Pattern.compile("\\{ralign:(.*?)\\}");
+    private static final Pattern pralign = Pattern
+            .compile("\\{ralign ([0-9]*?):(.*?)\\}");
+    private static final Pattern phline = Pattern
+            .compile("\\{hline ([0-9]*?)\\}");
+    private static final Pattern pspace = Pattern
+            .compile("\\{space ([0-9]*?)\\}");
 
     /**
      * utility method to replace scml commands with their hidden counterparts
@@ -150,84 +158,140 @@ public class StataUtils {
      *         (M0,M1,M2,M3)
      */
     static public String smcl2hidden(String content, boolean ignoreCommands) {
-	StringBuilder r = new StringBuilder();
+        StringBuilder r = new StringBuilder();
 
-	for (Map.Entry<Pattern, String> e : getPatternMap().entrySet()) {
-	    // content = StringUtils.replace( content, s[0], s[1]);
-	    content = e.getKey().matcher(content).replaceAll(e.getValue());
-	}
+        for (Map.Entry<Pattern, String> e : getPatternMap().entrySet()) {
+            content = e.getKey().matcher(content).replaceAll(e.getValue());
+        }
 
-	for (String c : content.split("\n")) {
+        for (String c : content.split("\n")) {
 
-	    // break if line starts with a dot an flag is set
-	    if (ignoreCommands
-		    && ((c.startsWith(". ") || (c.length() > 3
-			    && (c.charAt(0) == 28 && c.charAt(1) == 29 && c
-				    .charAt(2) == '.') || c.matches("^[" + M0
-			    + "][ ]*[\\d]+[" + M0 + "][" + M1 + "]\\. .*"))))) {
-		// do nothing, i.e. do not process command lines
-	    } else {
+            // break if line starts with a dot an flag is set
+            if (ignoreCommands
+                    && ((c.startsWith(". ") || (c.length() > 3
+                            && (c.charAt(0) == 28 && c.charAt(1) == 29 && c
+                                    .charAt(2) == '.') || c.matches("^[" + M0
+                            + "][ ]*[\\d]+[" + M0 + "][" + M1 + "]\\. .*"))))) {
+                // do nothing, i.e. do not process command lines
+            } else {
 
-		// fix columns
-		Matcher m = pcol.matcher(c);
+                // fix hline
+                Matcher mhline = phline.matcher(c);
 
-		while (m.find()) {
-		    String match = m.group(0);
-		    int n = Integer.parseInt(m.group(1)) - 1;
+                while (mhline.find()) {
+                    String match = mhline.group(0);
+                    int n = Integer.parseInt(mhline.group(1));
 
-		    // System.out.println(n);
+                    StringBuilder replace = new StringBuilder("");
+                    for (int x = 0; x < n; x++) {
+                        replace.append("-");
+                    }
 
-		    int x = c.indexOf(match);
-		    int charCount = c
-			    .substring(0, x)
-			    .replaceAll(
-				    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
-				    "").length();
-		    x = x - charCount;
+                    c = c.replace(match, replace);
+                }
 
-		    String replace = "";
-		    if (x < n) {
-			for (; x < n; x++) {
-			    replace = replace + " ";
-			}
-		    }
-		    c = c.replace(match, replace);
-		}
+                // fix space
+                Matcher mspace = pspace.matcher(c);
 
-		// fix RIGHT
-		Matcher mright = pright.matcher(c);
+                while (mspace.find()) {
+                    String match = mspace.group(0);
+                    int n = Integer.parseInt(mspace.group(1));
 
-		while (mright.find()) {
-		    String match = mright.group(0);
-		    String txt = mright.group(1);
-		    int n = txt.length();
+                    StringBuilder replace = new StringBuilder("");
+                    for (int x = 0; x < n; x++) {
+                        replace.append(" ");
+                    }
 
-		    // System.out.println(n);
+                    c = c.replace(match, replace);
+                }
 
-		    int x = c.indexOf(match);
-		    int charCount = c
-			    .substring(0, x)
-			    .replaceAll(
-				    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
-				    "").length();
-		    x = x - charCount;
-		    n = 80 - charCount - n + 1;
+                // fix columns
+                Matcher mcol = pcol.matcher(c);
 
-		    String replace = "";
-		    if (x < n) {
-			for (; x < n; x++) {
-			    replace = replace + " ";
-			}
-		    }
-		    c = c.replace(match, replace);
-		    c = c + txt;
-		}
+                while (mcol.find()) {
+                    String match = mcol.group(0);
+                    int n = Integer.parseInt(mcol.group(1)) - 1;
 
-		r.append(c);
-		r.append("\n");
-	    }
-	}
-	return r.toString();
+                    int x = c.indexOf(match);
+                    int charCount = c
+                            .substring(0, x)
+                            .replaceAll(
+                                    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
+                                    "").length();
+                    x = x - charCount;
+
+                    String replace = "";
+                    if (x < n) {
+                        for (; x < n; x++) {
+                            replace = replace + " ";
+                        }
+                    }
+                    c = c.replace(match, replace);
+                }
+
+                // fix RIGHT
+                Matcher mright = pright.matcher(c);
+
+                while (mright.find()) {
+                    String match = mright.group(0);
+                    String txt = mright.group(1);
+                    int n = txt.length();
+
+                    // System.out.println(n);
+
+                    int x = c.indexOf(match);
+                    int charCount = c
+                            .substring(0, x)
+                            .replaceAll(
+                                    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
+                                    "").length();
+                    x = x - charCount;
+                    n = 80 - charCount - n + 1;
+
+                    String replace = "";
+                    if (x < n) {
+                        for (; x < n; x++) {
+                            replace = replace + " ";
+                        }
+                    }
+                    replace = replace + txt;
+                    c = c.replace(match, replace);
+                }
+
+                // fix RALIGN
+                Matcher mralign = pralign.matcher(c);
+
+                while (mralign.find()) {
+                    String match = mralign.group(0);
+                    int width = Integer.parseInt(mralign.group(1)) - 1;
+
+                    String txt = mralign.group(2);
+                    int n = txt.length();
+
+                    int x = c.indexOf(match);
+                    int charCount = c
+                            .substring(0, x)
+                            .replaceAll(
+                                    "[^" + M0 + M1 + M2 + M3 + M4 + M5 + "]",
+                                    "").length();
+                    x = x - charCount;
+                    n = width - charCount - n + 1;
+
+                    String replace = "";
+                    if (x < n) {
+                        for (; x < n; x++) {
+                            replace = replace + " ";
+                        }
+                    }
+                    replace = replace + txt;
+                    c = c.replace(match, replace);
+                }
+
+                r.append(c);
+                r.append("\n");
+            }
+        }
+        return r.toString();
 
     }
 
@@ -243,37 +307,37 @@ public class StataUtils {
      * @return a html formated string
      */
     static public String smcl2html(String content, boolean hideCommands) {
-	String result = "<span>" + smcl2hidden(content, hideCommands);
+        String result = "<span>" + smcl2hidden(content, hideCommands);
 
-	result = result.replaceAll("" + M0 + M0,
-		"</span><span class=\"st_txt\">");
-	result = result.replaceAll("" + M0 + M1,
-		"</span><span class=\"st_inp\">");
-	result = result.replaceAll("" + M0 + M2,
-		"</span><span class=\"st_err\">");
-	result = result.replaceAll("" + M0 + M3,
-		"</span><span class=\"st_res\">");
-	result = result.replaceAll("" + M0 + M4,
-		"</span><span class=\"st_bf\">");
-	result = result.replaceAll("" + M0 + M5,
-		"</span><span class=\"st_it\">");
+        result = result.replaceAll("" + M0 + M0,
+                "</span><span class=\"st_txt\">");
+        result = result.replaceAll("" + M0 + M1,
+                "</span><span class=\"st_inp\">");
+        result = result.replaceAll("" + M0 + M2,
+                "</span><span class=\"st_err\">");
+        result = result.replaceAll("" + M0 + M3,
+                "</span><span class=\"st_res\">");
+        result = result.replaceAll("" + M0 + M4,
+                "</span><span class=\"st_bf\">");
+        result = result.replaceAll("" + M0 + M5,
+                "</span><span class=\"st_it\">");
 
-	result = result.replaceAll("" + M0, "</span><span class=\"st_txt\">");
-	result = result.replaceAll("" + M1, "</span><span class=\"st_inp\">");
-	result = result.replaceAll("" + M2, "</span><span class=\"st_err\">");
-	result = result.replaceAll("" + M3, "</span><span class=\"st_res\">");
-	result = result.replaceAll("" + M4, "</span><span class=\"st_bf\">");
-	result = result.replaceAll("" + M5, "</span><span class=\"st_it\">");
+        result = result.replaceAll("" + M0, "</span><span class=\"st_txt\">");
+        result = result.replaceAll("" + M1, "</span><span class=\"st_inp\">");
+        result = result.replaceAll("" + M2, "</span><span class=\"st_err\">");
+        result = result.replaceAll("" + M3, "</span><span class=\"st_res\">");
+        result = result.replaceAll("" + M4, "</span><span class=\"st_bf\">");
+        result = result.replaceAll("" + M5, "</span><span class=\"st_it\">");
 
-	result = result + "</span>";
+        result = result + "</span>";
 
-	return result;
+        return result;
     }
 
     /**
-     * a utility method to remoce smcl formating
+     * a utility method to replace smcl formating
      * 
-     * will use smcl2hidden as a workhorse
+     * uses smcl2hidden as a workhorse
      * 
      * @param content
      *            the smcl string
@@ -282,16 +346,16 @@ public class StataUtils {
      * @return plain txt string
      */
     public static String smcl2plain(String content, boolean hideCommands) {
-	String result = smcl2hidden(content, hideCommands);
+        String result = smcl2hidden(content, hideCommands);
 
-	result = result.replaceAll("" + M0, "");
-	result = result.replaceAll("" + M1, "");
-	result = result.replaceAll("" + M2, "");
-	result = result.replaceAll("" + M3, "");
-	result = result.replaceAll("" + M4, "");
-	result = result.replaceAll("" + M5, "");
+        result = result.replaceAll("" + M0, "");
+        result = result.replaceAll("" + M1, "");
+        result = result.replaceAll("" + M2, "");
+        result = result.replaceAll("" + M3, "");
+        result = result.replaceAll("" + M4, "");
+        result = result.replaceAll("" + M5, "");
 
-	return result;
+        return result;
     }
 
     /**
@@ -306,64 +370,63 @@ public class StataUtils {
      * @return an array of one or two elements
      */
     public static String[] splitSave(String str, String splt) {
-	String[] result = null;
+        String[] result = null;
 
-	int pos = -1;
-	boolean resolved = false;
+        int pos = -1;
+        boolean resolved = false;
 
-	int currentpos = 0;
-	while (!resolved) {
-	    int newpos = str.substring(currentpos).indexOf(splt);
-	    if (newpos == -1) {
-		resolved = true;
-	    } else {
-		currentpos = newpos + currentpos;
-		String strs = str.substring(0, currentpos);
-		int a = balanceChars(strs, "(", ")");
-		int c = balanceChars(strs, "[", "]");
-		int e = countChar(strs, "\"");
-		if (a == 0 && c == 0 && (e % 2 == 0)) {
-		    // TODO check if we are really always after the last match
-		    // otherwise:
-		    // resolved = true;
-		    // currently ptherwise certainly a problem if the prefix has
-		    // an option (,)
-		    pos = currentpos;
-		}
-		currentpos += splt.length();
-	    }
-	}
+        int currentpos = 0;
+        while (!resolved) {
+            int newpos = str.substring(currentpos).indexOf(splt);
+            if (newpos == -1) {
+                resolved = true;
+            } else {
+                currentpos = newpos + currentpos;
+                String strs = str.substring(0, currentpos);
+                int a = balanceChars(strs, "(", ")");
+                int c = balanceChars(strs, "[", "]");
+                int e = countChar(strs, "\"");
+                if (a == 0 && c == 0 && (e % 2 == 0)) {
+                    // TODO check if we are really always after the last match
+                    // otherwise:
+                    // resolved = true;
+                    // currently ptherwise certainly a problem if the prefix has
+                    // an option (,)
+                    pos = currentpos;
+                }
+                currentpos += splt.length();
+            }
+        }
 
-	if (pos == -1) {
-	    result = new String[] { str };
-	} else {
-	    result = new String[] { str.substring(0, pos),
-		    str.substring(pos + splt.length()) };
-	}
+        if (pos == -1) {
+            result = new String[] { str };
+        } else {
+            result = new String[] { str.substring(0, pos),
+                    str.substring(pos + splt.length()) };
+        }
 
-	return result;
+        return result;
     }
 
     public static int countChar(String string, String c) {
-	int counter = 0;
-	for (int i = 0; i < string.length() - (c.length() - 1); i++) {
-	    boolean check = true;
-	    for (int j = 0; j < c.length(); j++) {
-		if (string.charAt(i + j) != c.charAt(j)) {
-		    check = false;
-		    break;
-		}
-	    }
-	    if (check) {
-		counter++;
-	    }
-	}
-	return counter;
+        int counter = 0;
+        for (int i = 0; i < string.length() - (c.length() - 1); i++) {
+            boolean check = true;
+            for (int j = 0; j < c.length(); j++) {
+                if (string.charAt(i + j) != c.charAt(j)) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
     public static int balanceChars(String string, String c, String d) {
-
-	return countChar(string, c) - countChar(string, d);
+        return countChar(string, c) - countChar(string, d);
     }
 
     // private static final Pattern BOUNDARYSPLIT = Pattern
@@ -371,166 +434,165 @@ public class StataUtils {
 
     public static Set<String> parametersCleanSplit(String parameter) {
 
-	// remove all non stata special characters including brackets
-	parameter = parameter.replaceAll("[^a-zA-Z0-9\\(\\*\\?`'$\\{\\}_ ]",
-		" ");
+        // remove all non stata special characters including brackets
+        parameter = parameter.replaceAll("[^a-zA-Z0-9\\(\\*\\?`'$\\{\\}_ ]",
+                " ");
 
-	Set<String> s = new HashSet<String>();
+        Set<String> s = new HashSet<String>();
 
-	String[] params = parameter.split("[\\s]+");
+        String[] params = parameter.split("[\\s]+");
 
-	// deal with no space after opening brackets
-	for (int i = 0; i < params.length; i++) {
-	    String p = params[i];
-	    // remove brackets from the start
-	    p = p.replaceAll("^\\(", "");
-	    if (p.length() > 1) {
-		int pos = p.indexOf('(');
-		if (pos > -1) {
-		    s.add(p.substring(0, pos + 1));
-		    s.add(p.substring(pos + 1));
-		} else {
-		    s.add(p);
-		}
-	    }
-	}
+        // deal with no space after opening brackets
+        for (int i = 0; i < params.length; i++) {
+            String p = params[i];
+            // remove brackets from the start
+            p = p.replaceAll("^\\(", "");
+            if (p.length() > 1) {
+                int pos = p.indexOf('(');
+                if (pos > -1) {
+                    s.add(p.substring(0, pos + 1));
+                    s.add(p.substring(pos + 1));
+                } else {
+                    s.add(p);
+                }
+            }
+        }
 
-	return s;
+        return s;
     }
 
     public static String stataTokenToRegex(String wildcard) {
-	// clear out stata lacal, global
-	wildcard = wildcard.replaceAll("\\$\\{.*\\}", "*");
-	wildcard = wildcard.replaceAll("`.*'", "*");
-	wildcard = wildcard.replaceAll("\\$[a-zA-Z0-9\\*_]*", "*");
+        // clear out stata lacal, global
+        wildcard = wildcard.replaceAll("\\$\\{.*\\}", "*");
+        wildcard = wildcard.replaceAll("`.*'", "*");
+        wildcard = wildcard.replaceAll("\\$[a-zA-Z0-9\\*_]*", "*");
 
-	// remove all residual special characters
-	wildcard = wildcard.replaceAll("[\\$\\{\\}`']", " ");
-	wildcard = wildcard.trim();
+        // remove all residual special characters
+        wildcard = wildcard.replaceAll("[\\$\\{\\}`']", " ");
+        wildcard = wildcard.trim();
 
-	StringBuffer s = new StringBuffer(wildcard.length());
-	// s.append("^.*?");
-	for (int i = 0, is = wildcard.length(); i < is; i++) {
-	    char c = wildcard.charAt(i);
-	    switch (c) {
-	    case '*':
-		s.append(".*");
-		break;
-	    case '?':
-		s.append(".");
-		break;
-	    case '/':
-		s.append(".");
-		break;
-	    case '\\':
-		s.append(".");
-		break;
-	    // escape special regexp-characters
-	    case '(':
-	    case ')':
-	    case '[':
-	    case ']':
-	    case '$':
-	    case '^':
-		// case '.':
-	    case '{':
-	    case '}':
-	    case '|':
-		s.append("\\");
-		s.append(c);
-		break;
-	    default:
-		s.append(c);
-		break;
-	    }
-	}
-	// s.append(".*?$");
-	return (s.toString());
+        StringBuffer s = new StringBuffer(wildcard.length());
+        // s.append("^.*?");
+        for (int i = 0, is = wildcard.length(); i < is; i++) {
+            char c = wildcard.charAt(i);
+            switch (c) {
+            case '*':
+                s.append(".*");
+                break;
+            case '?':
+                s.append(".");
+                break;
+            case '/':
+                s.append(".");
+                break;
+            case '\\':
+                s.append(".");
+                break;
+            // escape special regexp-characters
+            case '(':
+            case ')':
+            case '[':
+            case ']':
+            case '$':
+            case '^':
+                // case '.':
+            case '{':
+            case '}':
+            case '|':
+                s.append("\\");
+                s.append(c);
+                break;
+            default:
+                s.append(c);
+                break;
+            }
+        }
+        // s.append(".*?$");
+        return (s.toString());
     }
 
     public static String runTemplate(final String templateName,
-	    String stataexe, Map<String, Object> data, File outputDir)
-	    throws IOException, InterruptedException {
+            String stataexe, Map<String, Object> data, File outputDir)
+            throws IOException, InterruptedException {
 
-	Runtime rt = Runtime.getRuntime();
+        Runtime rt = Runtime.getRuntime();
 
-	Process ps;
-	// BufferedReader in;
-	// BufferedWriter out;
+        Process ps;
+        // BufferedReader in;
+        // BufferedWriter out;
 
-	// System.out.println( statacmd );
+        // System.out.println( statacmd );
 
-	final Path tempDir = Files.createTempDirectory("statdoc");
+        final Path tempDir = Files.createTempDirectory("statdoc");
 
-	TemplateUtil.getInstance().evalVMtoFile(
-		tempDir.resolve(templateName + ".do").toFile(),
-		templateName + ".do.vm", data);
+        TemplateUtil.getInstance().evalVMtoFile(
+                tempDir.resolve(templateName + ".do").toFile(),
+                templateName + ".do.vm", data);
 
-	// FIXME horrible, horrible horrible implementation for Windose
-	if (stataexe.toLowerCase().endsWith(".exe")) {
-	    ps = rt.exec(new String[] { stataexe, "-q", "-e", "-s", "do",
-		    templateName + ".do" }, null, tempDir.toFile());
-	    ps.waitFor();
-	} else {
-	    ps = rt.exec(new String[] { stataexe, "-q", "-s", "do",
-		    templateName + ".do" }, null, tempDir.toFile());
-	    ps.waitFor();
-	}
+        // FIXME horrible, horrible horrible implementation for Windose
+        if (stataexe.toLowerCase().endsWith(".exe")) {
+            ps = rt.exec(new String[] { stataexe, "-q", "-e", "-s", "do",
+                    templateName + ".do" }, null, tempDir.toFile());
+            ps.waitFor();
+        } else {
+            ps = rt.exec(new String[] { stataexe, "-q", "-s", "do",
+                    templateName + ".do" }, null, tempDir.toFile());
+            ps.waitFor();
+        }
 
-	Files.copy(tempDir.resolve(templateName + ".smcl"), outputDir.toPath(),
-		StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(tempDir.resolve(templateName + ".smcl"), outputDir.toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
 
-	/*
-	 * shutdown hook to get temp files and directory deleted
-	 */
-	Runtime.getRuntime().addShutdownHook(new Thread() {
+        /*
+         * shutdown hook to get temp files and directory deleted
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
-	    @Override
-	    public void run() {
-		tempDir.resolve(templateName + ".do").toFile().delete();
-		tempDir.resolve(templateName + ".smcl").toFile().delete();
-		tempDir.toFile().delete();
-	    }
-	});
+            @Override
+            public void run() {
+                tempDir.resolve(templateName + ".do").toFile().delete();
+                tempDir.resolve(templateName + ".smcl").toFile().delete();
+                tempDir.toFile().delete();
+            }
+        });
 
-	return "";
+        return "";
     }
 
     public static File resolveStataPath(String[] stataProgs, String osString) {
-	File stataPath = new File("");
-	int i = 0;
-	while ((!stataPath.canExecute() || stataPath.isDirectory()) && stataProgs.length > i) {
+        File stataPath = new File("");
+        int i = 0;
+        while ((!stataPath.canExecute() || stataPath.isDirectory())
+                && stataProgs.length > i) {
 
-	    stataPath = new File(stataProgs[i]);
-	    if (stataPath.isDirectory()) {
-		String[] trials = new String[] {};
-		
-		String OS = osString
-			.toLowerCase(Locale.ENGLISH);
-		if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
-		    trials = new String[] { 
-			    "/StataMP.app/Contents/MacOS/StataMP",
-			    "/StataSE.app/Contents/MacOS/StataSE",
-			    "/smStata.app/Contents/MacOS/smStata",
-		    };
-		} else if (OS.indexOf("win") >= 0) {
-		    trials = new String[] { 
-			    "/StataMP-64.exe", "/StataMP.exe", 
-			    "/StataSE-64.exe", "/StataSE.exe", 
-			    "/Stata-64.exe", "/Stata.exe" };
-		} else if (OS.indexOf("nux") >= 0) {
-		    trials = new String[] { "/stata-mp", "/stata-se", "/stata" };
-		} else {
-		    // ignore for now, no known installations
-		}
-		int j = 0;
-		while ((!stataPath.canExecute() || stataPath.isDirectory()) && trials.length > j) {
-		    stataPath = new File(stataProgs[i], trials[j]);
-		    j++;
-		}
-	    }
-	    i++;
-	}
-	return stataPath;
+            stataPath = new File(stataProgs[i]);
+            if (stataPath.isDirectory()) {
+                String[] trials = new String[] {};
+
+                String OS = osString.toLowerCase(Locale.ENGLISH);
+                if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+                    trials = new String[] {
+                            "/StataMP.app/Contents/MacOS/StataMP",
+                            "/StataSE.app/Contents/MacOS/StataSE",
+                            "/smStata.app/Contents/MacOS/smStata", };
+                } else if (OS.indexOf("win") >= 0) {
+                    trials = new String[] { "/StataMP-64.exe", "/StataMP.exe",
+                            "/StataSE-64.exe", "/StataSE.exe", "/Stata-64.exe",
+                            "/Stata.exe" };
+                } else if (OS.indexOf("nux") >= 0) {
+                    trials = new String[] { "/stata-mp", "/stata-se", "/stata" };
+                } else {
+                    // ignore for now, no known installations
+                }
+                int j = 0;
+                while ((!stataPath.canExecute() || stataPath.isDirectory())
+                        && trials.length > j) {
+                    stataPath = new File(stataProgs[i], trials[j]);
+                    j++;
+                }
+            }
+            i++;
+        }
+        return stataPath;
     }
 }

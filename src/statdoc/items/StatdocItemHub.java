@@ -186,8 +186,7 @@ public class StatdocItemHub {
         if (this.tokens.containsKey(token)) {
             ti = this.tokens.get(token);
         } else {
-            ti = new TokenItem(token);
-            ti.setType("token:" + type);
+            ti = new TokenItem(token, "token:" + type);
             this.tokens.put(token, ti);
         }
         return ti;
@@ -333,7 +332,7 @@ public class StatdocItemHub {
                     Pattern pattern = Pattern.compile(".*" + regex + ".*");
                     for (FileItem fi : files) {
                         if (fi.getType().startsWith(targetType)) {
-                            String matchee = fi.getFile().getAbsolutePath();
+                            String matchee = fi.getPath().toAbsolutePath().toString();
                             if (pattern.matcher(matchee).matches()) {
                                 matchList.add(fi);
                                 MatchItem mo = new MatchItem("back_of"
@@ -599,9 +598,7 @@ public class StatdocItemHub {
         if (tmp.size() > 0) {
             int i = 0;
             String current = iter[i];
-            Item group = new Item(current, current, "#" + current);
-            ;
-            group.setType(type);
+            Item group = new Item(current, current, "#" + current, type);
 
             for (Item item : set) {
                 String n = item.getName();
@@ -609,9 +606,7 @@ public class StatdocItemHub {
                     i++;
                     if (tmp.size() > (i)) {
                         current = iter[i];
-                        group = new Item(current, current, "#" + current);
-                        ;
-                        group.setType(type);
+                        group = new Item(current, current, "#" + current, type);
                     }
                 }
                 if (n.startsWith(current)) {

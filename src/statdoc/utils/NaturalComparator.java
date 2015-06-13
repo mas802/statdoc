@@ -30,6 +30,7 @@ public class NaturalComparator implements Comparator<Item> {
     private static final Pattern BOUNDARYSPLIT = Pattern
             .compile("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
 
+    @Override
     public int compare(Item s1, Item s2) {
         int r = compareSplit(s1.getName(), s2.getName());
 

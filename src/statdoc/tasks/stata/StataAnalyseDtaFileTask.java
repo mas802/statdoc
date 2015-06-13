@@ -91,7 +91,7 @@ public class StataAnalyseDtaFileTask implements Task {
 
             if (!output.exists()) {
 
-                cmd = c + " \"" + dtaFileItem.getFile().getAbsolutePath()
+                cmd = c + " \"" + dtaFileItem.getPath().toAbsolutePath()
                         + "\"";
 
                 // System.out.println( cmd );
