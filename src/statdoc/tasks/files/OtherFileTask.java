@@ -52,7 +52,7 @@ public class OtherFileTask implements Task {
     public void run() {
         Thread.currentThread().setName("Other File Task for File: " + file);
 
-        FileItem fi = hub.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
 
         if ( type.equals("file:general") ) {
             // set tokens, probably not much to do here

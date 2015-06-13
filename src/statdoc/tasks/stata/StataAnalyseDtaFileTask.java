@@ -18,6 +18,7 @@ package statdoc.tasks.stata;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -35,16 +36,16 @@ import statdoc.tasks.Task;
  */
 public class StataAnalyseDtaFileTask implements Task {
 
-    private File file;
-    private File rootDir;
+    private Path file;
+    private Path rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
 
     public StataAnalyseDtaFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
-        this.file = file;
-        this.rootDir = rootDir;
+        this.file = file.toPath();
+        this.rootDir = rootDir.toPath();
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -62,25 +63,25 @@ public class StataAnalyseDtaFileTask implements Task {
 
             String c = "use ";
             String t = "stata";
-            if (file.getName().endsWith("csv")) {
+            if (file.getFileName().endsWith("csv")) {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "csv";
-            } else if (file.getName().endsWith("raw")) {
+            } else if (file.getFileName().endsWith("raw")) {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "raw";
-            } else if (file.getName().endsWith("xls")
-                    || file.getName().endsWith("xlsx")) {
+            } else if (file.getFileName().endsWith("xls")
+                    || file.getFileName().endsWith("xlsx")) {
                 dtaFileItem.put("_runCommand", "import excel ");
                 c = "import excel ";
                 t = "excel";
             }
 
-            long id = file.lastModified();
+            long id = file.toFile().lastModified();
             dtaFileItem.put("lastmodified", id);
-            File output = new File(hub.outputDir, "derived/analyse_dta_"
-                    + file.getName() + "_" + id + ".smcl");
+            File output = new File(hub.outputDir.toFile(), "derived/analyse_dta_"
+                    + file.getFileName() + "_" + id + ".smcl");
 
             // stop execution if no Stata exec
             if (hub.getStataPath() == null) {

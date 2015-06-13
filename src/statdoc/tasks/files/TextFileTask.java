@@ -58,7 +58,7 @@ public class TextFileTask implements Task {
                 " Text File Task for File: " + file + " - "
                         + Thread.currentThread().getName());
 
-        FileItem fi = hub.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));

@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -129,8 +130,8 @@ public class Statdoc {
 
         // default values, current directory, output into statdoc
         // do not initialise
-        File sourceDir = new File(".");
-        File outputDir = new File("statdoc");
+        Path sourceDir = (new File(".")).toPath();
+        Path outputDir = (new File("statdoc")).toPath();
         boolean initialise = false;
         boolean derivedClear = false;
         boolean clear = false;
@@ -141,14 +142,14 @@ public class Statdoc {
             if (args[i].equals("-o") || args[i].equals("--output")) {
                 if (args.length > i + 1) {
                     i++;
-                    outputDir = new File(args[i]);
+                    outputDir = (new File(args[i])).toPath();
                 } else {
                     ok = false;
                 }
             } else if (args[i].equals("-s") || args[i].equals("--source")) {
                 if (args.length > i + 1) {
                     i++;
-                    sourceDir = new File(args[i]);
+                    sourceDir = (new File(args[i])).toPath();
                 } else {
                     ok = false;
                 }
@@ -170,16 +171,16 @@ public class Statdoc {
             return;
         }
 
-        if (!sourceDir.exists() || !sourceDir.isDirectory()) {
+        if (!sourceDir.toFile().exists() || !sourceDir.toFile().isDirectory()) {
             System.out.println("ERROR, source directory "
-                    + sourceDir.getAbsolutePath()
+                    + sourceDir.toAbsolutePath()
                     + " does not exist or is not a directory.");
             return;
         }
 
-        if (outputDir.exists() && !outputDir.isDirectory()) {
+        if (outputDir.toFile().exists() && !outputDir.toFile().isDirectory()) {
             System.out.println("ERROR, output directory "
-                    + outputDir.getAbsolutePath()
+                    + outputDir.toAbsolutePath()
                     + " exists and is not a directory.");
             return;
         }
@@ -188,8 +189,8 @@ public class Statdoc {
          * Setup the hub that handles all items from now on.
          */
         System.out.println("Statdoc generates automagical documentation for ");
-        System.out.println("input: " + sourceDir.getAbsolutePath());
-        System.out.println("output: " + outputDir.getAbsolutePath());
+        System.out.println("input: " + sourceDir.toAbsolutePath());
+        System.out.println("output: " + outputDir.toAbsolutePath());
         System.out.println("Version " + version);
         System.out.println("Please be patient...");
         System.out.println(" ");
@@ -209,9 +210,9 @@ public class Statdoc {
         hub.setGlobal("version", version);
 
         // copy initial root and make file structure if needed
-        hub.outputDir.mkdirs();
+        hub.outputDir.toFile().mkdirs();
         for (String file : dirs) {
-            File dir = new File(hub.outputDir, file);
+            File dir = new File(hub.outputDir.toFile(), file);
             dir.mkdir();
             if ( clear ) {
                 for(File files: dir.listFiles()) files.delete();
@@ -219,13 +220,13 @@ public class Statdoc {
         }
 
         if ( derivedClear ) {
-            for(File file: new File( hub.outputDir, "derived" ).listFiles()) file.delete();
+            for(File file: new File( hub.outputDir.toFile(), "derived" ).listFiles()) file.delete();
         }
         
         for (String file : files) {
             InputStream f = Statdoc.class.getResourceAsStream("/initialroot/"
                     + file);
-            File target = new File(hub.outputDir, file);
+            File target = new File(hub.outputDir.toFile(), file);
             if (!target.isDirectory() && (initialise || !target.exists())) {
                 Files.copy(f, target.toPath(),
                         StandardCopyOption.REPLACE_EXISTING);
@@ -235,7 +236,7 @@ public class Statdoc {
         for (String file : templatefiles) {
             InputStream f = Statdoc.class
                     .getResourceAsStream("/initialroot/templates/" + file);
-            File target = new File(hub.outputDir, "templates/" + file);
+            File target = new File(hub.outputDir.toFile(), "templates/" + file);
             if (initialise || !target.exists()) {
                 Files.copy(f, target.toPath(),
                         StandardCopyOption.REPLACE_EXISTING);
@@ -243,11 +244,11 @@ public class Statdoc {
         }
 
         // initialise template util
-        File templateDir = new File(hub.outputDir, "templates");
+        File templateDir = new File(hub.outputDir.toFile(), "templates");
         new TemplateUtil(templateDir.getAbsolutePath());
 
         Properties generalProp = new Properties();
-        generalProp.load(new FileInputStream(new File(outputDir,
+        generalProp.load(new FileInputStream(new File(outputDir.toFile(),
                 "statdoc.properties")));
 
         // add commandline properties
@@ -259,7 +260,7 @@ public class Statdoc {
         }
 
         hub.setGlobal("project", generalProp.getProperty("statdoc.project",
-                sourceDir.getCanonicalFile().getName()));
+                sourceDir.toFile().getCanonicalFile().getName()));
 
         hub.setProp(generalProp);
         
@@ -299,7 +300,7 @@ public class Statdoc {
         // start of the first round of just reading in all files
         // and processing all files
         me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(
-                sourceDir.toPath(), generalProp, hub, me.taskQueue));
+                sourceDir, generalProp, hub, me.taskQueue));
 
         /*
         // work through second stage file producing
@@ -321,18 +322,18 @@ public class Statdoc {
         data.put("item", overview);
 
         // build general index file
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir,
+        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
                 "index.html"), "index.vm", data));
 
         // build the comapre file
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir,
+        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
                 "compare.html"), "compare.vm", data));
 
         // build overview files
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir,
+        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
                 "overview/overview-frame.html"), "overview-frame.vm", data));
         me.taskQueue
-                .execute(new GeneralVMTask(new File(hub.outputDir,
+                .execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
                         "overview/overview-summary.html"),
                         "overview-summary.vm", data));
 
@@ -341,13 +342,13 @@ public class Statdoc {
                 hub.getGlobals());
         datah.put("section", "help");
         datah.put("item", help);
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir,
+        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
                 "overview/help-doc.html"), "help-doc.vm", datah));
 
         // build the rest
-        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir, hub,
+        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir.toFile(), hub,
                 me.taskQueue));
-        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir, hub,
+        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir.toFile(), hub,
                 me.taskQueue));
         me.taskQueue.execute(new GenerateVariableinfoTask(hub, me.taskQueue));
 
@@ -365,7 +366,7 @@ public class Statdoc {
         System.out.println(" ");
         System.out
                 .println("All done, copy the following URL into your browser:");
-        System.out.println("file://" + hub.outputDir.getAbsolutePath()
+        System.out.println("file://" + hub.outputDir.toAbsolutePath()
                 + "/index.html");
         System.out.println(" ");
     }

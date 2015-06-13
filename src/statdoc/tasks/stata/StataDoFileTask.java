@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.CmdItem;
@@ -46,8 +46,8 @@ public class StataDoFileTask implements Task {
         Commands, DocBlock, CommentBlock, MataBlock
     }
 
-    private File file;
-    private File rootDir;
+    private Path file;
+    private Path rootDir;
     ThreadPoolExecutor taskList;
     private StatdocItemHub hub;
     private String type;
@@ -57,8 +57,8 @@ public class StataDoFileTask implements Task {
 
     public StataDoFileTask(File rootDir, File file, String type,
             StatdocItemHub hub, ThreadPoolExecutor taskList) {
-        this.file = file;
-        this.rootDir = rootDir;
+        this.file = file.toPath();
+        this.rootDir = rootDir.toPath();
         this.taskList = taskList;
         this.type = type;
         this.hub = hub;
@@ -73,8 +73,7 @@ public class StataDoFileTask implements Task {
         FileItem fileItem = hub.createFile(file, rootDir, type);
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get(file
-                    .toURI())));
+            String content = new String(Files.readAllBytes(file));
 
             fileItem.setContent(content);
         } catch (Exception e) {

@@ -54,7 +54,7 @@ public class HtmlFileTask implements Task {
                 " Text File Task for File: " + file + " - "
                         + Thread.currentThread().getName());
 
-        FileItem fi = hub.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
 
         try {
             String content = new String(Files.readAllBytes(Paths.get(file

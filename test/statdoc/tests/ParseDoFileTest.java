@@ -89,7 +89,7 @@ public class ParseDoFileTest {
 	    map.put("desc", new String[] { "sum" });
 	    hub.setStataCmdTypes(map);
 
-	    StataDoFileTask t2 = new StataDoFileTask(new File(""), file, "cmd:stata:do", hub, null);
+	    StataDoFileTask t2 = new StataDoFileTask(new File("/"), file, "cmd:stata:do", hub, null);
 		
 	    t2.run();
 

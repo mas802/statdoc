@@ -50,7 +50,7 @@ public class GenerateVariableinfoTask implements Task {
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
 
-        File variableDir = new File(hub.outputDir, "/variables");
+        File variableDir = new File(hub.outputDir.toFile(), "/variables");
 
         TemplateUtil tu = TemplateUtil.getInstance();
 

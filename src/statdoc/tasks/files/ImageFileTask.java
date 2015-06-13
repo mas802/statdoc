@@ -50,7 +50,7 @@ public class ImageFileTask implements Task {
     public void run() {
         Thread.currentThread().setName("Image File Task for File: " + file);
 
-        FileItem fi = hub.createFile(file, rootDir, type);
+        FileItem fi = hub.createFile(file.toPath(), rootDir.toPath(), type);
 
         fi.setContent("<img src=\"../" + fi.getFileLink() + "\" width=\"90%\">");
 

@@ -15,7 +15,8 @@
  */
 package statdoc.items;
 
-import java.io.File;
+// import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -64,9 +65,9 @@ public class StatdocItemHub {
      * fields with general information/resources
      */
 
-    public File sourceDir;
-    public File outputDir;
-    public File templateDir;
+    public Path sourceDir;
+    public Path outputDir;
+    public Path templateDir;
 
     private Map<String, Object> globals = new TreeMap<String, Object>();
     private String stataPath;
@@ -127,15 +128,15 @@ public class StatdocItemHub {
      * FILES
      */
 
-    synchronized public FileItem createFile(File file, File rootDir, String type) {
-        FileItem fileItem = new FileItem(file.toPath(), rootDir.toPath(), type);
+    synchronized public FileItem createFile(Path file, Path rootDir, String type) {
+        FileItem fileItem = new FileItem(file, rootDir, type);
 
         files.add(fileItem);
 
-        fileItem.put("date", new Date(file.lastModified()));
+        fileItem.put("date", new Date(file.toFile().lastModified()));
 
         // create tokens from filename
-        createTokens(fileItem, file.getName());
+        createTokens(fileItem, file.getFileName().toString());
 
         return fileItem;
     }
