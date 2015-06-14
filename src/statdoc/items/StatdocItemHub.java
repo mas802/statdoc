@@ -48,8 +48,8 @@ public class StatdocItemHub {
             .compile("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|\\b");
 
     /*
-     * fields to hold main Item collections
-     * TODO should be unified or even put into a superitem (or DB)
+     * fields to hold main Item collections TODO should be unified or even put
+     * into a superitem (or DB)
      */
 
     private TreeSet<FileItem> files = new TreeSet<FileItem>();
@@ -59,7 +59,7 @@ public class StatdocItemHub {
     private List<MatchItem> matches = new ArrayList<MatchItem>();
 
     private Properties prop = null;
-    
+
     /*
      * fields with general information/resources
      */
@@ -72,17 +72,17 @@ public class StatdocItemHub {
     private String stataPath;
     private Map<String, String[]> stataCmdTypes;
 
-    /* 
+    /*
      * GETTER / SETTERS and data access
      */
     public Properties getProp() {
-	return prop;
+        return prop;
     }
 
     public void setProp(Properties prop) {
-	this.prop = prop;
+        this.prop = prop;
     }
-    
+
     public void setGlobal(String key, Object value) {
         globals.put(key, value);
     }
@@ -269,9 +269,9 @@ public class StatdocItemHub {
         }
 
         /*
-        item.put("_docFirstLine", range[0]);
-        item.put("_docLastLine", range[1]);
-        */
+         * item.put("_docFirstLine", range[0]); item.put("_docLastLine",
+         * range[1]);
+         */
 
         boolean inSummary = true;
         String summary = "";
@@ -289,7 +289,7 @@ public class StatdocItemHub {
 
     }
 
-    /* 
+    /*
      * MATCHES
      */
 
@@ -326,13 +326,15 @@ public class StatdocItemHub {
                 /*
                  * check data files first
                  * 
-                 * FIXME second condition: && regex.matches("\\.\\*\\\\.[a-zA-Z].*")
+                 * FIXME second condition: &&
+                 * regex.matches("\\.\\*\\\\.[a-zA-Z].*")
                  */
-                if (targetType.startsWith("file")  ) {
+                if (targetType.startsWith("file")) {
                     Pattern pattern = Pattern.compile(".*" + regex + ".*");
                     for (FileItem fi : files) {
                         if (fi.getType().startsWith(targetType)) {
-                            String matchee = fi.getPath().toAbsolutePath().toString();
+                            String matchee = fi.getPath().toAbsolutePath()
+                                    .toString();
                             if (pattern.matcher(matchee).matches()) {
                                 matchList.add(fi);
                                 MatchItem mo = new MatchItem("back_of"
@@ -457,8 +459,8 @@ public class StatdocItemHub {
                     String value = line.trim()
                             .substring(tokens[0].length() + 1);
                     // TODO check if this is a problem
-                    value = value.replaceAll("\\\\","\\\\\\\\");
-                    
+                    value = value.replaceAll("\\\\", "\\\\\\\\");
+
                     if (key.equals("summary")) {
                         item.setSummary(value);
                     } else if (key.equals("token")) {

@@ -63,7 +63,6 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
 
     // avoid raw subclassing
     protected Item() {
-
     }
 
     public Item(String name, String fullName, String link) {

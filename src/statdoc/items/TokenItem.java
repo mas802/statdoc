@@ -36,13 +36,10 @@ public class TokenItem extends Item {
     private String token;
 
     protected TokenItem(String token, String type) {
-        this.token = token;
-        this.link = this.type = "token";
-
         this.name = token;
         this.fullName = token;
         this.type = type;
-
+        this.token = token;
     }
 
     public String getClean() {

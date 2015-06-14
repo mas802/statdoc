@@ -45,7 +45,7 @@ import statdoc.tasks.vm.GenerateVariableinfoTask;
 import statdoc.utils.TemplateUtil;
 
 /**
- * Main class of Statdoc and entry into the execution .
+ * Main class of Statdoc and entry into the execution.
  * 
  * Should read the configuration and initiate the main tasks . Has control over
  * the dispensation of threads.

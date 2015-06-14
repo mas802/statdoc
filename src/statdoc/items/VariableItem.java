@@ -31,8 +31,8 @@ public class VariableItem extends Item {
     private FileItem container;
     
     
-    public VariableItem( String name, FileItem file, String type ) {
-        this.container = file;
+    public VariableItem( String name, FileItem container, String type ) {
+        this.container = container;
 
         this.type = "variable:"+type;
         this.name = name;
