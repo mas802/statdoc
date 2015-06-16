@@ -45,12 +45,12 @@ var svg = d3.select(id).append("svg")
   y.domain([0.0,d3.max(frequency)]);
   
   svg.append("g")
-      .attr("class", "x axis")
+      .attr("class", "graphx graphaxis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
   svg.append("g")
-      .attr("class", "y axis")
+      .attr("class", "graphy graphaxis")
       .call(yAxis);
       /*
     .append("text")
@@ -64,7 +64,7 @@ var svg = d3.select(id).append("svg")
   svg.selectAll(".bar")
       .data(index)
     .enter().append("rect")
-      .attr("class", "bar")
+      .attr("class", "graphbar")
       .attr("x", function(d) { return x(names[d]); })
       .attr("width", x.rangeBand() )
       .attr("y", function(d) { return y(frequency[d]); })

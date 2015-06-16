@@ -603,25 +603,25 @@ padding: 1px;
     font-style: italic;
 }
 
-.bar {
+.graphbar {
   fill: steelblue;
 }
 
-.bar:hover {
+.graphbar:hover {
   fill: brown;
 }
 
-.axis {
+.graphaxis {
   font: 10px sans-serif;
 }
 
-.axis path,
-.axis line {
+.graphaxis path,
+.graphaxis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
-.x.axis path {
+.graphx.graphaxis path {
   display: none;
 }
