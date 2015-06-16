@@ -181,17 +181,21 @@ public class StatdocItemHub {
      * TOKENS
      */
 
-    synchronized public TokenItem createToken(String token, String type) {
+    synchronized public TokenItem createToken(String token, String fullname, String type) {
         TokenItem ti;
         if (this.tokens.containsKey(token)) {
             ti = this.tokens.get(token);
         } else {
-            ti = new TokenItem(token, "token:" + type);
+            ti = new TokenItem(token, fullname, "token:" + type);
             this.tokens.put(token, ti);
         }
         return ti;
     }
 
+    synchronized public TokenItem createToken(String token, String type) {
+        return createToken(token, token, type);
+    }
+    
     synchronized public void createTokens(Item source, String name) {
         String[] tokens = BOUNDARYSPLIT.split(name.replaceAll("[^a-zA-Z0-9 ]",
                 " "));
@@ -418,7 +422,7 @@ public class StatdocItemHub {
                 if (m != null && m.containsKey("term")) {
                     String stripterm = m.get("term").toString()
                             .replaceAll("[^a-zA-Z0-9_]", "").trim();
-                    TokenItem ti = createToken(stripterm, "match");
+                    TokenItem ti = createToken(stripterm, m.get("term").toString(), "match");
                     ti.addChild(origin);
                     m.addChild(ti);
                     // origin.addChild(ti);

@@ -35,9 +35,9 @@ public class TokenItem extends Item {
 
     private String token;
 
-    protected TokenItem(String token, String type) {
+    protected TokenItem(String token, String fullname, String type) {
         this.name = token;
-        this.fullName = token;
+        this.fullName = fullname;
         this.type = type;
         this.token = token;
     }
