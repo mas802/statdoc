@@ -1,5 +1,5 @@
 javadoc/
-statdoc/
+/statdoc/
 target/
 .DS_Store
 lib/stata-sfi.jar
