@@ -361,6 +361,11 @@ public class StataDoFileTask implements Task {
             }
 
         }
+        
+        if ( fileItem.containsKey("statdocrun") ) {
+            taskList.execute( new StataRunDoFileTask(fileItem, hub, taskList));
+        }
+        
         Thread.currentThread().setName(
                 "Thread " + Thread.currentThread().getId());
     }

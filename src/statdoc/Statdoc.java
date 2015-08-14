@@ -68,7 +68,7 @@ public class Statdoc {
             "token-item.vm", "tokens-summary.vm", "tokens-frame.vm",
             "variable-item.vm", "variables-summary.vm", "variables-frame.vm",
             "item-header.vm", "item-footer.vm", "VM_global_library.vm",
-            "compare.vm", "analyse-dta.do.vm" };
+            "compare.vm", "analyse-dta.do.vm", "dumpdata.vm" };
 
     // ThreadPoolExecutor taskQueue = new ArrayBlockingQueue<Task>(16000);
     ThreadPoolExecutor taskQueue = new ThreadPoolExecutor(4, 1000, 60,

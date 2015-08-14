@@ -559,6 +559,49 @@ public class StataUtils {
         return "";
     }
 
+    public static String runDoFile(final String doFileName, final String doFileAbsPath,
+            String stataexe, Path outputFile)
+            throws IOException, InterruptedException {
+
+        Runtime rt = Runtime.getRuntime();
+
+        Process ps;
+        // BufferedReader in;
+        // BufferedWriter out;
+
+        // System.out.println( statacmd );
+
+        final Path tempDir = Files.createTempDirectory("statdoc");
+
+        // FIXME horrible, horrible horrible implementation for Windose
+        if (stataexe.toLowerCase().endsWith(".exe")) {
+            ps = rt.exec(new String[] { stataexe, "-q", "-e", "-s", "do",
+                    doFileAbsPath }, null, tempDir.toFile());
+            ps.waitFor();
+        } else {
+            ps = rt.exec(new String[] { stataexe, "-q", "-s", "do",
+                    doFileAbsPath }, null, tempDir.toFile());
+            ps.waitFor();
+        }
+
+        Files.copy(tempDir.resolve( doFileName + ".smcl"), outputFile,
+                StandardCopyOption.REPLACE_EXISTING);
+
+        /*
+         * shutdown hook to get temp files and directory deleted
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                tempDir.resolve( doFileName + ".smcl").toFile().delete();
+                tempDir.toFile().delete();
+            }
+        });
+
+        return "";
+    }
+
     public static File resolveStataPath(String[] stataProgs, String osString) {
         File stataPath = new File("");
         int i = 0;
