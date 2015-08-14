@@ -1,3 +1,16 @@
+# 0.9.2-beta (unreleased)
+
+- images get copied to output folder
+- add @statdocrun functionality
+
+## known limitations/bugs
+
+- matching is not perfect yet
+- hickups on non *nix platforms to be expected
+- stata needs to be restarted to make it work
+- unit testing has hugh gaps
+- trailing /// gets marked as a comments in do files
+
 # 0.9.1-beta (17/06/2015)
 
 - improve smcl parsing
@@ -16,7 +29,6 @@
 - hickups on non *nix platforms to be expected
 - stata needs to be restarted to make it work
 - unit testing has hugh gaps
-
 
 # 0.9.0-beta
 

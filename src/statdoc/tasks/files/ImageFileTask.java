@@ -15,7 +15,11 @@
  */
 package statdoc.tasks.files;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.FileItem;
@@ -36,8 +40,8 @@ public class ImageFileTask implements Task {
     private StatdocItemHub hub;
     private String type;
 
-    public ImageFileTask(Path file, String type,
-            StatdocItemHub hub, ThreadPoolExecutor taskList) {
+    public ImageFileTask(Path file, String type, StatdocItemHub hub,
+            ThreadPoolExecutor taskList) {
         this.file = file;
         this.taskList = taskList;
         this.hub = hub;
@@ -50,8 +54,33 @@ public class ImageFileTask implements Task {
 
         FileItem fi = hub.createFile(file, type);
 
-        fi.setContent("<img src=\"../" + fi.getFileLink() + "\" width=\"90%\">");
+        // TODO make this configurable
+        boolean copy = true;
+        if (copy) {
+            long id = file.toFile().lastModified();
 
+            Path target = new File(hub.outputDir.toFile(), "derived/"
+                    + file.getFileName()).toPath();
+            try {
+                long targettimestamp = target.toFile().lastModified();
+
+                if (targettimestamp < id) {
+                    Files.copy(file, target,
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+                fi.setContent("<img src=\"../"
+                        + hub.outputDir.relativize(target).toString()
+                        + "\" width=\"90%\">");
+            } catch (IOException e) {
+                e.printStackTrace();
+                fi.setContent("<img src=\"../" + fi.getFileLink()
+                        + "\" width=\"90%\">");
+                fi.addWarning("error while copying file: " + e.getMessage());
+            }
+        } else {
+            fi.setContent("<img src=\"../" + fi.getFileLink()
+                    + "\" width=\"90%\">");
+        }
         Thread.currentThread().setName(
                 "Thread " + Thread.currentThread().getId());
     }
