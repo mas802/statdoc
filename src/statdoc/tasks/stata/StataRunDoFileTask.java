@@ -21,7 +21,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -91,7 +93,7 @@ public class StataRunDoFileTask implements Task {
                         output.toPath());
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(output));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(output), "x-MacRoman"));
 
             StringBuilder sb = new StringBuilder();
 

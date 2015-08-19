@@ -470,7 +470,7 @@ public class StatdocItemHub {
                     } else if (key.equals("token")) {
                         createTokens(item, value);
                     } else {
-                        item.put(key, value);
+                        item.put(key, value.trim());
                     }
                 }
             } catch (Exception e) {
