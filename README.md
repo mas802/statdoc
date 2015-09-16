@@ -1,10 +1,7 @@
-statdoc
+statdoc <img src="https://raw.githubusercontent.com/mas802/statdoc/master/logo_32.png" width="64" />
 =======
 
-Statdoc analyses your statistics project and provides a javadoc like set of
-documentation pages with the key information it can discover. This is quite 
-useful if you want to document your projects for others, or retrieve 
-information about code written by somebody else or of an old project.
+Statdoc analyses your statistics project and provides a javadoc like set of documentation pages with the key information it can discover. This is quite  useful if you want to document your projects for others, or retrieve information about code written by somebody else or of an old project. 
 
 The system is setup to be extendible and flexible, but it currently mainly
 focuses on projects using Stata. 
