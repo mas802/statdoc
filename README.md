@@ -1,4 +1,4 @@
-statdoc <img src="https://raw.githubusercontent.com/mas802/statdoc/master/logo_32.png" width="64" />
+statdoc <img src="https://raw.githubusercontent.com/mas802/statdoc/master/logo_512.png" width="128" />  
 =======
 
 Statdoc analyses your statistics project and provides a javadoc like set of documentation pages with the key information it can discover. This is quite  useful if you want to document your projects for others, or retrieve information about code written by somebody else or of an old project. 
