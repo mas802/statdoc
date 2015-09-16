@@ -119,7 +119,7 @@ public class StataRunDoFileTask implements Task {
                     
                     // reset temp vars
                     sb = new StringBuilder();
-                    tempItem = new Item("", "", "");
+                    // FIXME here we should at least copy tempItem = new Item("", "", "");
                     
 //                } else if (cleanline.startsWith("_@NOTES")) {
 //                    innotes = true;

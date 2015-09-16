@@ -2,6 +2,7 @@
 
 - images get copied to output folder
 - add @statdocrun functionality
+- add logo
 
 ## known limitations/bugs
 
@@ -10,6 +11,7 @@
 - stata needs to be restarted to make it work
 - unit testing has hugh gaps
 - trailing /// gets marked as a comments in do files
+- issues with regex parsing
 
 # 0.9.1-beta (17/06/2015)
 
