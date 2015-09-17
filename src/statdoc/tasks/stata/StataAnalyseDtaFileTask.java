@@ -101,6 +101,10 @@ public class StataAnalyseDtaFileTask implements Task {
                         "maxvarobs",
                         hub.getProp().getProperty("statdoc.stata.maxvarobs",
                                 "" + Integer.MAX_VALUE));
+                data.put(
+                        "catcutoff",
+                        hub.getProp().getProperty("statdoc.stata.catcutoff",
+                                "100" ));
                 StataUtils.runTemplate("analyse-dta", hub.getStataPath(), data,
                         output);
             }

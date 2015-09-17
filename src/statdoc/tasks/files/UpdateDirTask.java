@@ -69,7 +69,7 @@ public class UpdateDirTask implements Task {
                 .split("[\\s]*,[\\s]*");
 
         for (String s : exclude) {
-            Pattern p = Pattern.compile(".*" + s + ".*");
+            Pattern p = Pattern.compile(".*" + s.toLowerCase() + ".*");
             this.exclude.add(p);
         }
 

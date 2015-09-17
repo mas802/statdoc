@@ -53,7 +53,7 @@ foreach var of varlist * {
 
 di "=====`var'====="
 qui {
-local category_cutoff = 100
+local category_cutoff = ${catcutoff}
 
 // this takes very long on large datasets (and does mostly the same as other things below)
 // codebook `var'
