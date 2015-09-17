@@ -1,0 +1,6 @@
+********************************************** mivars.pkg
+v 3
+d mivars
+d Find missing vars in regressions
+d Distribution-Date: 01 August 2014
+f mivars.ado

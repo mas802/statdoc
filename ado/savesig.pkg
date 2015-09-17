@@ -1,0 +1,6 @@
+********************************************** savesig.pkg
+v 3
+d savesig
+d Save files with a fingerprint signature
+d Distribution-Date: 01 January 2014
+f savesig.ado

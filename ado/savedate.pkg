@@ -1,0 +1,6 @@
+********************************************** savedate.pkg
+v 3
+d savedate
+d Save files with the current date
+d Distribution-Date: 25 February 2015
+f savedate.ado

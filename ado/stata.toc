@@ -1,0 +1,9 @@
+********************************************** stata.toc
+v 3
+d Random utils
+p statdoc [run statdoc from within stata]
+p interact [allow 3rd party interactions]
+p mivars [investigate which vars cause low number is regressions]
+p impuls [impuls saturation specification search]
+p savesig [save files with fingerprint in name]
+p savedate [save files with current date in name]
