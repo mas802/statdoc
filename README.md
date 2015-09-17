@@ -1,4 +1,4 @@
-statdoc <img src="https://raw.githubusercontent.com/mas802/statdoc/master/logo_512.png" width="128" />  
+statdoc <img src="https://raw.githubusercontent.com/mas802/statdoc/master/res/logo/logo_512.png" width="128" />  
 =======
 
 Statdoc analyses your statistics project and provides a javadoc like set of documentation pages with the key information it can discover. This is quite  useful if you want to document your projects for others, or retrieve information about code written by somebody else or of an old project. 
@@ -31,7 +31,7 @@ You can also invoke Statdoc from the command line or directly from within Stata
 (experimental). 
 
 ```
-net from https://dl.dropboxusercontent.com/u/12198759/ado/
+net from https://mas802.github.io/statdoc/ado
 net install statdoc
 ```
 
