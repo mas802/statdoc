@@ -425,6 +425,14 @@ public class StataUtils {
         return counter;
     }
 
+    /**
+     * returns the balance of two types of chars, used to match brackets
+     * 
+     * @param string string of interest
+     * @param c opening bracket character
+     * @param d closing bracket character
+     * @return
+     */
     public static int balanceChars(String string, String c, String d) {
         return countChar(string, c) - countChar(string, d);
     }

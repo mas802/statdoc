@@ -123,7 +123,7 @@ public class StataDoFileTask implements Task {
                 // encountered
                 // inside the mata block
 
-            } else if (trimLine.equals("mata") || trimLine.startsWith("mata ")) {
+            } else if (trimLine.equals("mata") || trimLine.equals("mata:") || trimLine.startsWith("mata ")) {
                 // start mata block
                 mode = ReadMode.MataBlock;
 
@@ -249,7 +249,7 @@ public class StataDoFileTask implements Task {
                     }
 
                     // deal with indent reduction
-                    if (trimLine.contains("}") && !trimLine.contains("{")) {
+                    if (StataUtils.balanceChars(trimLine, "{" , "}") == -1) {
                         indent--;
                     }
 
@@ -281,7 +281,7 @@ public class StataDoFileTask implements Task {
                     }
 
                     // deal with indent increase
-                    if (trimLine.contains("{") && !trimLine.contains("}")) {
+                    if (StataUtils.balanceChars(trimLine, "{" , "}") == 1) {
                         indent++;
                     }
 
