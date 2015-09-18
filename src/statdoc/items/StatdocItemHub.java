@@ -315,6 +315,8 @@ public class StatdocItemHub {
         if (m.isResolved())
             return;
 
+        int maxmatch = Integer.parseInt(getProp().getProperty("statdoc.match.maxmatch", "10"));
+        
         if (m != null && m.containsKey("regex")) {
             String regex = m.get("regex").toString().trim();
             String relation = m.get("relation").toString();
@@ -413,9 +415,19 @@ public class StatdocItemHub {
             }
 
             m.setAsResolved();
-            if (matchList.size() > 0) {
+            if (matchList.size() > 0 && matchList.size() < maxmatch) {
                 for (Item i : matchList) {
                     m.addChild(i);
+                }
+            } else if ( matchList.size() >= maxmatch ){
+                m.addWarning("too many matches for this term");
+                String stripterm = m.get("term").toString()
+                        .replaceAll("[^a-zA-Z0-9_]", "").trim();
+                if (m != null && m.containsKey("term") && !stripterm.equals("")) {
+                    TokenItem ti = createToken(stripterm, "match");
+                    ti.addChild(origin);
+                    m.addChild(ti);
+                    // origin.addChild(ti);
                 }
             } else {
                 m.addWarning("item could not be resolved");
