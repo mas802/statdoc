@@ -1,0 +1,92 @@
+#parse( "item-header.vm" )
+#*
+
+VARIABLES
+
+*#
+<div class="contentContainer">
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Variables table">
+<caption><span>Variables</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Variable</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="rowColor">
+<td class="colFirst"><a href="../variables/variables-summary.html">Summary</a></td>
+<td class="colLast">Summary of all Variables found in the data files.&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+#*
+
+FILES
+
+*#
+<div class="contentContainer">
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Files table, listing summary">
+<caption><span>Files</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Files</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><a href="../files/files-summary.html">All files</a></td>
+<td class="colLast">Summary of all files.&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../files/files-summary.html#Data">Data</a></td>
+<td class="colLast">Data files containing raw and processed data.&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../files/files-summary.html#Scripts">Scripts</a></td>
+<td class="colLast">Scripts that processed the data.&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../files/files-summary.html#Images">Images</a></td>
+<td class="colLast">Images and Graphs.&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../files/files-summary.html#Documents">Documents</a></td>
+<td class="colLast">Documents including text files.&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../files/files-summary.html#Other%20Files">Other Files</a></td>
+<td class="colLast">Files not classified above.&nbsp;</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="contentContainer">
+<ul class="blockList">
+<li class="blockList">
+#cmdLines($cmds.getChildrenBy( "cmd:estcmd" ) "All known estimations ")
+</li>
+</ul>
+##cmdLines($cmds.getChildrenBy( "cmd:statcmd" ) "All known descriptive statistics")
+</div>
+
+#*
+
+TOKENS
+
+*#
+<div class="contentContainer">
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Tokens table, listing packages, and an explanation">
+<caption><span>Tokens</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Tokens</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="rowColor">
+<td class="colFirst"><a href="../tokens/tokens-summary.html">All Tokens</a></td>
+<td class="colLast">Tokens are words or n-grams that appear and any number of files, it can be seen as an index.&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+#parse( "item-footer.vm" )
