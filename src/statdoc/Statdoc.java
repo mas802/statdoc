@@ -299,7 +299,7 @@ public class Statdoc {
             System.err.println(" ");
             System.err.println("No installations of Stata found, please edit");
             System.err.println("the statadoc.properties file and add the path");
-            System.err.println("of a Stata 13 executable on this system to");
+            System.err.println("of a Stata 13/14 executable on this system to");
             System.err.println("the statdoc.stata.path property.");
             System.err.println(" ");
         } else {

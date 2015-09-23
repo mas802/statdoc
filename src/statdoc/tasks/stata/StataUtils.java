@@ -431,7 +431,7 @@ public class StataUtils {
      * @param string string of interest
      * @param c opening bracket character
      * @param d closing bracket character
-     * @return
+     * @return the difference between number of chars c-d
      */
     public static int balanceChars(String string, String c, String d) {
         return countChar(string, c) - countChar(string, d);
