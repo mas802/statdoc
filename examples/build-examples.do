@@ -12,7 +12,7 @@ local dropdir = "`homedir'/Dropbox"
 statdoc, source("`dropdir'/Stata_conference_2015/example") output("`basedir'/example/")
 
 // autorun
-statdoc, source("`dropdir'/Stata_conference_2015/autorun") output("`basedir'/autorun/")
+//statdoc, source("`dropdir'/Stata_conference_2015/autorun") output("`basedir'/autorun/")
 
 // itsp
 statdoc, source("`dropdir'/Stata_conference_2015/itsp") output("`basedir'/itsp/")

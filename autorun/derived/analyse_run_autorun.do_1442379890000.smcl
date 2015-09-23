@@ -1,0 +1,91 @@
+{smcl}
+{txt}{sf}{ul off}
+
+{com}. /**
+>  * example for using statdocrun
+>  *
+>  * @author Markus Schaffner
+>  * @statdocrun do
+> */
+. 
+. sysuse auto, clear
+{txt}(1978 Automobile Data)
+
+{com}. 
+. sum price
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}price {c |}{res}        74    6165.257    2949.496       3291      15906
+{txt}
+{com}. di "@N " %9.0f `r(N)'
+{res}@N        74
+{txt}
+{com}. di "@max " %9.2f `r(max)'
+{res}@max  15906.00
+{txt}
+{com}. di "@min " %9.2f `r(min)'
+{res}@min   3291.00
+{txt}
+{com}. 
+. di ">>>>> dumpdata.vm -> dumpdata.txt"
+{res}>>>>> dumpdata.vm -> dumpdata.txt
+{txt}
+{com}. 
+. sum price
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}price {c |}{res}        74    6165.257    2949.496       3291      15906
+{txt}
+{com}. di "@N " %9.0f `r(N)'
+{res}@N        74
+{txt}
+{com}. di "@max " %9.2f `r(max)'
+{res}@max  15906.00
+{txt}
+{com}. di "@min " %9.2f `r(min)'
+{res}@min   3291.00
+{txt}
+{com}. di "@title Custom Template Output"
+{res}@title Custom Template Output
+{txt}
+{com}. 
+. di ">>>>> custom.vm -> custom.html"
+{res}>>>>> custom.vm -> custom.html
+{txt}
+{com}. 
+. levelsof foreign, local( groups )
+{txt}0 1
+
+{com}. 
+. foreach group of local groups {c -(}
+{txt}  2{com}.         sum price if foreign == `group'
+{txt}  3{com}.         di "@N " %9.0f `r(N)'
+{txt}  4{com}.         di "@max " %9.2f `r(max)'
+{txt}  5{com}.         di "@min " %9.2f `r(min)'
+{txt}  6{com}.         di "@title Custom Template Output for Group `group'"
+{txt}  7{com}. 
+.         di ">>>>> custom.vm -> custom_`group'.html"
+{txt}  8{com}. {c )-}
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}price {c |}{res}        52    6072.423    3097.104       3291      15906
+@N        52
+@max  15906.00
+@min   3291.00
+@title Custom Template Output for Group 0
+>>>>> custom.vm -> custom_0.html
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}price {c |}{res}        22    6384.682    2621.915       3748      12990
+@N        22
+@max  12990.00
+@min   3748.00
+@title Custom Template Output for Group 1
+>>>>> custom.vm -> custom_1.html
+{txt}
+{com}. 
+{txt}end of do-file

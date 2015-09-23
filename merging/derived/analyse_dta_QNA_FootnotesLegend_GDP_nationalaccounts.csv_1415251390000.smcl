@@ -1,0 +1,23 @@
+{smcl}
+{txt}{sf}{ul off}
+
+{com}. /** 
+>  * A do file to run the standard stats for a whole data set. 
+>  *
+>  * Note that you must delete the files in the derived directory
+>  * for changes to be reflected in the output.
+>  *
+>  * @version 0.1
+> */
+. 
+. // profiler on
+. 
+. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/GDP data/GDP/QNA_FootnotesLegend_GDP_nationalaccounts.csv"
+{err}{p 0 4 2}
+file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/GDP data/GDP/QNA_FootnotesLegend_GDP_nationalaccounts.csv
+not Stata format
+{p_end}
+{txt}{search r(610):r(610);}
+
+end of do-file
+{search r(610):r(610);}

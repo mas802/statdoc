@@ -1,0 +1,747 @@
+{smcl}
+{txt}{sf}{ul off}
+
+{com}. /** 
+>  * A do file to run the standard stats for a whole data set. 
+>  *
+>  * Note that you must delete the files in the derived directory
+>  * for changes to be reflected in the output.
+>  *
+>  * @version 0.1
+> */
+. 
+. // profiler on
+. 
+. use  "/Users/mas/Dropbox/Public/cameron/t4_post_G10__5_Jul_2014.dta"
+{txt}
+{com}. 
+. describe, short
+
+{txt}Contains data from {res}/Users/mas/Dropbox/Public/cameron/t4_post_G10__5_Jul_2014.dta
+{txt}  obs:{res}         4,000                          
+{txt} vars:{res}            13                          5 Jul 2014 16:13
+{txt} size:{res}       208,000                          
+{txt}Sorted by:  
+
+{com}. 
+. local N = r(N)
+{txt}
+{com}. local variables = r(k)
+{txt}
+{com}. 
+. di "@N `N'"
+{res}@N 4000
+{txt}
+{com}. di "@variables `variables'"
+{res}@variables 13
+{txt}
+{com}. 
+. datasignature
+  {res}4000:13(60387):166009233:3994617996
+{txt}
+{com}. local datasig = "`r(datasignature)'"
+{txt}
+{com}. 
+. di "@datasignature `datasig'"
+{res}@datasignature 4000:13(60387):166009233:3994617996
+{txt}
+{com}. 
+. cap noi xtset
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{txt}
+{com}. if ( !_rc ) {c -(}
+.     di "@timevar `r(timevar)'"
+.     di "@panelvar `r(panelvar)'"
+. {c )-}
+{txt}
+{com}. 
+. notes _dta
+{res}{txt}
+{com}. 
+. qui {c -(}
+{txt}
+{com}. 
+. foreach var of varlist * {c -(}
+{txt}  2{com}. 
+. di "=====`var'====="
+{txt}  3{com}. qui {c -(}
+{txt}  4{com}. local category_cutoff = 30
+{txt}  5{com}. 
+. // this takes very long on large datasets (and does mostly the same as other things below)
+. // codebook `var'
+. 
+. local isstr = ""
+{txt}  6{com}. local unique = ""
+{txt}  7{com}. local total = ""
+{txt}  8{com}. local class = ""
+{txt}  9{com}. 
+. local type : type `var' 
+{txt} 10{com}. local label : variable label `var' 
+{txt} 11{com}. 
+. local class = "other"
+{txt} 12{com}. 
+. // test for string
+. capture confirm string variable `var'
+{txt} 13{com}. if ( !_rc ) {c -(}
+{txt} 14{com}.     // we now it is a string
+.     local isstr = "YES"
+{txt} 15{com}.     capture tab `var', matcell( freq )
+{txt} 16{com}.     if ( !_rc ) {c -(}
+{txt} 17{com}.     
+.         // not too many obs
+.         local total = `r(N)'
+{txt} 18{com}.         local unique = r(r)
+{txt} 19{com}. 
+.         if ( `unique' < `category_cutoff' ) {c -(}
+{txt} 20{com}.         forvalues i=1/`unique' {c -(}
+{txt} 21{com}.             if ( `i' == 1 ) {c -(}
+{txt} 22{com}.                 noi di "@freq " _continue
+{txt} 23{com}.             {c )-}
+{txt} 24{com}.             noi di freq[`i',1] _continue
+{txt} 25{com}.             if ( `i' == `unique' ) {c -(}
+{txt} 26{com}.                 noi di ""
+{txt} 27{com}.             {c )-}
+{txt} 28{com}.             else {c -(}
+{txt} 29{com}.                 noi di ", " _continue
+{txt} 30{com}.             {c )-}
+{txt} 31{com}.         {c )-}
+{txt} 32{com}. 
+.         levelsof `var', local(levels)
+{txt} 33{com}.         local i = 1
+{txt} 34{com}.         foreach l of local levels {c -(}
+{txt} 35{com}.             if ( `i' == 1 ) {c -(}
+{txt} 36{com}.                 noi di "@values " _continue
+{txt} 37{com}.             {c )-}
+{txt} 38{com}.             noi di `""`l'""' _continue
+{txt} 39{com}.             if ( `i' == `unique' ) {c -(}
+{txt} 40{com}.                 noi di ""
+{txt} 41{com}.             {c )-}
+{txt} 42{com}.             else {c -(}
+{txt} 43{com}.                 noi di ", " _continue
+{txt} 44{com}.             {c )-}
+{txt} 45{com}.             local i = `i' + 1
+{txt} 46{com}.         {c )-}
+{txt} 47{com}.         {c )-}
+{txt} 48{com}.         
+.         if ( `total' == 0 ) {c -(}
+{txt} 49{com}.             local class = "empty"
+{txt} 50{com}.         {c )-}
+{txt} 51{com}.         else if ( `unique' == 1 ) {c -(}
+{txt} 52{com}.             local class = "constant"
+{txt} 53{com}.         {c )-}
+{txt} 54{com}.         else if ( `unique' == 2 ) {c -(}
+{txt} 55{com}.             local class = "dummy"
+{txt} 56{com}.         {c )-}
+{txt} 57{com}.         else if ( `unique' < `category_cutoff' & `unique' < `total' ) {c -(}
+{txt} 58{com}.             local class = "category"
+{txt} 59{com}.         {c )-}
+{txt} 60{com}.         else if (`unique' == `total') {c -(}
+{txt} 61{com}.             local class = "identifier"
+{txt} 62{com}.         {c )-} 
+{txt} 63{com}.         else {c -(}
+{txt} 64{com}.             local class = "string"
+{txt} 65{com}.         {c )-}        
+{txt} 66{com}.     {c )-}
+{txt} 67{com}.     else {c -(}
+{txt} 68{com}.         // lots of observations, not sure what to do yet
+.         // should get random samples here
+.         noi di "@example0 " `var'[1]
+{txt} 69{com}.     {c )-}
+{txt} 70{com}. {c )-}
+{txt} 71{com}. else {c -(}
+{txt} 72{com}.     // else assume it is numeric
+. 
+.     noi inspect `var'
+{txt} 73{com}. 
+.     local total = r(N)
+{txt} 74{com}.     local unique = r(N_unique)
+{txt} 75{com}. 
+.     if ( `unique' < `category_cutoff' ) {c -(}
+{txt} 76{com}.         local cat = "YES"
+{txt} 77{com}.     {c )-}
+{txt} 78{com}. 
+.     if ( "`unique'" != "." ) {c -(}
+{txt} 79{com}.         if ( `total' == 0 ) {c -(}
+{txt} 80{com}.             local class = "empty"
+{txt} 81{com}.         {c )-}
+{txt} 82{com}.         else if ( `unique' == 1 ) {c -(}
+{txt} 83{com}.             local class = "constant"
+{txt} 84{com}.         {c )-}
+{txt} 85{com}.         else if ( `unique' == 2 ) {c -(}
+{txt} 86{com}.             local class = "dummy"
+{txt} 87{com}.         {c )-}
+{txt} 88{com}.         else if ( `unique' < `category_cutoff' & `unique' < `total' ) {c -(}
+{txt} 89{com}.             capture confirm string variable `var'
+{txt} 90{com}.             if ( !_rc ) {c -(}
+{txt} 91{com}.                 local class = "other"
+{txt} 92{com}.             {c )-} 
+{txt} 93{com}.             else {c -(}
+{txt} 94{com}.                 local class = "category"
+{txt} 95{com}.             {c )-}
+{txt} 96{com}.         {c )-}
+{txt} 97{com}.         else if (`r(N_unique)' == `r(N)') {c -(}
+{txt} 98{com}.             local class = "identifier"
+{txt} 99{com}.         {c )-}
+{txt}100{com}.     {c )-}
+{txt}101{com}. 
+. // TODO this takes too long?   sum `var', detail
+.     noi sum `var'
+{txt}102{com}.     local min = r(min)
+{txt}103{com}.     local max = r(max)
+{txt}104{com}.     local nobs = r(N)
+{txt}105{com}.     
+.     // TODO maybe the precision should be handled later (vm?)
+.     if ( ( "`type'" != "double" & "`type'" != "float" ) & "`class'" == "constant" ) {c -(}
+{txt}106{com}.         noi di "@mean " %9.0f r(mean)
+{txt}107{com}.     {c )-} 
+{txt}108{com}.     else {c -(}
+{txt}109{com}.         noi di "@mean " %9.3f r(mean)
+{txt}110{com}.     {c )-}
+{txt}111{com}.     noi di "@sd " %9.3f `r(sd)'
+{txt}112{com}.     // noi di "@skewness " %9.3f `r(skewness)'
+.     // noi di "@kurtosis " %9.3f `r(kurtosis)'
+.     
+.     if ( "`type'" == "double" | "`type'" == "float" ) {c -(}
+{txt}113{com}.       noi di "@min " %9.3f `r(min)'
+{txt}114{com}.       noi di "@max " %9.3f `r(max)'
+{txt}115{com}.       // noi di "@p50 " %9.3f `r(p50)'
+.     {c )-} 
+{txt}116{com}.     else {c -(}
+{txt}117{com}.       noi di "@min " %9.0f `r(min)'
+{txt}118{com}.       noi di "@max " %9.0f `r(max)'
+{txt}119{com}.       // noi di "@p50 " %9.0f `r(p50)'
+.     {c )-}
+{txt}120{com}. {c )-}
+{txt}121{com}. 
+. 
+. if ( ( "`class'" == "constant" ) & ( "`isstr'"!= "YES" ) ) {c -(}
+{txt}122{com}.     noi di "@values " `var'[1]
+{txt}123{com}. {c )-}
+{txt}124{com}. else if ( "`class'" == "category" | "`class'" == "dummy" ) {c -(}
+{txt}125{com}.     cap noi {c -(}
+{txt}126{com}.         if ( "`isstr'" != "YES" ) {c -(}
+{txt}127{com}.             cap tab `var', matcell( freq ) matrow( name )
+{txt}128{com}.             if ( _rc != 0 | ("`r(r)'" != "`unique'") ) {c -(}
+{txt}129{com}.                 local class = "other"
+{txt}130{com}.                 local unique = r(r)
+{txt}131{com}.             {c )-}
+{txt}132{com}.             else {c -(}
+{txt}133{com}.                 forvalues i=1/`unique' {c -(}
+{txt}134{com}.                     if ( `i' == 1 ) {c -(}
+{txt}135{com}.                         noi di "@values " _continue
+{txt}136{com}.                     {c )-}
+{txt}137{com}.                     noi di name[`i',1] _continue
+{txt}138{com}.                     if ( `i' == `unique' ) {c -(}
+{txt}139{com}.                         noi di ""
+{txt}140{com}.                     {c )-}
+{txt}141{com}.                     else {c -(}
+{txt}142{com}.                         noi di ", " _continue
+{txt}143{com}.                     {c )-}
+{txt}144{com}.                 {c )-}
+{txt}145{com}.                 forvalues i=1/`unique' {c -(}
+{txt}146{com}.                     if ( `i' == 1 ) {c -(}
+{txt}147{com}.                         noi di "@names " _continue
+{txt}148{com}.                     {c )-}
+{txt}149{com}.                     local val = name[`i',1]
+{txt}150{com}.                     local lab :label (`var') `val'
+{txt}151{com}.                     noi di `""`lab'""' _continue
+{txt}152{com}.                     if ( `i' == `unique' ) {c -(}
+{txt}153{com}.                         noi di ""
+{txt}154{com}.                     {c )-}
+{txt}155{com}.                     else {c -(}
+{txt}156{com}.                         noi di ", " _continue
+{txt}157{com}.                     {c )-}
+{txt}158{com}.                 {c )-}
+{txt}159{com}.                 forvalues i=1/`unique' {c -(}
+{txt}160{com}.                     if ( `i' == 1 ) {c -(}
+{txt}161{com}.                         noi di "@freq " _continue
+{txt}162{com}.                     {c )-}
+{txt}163{com}.                     noi di freq[`i',1] _continue
+{txt}164{com}.                     if ( `i' == `unique' ) {c -(}
+{txt}165{com}.                         noi di ""
+{txt}166{com}.                     {c )-}
+{txt}167{com}.                     else {c -(}
+{txt}168{com}.                         noi di ", " _continue
+{txt}169{com}.                     {c )-}
+{txt}170{com}.                 {c )-}
+{txt}171{com}.             {c )-}
+{txt}172{com}.         {c )-}
+{txt}173{com}.     {c )-}
+{txt}174{com}. {c )-}
+{txt}175{com}. else {c -(}
+{txt}176{com}.     noi di "@example0 " `var'[1]
+{txt}177{com}. {c )-}
+{txt}178{com}. 
+. // histogram
+. if ( "`isstr'" != "YES" & ("`class'" == "other" | "`class'" == "identifier") ) {c -(}
+{txt}179{com}. cap noi {c -(}
+{txt}180{com}.     tempvar h w
+{txt}181{com}.     twoway__histogram_gen `var', gen( `h' `w' )
+{txt}182{com}.     forvalues i=1/`=r(n_x)' {c -(}
+{txt}183{com}.         if ( `i' == 1 ) {c -(}
+{txt}184{com}.             noi di "@histh " _continue
+{txt}185{com}.         {c )-}
+{txt}186{com}.         noi di `h'[`i'] _continue
+{txt}187{com}.         if ( `i' == `=r(n_x)' ) {c -(}
+{txt}188{com}.             noi di ""
+{txt}189{com}.         {c )-}
+{txt}190{com}.         else {c -(}
+{txt}191{com}.             noi di ", " _continue
+{txt}192{com}.         {c )-}
+{txt}193{com}.     {c )-}
+{txt}194{com}.     forvalues i=1/`=r(n_x)' {c -(}
+{txt}195{com}.         if ( `i' == 1 ) {c -(}
+{txt}196{com}.             noi di "@histw " _continue
+{txt}197{com}.         {c )-}
+{txt}198{com}.         noi di `w'[`i'] _continue
+{txt}199{com}.         if ( `i' == `=r(n_x)' ) {c -(}
+{txt}200{com}.             noi di ""
+{txt}201{com}.         {c )-}
+{txt}202{com}.         else {c -(}
+{txt}203{com}.             noi di ", " _continue
+{txt}204{com}.         {c )-}
+{txt}205{com}.     {c )-}
+{txt}206{com}.     {c )-}
+{txt}207{com}. {c )-}
+{txt}208{com}. 
+. noi di "@type `type'"
+{txt}209{com}. noi di "@label `label'"
+{txt}210{com}. noi di "@class `class'"
+{txt}211{com}. noi di "@N_unique `unique'"
+{txt}212{com}. noi di "@N `total'"
+{txt}213{com}. 
+. noi di as res " "
+{txt}214{com}. noi di "_@NOTES"
+{txt}215{com}. 
+. noi notes `var'
+{txt}216{com}. 
+. noi di as res " "
+{txt}217{com}. {c )-}
+{txt}218{com}. 
+. 
+. {c )-}
+=====numobs=====
+
+{res}numobs:                                         {txt}Number of Observations
+{hline 9}                                   {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 4000      4000          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4000      4000          -
+{txt}{c |}  {res}#                         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}360                                          4000
+   (1 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 6}numobs {c |}{res}      4000         360           0        360        360
+@mean   360.000
+@sd     0.000
+@min   360.000
+@max   360.000
+@values 360
+@type float
+@label 
+@class constant
+@N_unique 1
+@N 4000
+ 
+_@NOTES
+ 
+=====numstates=====
+
+numstates:                                      {txt}Number of Observations
+{hline 12}                                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 4000      4000          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4000      4000          -
+{txt}{c |}  {res}#                         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}10                                           4000
+   (1 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 3}numstates {c |}{res}      4000          10           0         10         10
+@mean    10.000
+@sd     0.000
+@min    10.000
+@max    10.000
+@values 10
+@type float
+@label 
+@class constant
+@N_unique 1
+@N 4000
+ 
+_@NOTES
+ 
+=====K=====
+
+K:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 4000      4000          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4000      4000          -
+{txt}{c |}  {res}#                         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1                                            4000
+   (1 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}K {c |}{res}      4000           1           0          1          1
+@mean     1.000
+@sd     0.000
+@min     1.000
+@max     1.000
+@values 1
+@type float
+@label 
+@class constant
+@N_unique 1
+@N 4000
+ 
+_@NOTES
+ 
+=====numbsreps=====
+
+numbsreps:                                      {txt}Number of Observations
+{hline 12}                                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 4000      4000          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4000      4000          -
+{txt}{c |}  {res}#                         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}399                                          4000
+   (1 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 3}numbsreps {c |}{res}      4000         399           0        399        399
+@mean   399.000
+@sd     0.000
+@min   399.000
+@max   399.000
+@values 399
+@type float
+@label 
+@class constant
+@N_unique 1
+@N 4000
+ 
+_@NOTES
+ 
+=====b=====
+
+b:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}          {res}#                 {txt}Negative       {res} 2018         -       2018
+{txt}{c |}          {res}#                 {txt}Zero               {res}-         -          -
+{txt}{c |}          {res}#                 {txt}Positive       {res} 1982         -       1982
+{txt}{c |}          {res}#                                {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}          {res}#                 {txt}Total          {res} 4000         -       4000
+{txt}{c |}  {res}.   #   #   #   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}-.1216976      .1175407                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}b {c |}{res}      4000    .0002981    .0274743  -.1216976   .1175407
+@mean     0.000
+@sd     0.027
+@min    -0.122
+@max     0.118
+@example0 .03656079
+@histh .0376194, .0376194, .0376194, .0376194, .0376194, .30095521, .45143282, .90286565, 1.4295373, 2.2195446, 3.4233656, 5.1914773, 6.3200593, 9.2919922, 11.398679, 13.919179, 15.311096, 15.574432, 14.934902, 13.392507, 10.194858, 6.6586342, 6.2824402, 4.7400446, 2.7838356, 1.9562089, 1.5800148, .97810447, .37619403, .1504776, .22571641, .0752388, .1504776, .0376194, .0376194
+@histw -.11837482, -.10508381, -.0984383, -.09179279, -.08514728, -.07850178, -.07185628, -.06521077, -.05856526, -.05191975, -.04527424, -.03862873, -.03198323, -.02533772, -.01869222, -.01204671, -.0054012, .00124431, .00788981, .01453532, .02118083, .02782634, .03447184, .04111735, .04776286, .05440836, .06105387, .06769938, .07434488, .08099039, .0876359, .09428141, .10092691, .10757242, .11421793
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+=====se_def=====
+
+se_def:                                         {txt}Number of Observations
+{hline 9}                                   {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}      {res}#                     {txt}Negative           {res}-         -          -
+{txt}{c |}      {res}#                     {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#   #                     {txt}Positive       {res} 4000         -       4000
+{txt}{c |}  {res}#   #                                    {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4000         -       4000
+{txt}{c |}  {res}#   #   #   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.0048633       .0143191                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 6}se_def {c |}{res}      4000     .007635    .0015885   .0048633   .0143191
+@mean     0.008
+@sd     0.002
+@min     0.005
+@max     0.014
+@example0 .00584467
+@histh 8.5661077, 24.746532, 70.432434, 143.72025, 204.63478, 305.52451, 377.8605, 428.30536, 396.8963, 380.71588, 293.15121, 192.26152, 149.43098, 78.046753, 32.360851, 20.939373, 14.276846, 48.541275, 60.914539, 91.371811, 93.275391, 118.97371, 91.371811, 76.143173, 28.553692, 19.987583, 3.8071587, 7.6143174, 9.5178967, 10.469687, 7.6143174, 6.662528, 3.8071587, 1.9035794, 2.8553691, 1.9035794
+@histw .00499459, .00525726, .00551992, .00578258, .00604525, .00630791, .00657057, .00683324, .0070959, .00735856, .00762123, .00788389, .00814655, .00840922, .00867188, .00893454, .0091972, .00945987, .00972253, .00998519, .01024786, .01051052, .01077318, .01103585, .01129851, .01156117, .01182383, .0120865, .01234916, .01261182, .01287449, .01313715, .01339981, .01366248, .01392514, .0141878
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+=====se_clu=====
+
+se_clu:                                         {txt}Number of Observations
+{hline 9}                                   {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}      {res}#                     {txt}Negative           {res}-         -          -
+{txt}{c |}      {res}#                     {txt}Zero               {res}-         -          -
+{txt}{c |}      {res}#                     {txt}Positive       {res} 4000         -       4000
+{txt}{c |}      {res}#                                    {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4000         -       4000
+{txt}{c |}  {res}#   #   .   #   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.0046796       .0666754                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 6}se_clu {c |}{res}      4000    .0236627    .0103063   .0046796   .0666754
+@mean     0.024
+@sd     0.010
+@min     0.005
+@max     0.067
+@example0 .0154799
+@histh .29034191, .58068383, 3.9196157, 10.74265, 24.098377, 38.905815, 55.310131, 71.133766, 73.746841, 65.762444, 58.794235, 37.744446, 18.727053, 9.1457701, 3.0485899, 1.3065386, .43551284, 1.5968804, 4.3551283, 8.274744, 15.388121, 19.452908, 24.679062, 16.404318, 6.9682055, 1.5968804, .72585475, 1.3065386, .87102568, 1.4517095, 1.8872224, 1.0161966, .43551284, .43551284, .14517096
+@histw .00554063, .00726273, .00898484, .01070695, .01242906, .01415116, .01587327, .01759538, .01931749, .0210396, .0227617, .02448381, .02620592, .02792803, .02965013, .03137224, .03309435, .03481646, .03653856, .03826067, .03998278, .04170489, .04342699, .0451491, .04687121, .04859332, .05031542, .05203753, .05375964, .05548175, .05720386, .05892596, .06064807, .06237018, .06581439
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+=====se_clu_bs=====
+
+se_clu_bs:                                      {txt}Number of Observations
+{hline 12}                                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}      {res}#                     {txt}Negative           {res}-         -          -
+{txt}{c |}      {res}#                     {txt}Zero               {res}-         -          -
+{txt}{c |}      {res}#                     {txt}Positive       {res} 4000         -       4000
+{txt}{c |}      {res}#                                    {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4000         -       4000
+{txt}{c |}  {res}#   #   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.004669        .0675428                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 3}se_clu_bs {c |}{res}      4000    .0240014     .010217    .004669   .0675428
+@mean     0.024
+@sd     0.010
+@min     0.005
+@max     0.068
+@example0 .01590682
+@histh .14314398, .71571994, 3.4354556, 9.1612148, 22.903038, 37.790012, 49.957249, 69.138542, 73.146576, 66.132523, 55.110432, 41.082321, 21.042166, 11.022086, 4.4374633, 1.2882959, 1.1451519, 3.1491675, 6.2983351, 11.308374, 14.600686, 20.899021, 19.324438, 12.59667, 5.7257595, 2.8628798, .57257593, .57257593, 1.8608718, 2.2903037, 1.2882959, .42943195, .71571994, .14314398, .14314398, .14314398
+@histw .0055423, .00728879, .00903528, .01078178, .01252827, .01427476, .01602126, .01776775, .01951424, .02126073, .02300723, .02475372, .02650021, .02824671, .0299932, .03173969, .03348619, .03523268, .03697917, .03872567, .04047216, .04221866, .04396515, .04571164, .04745813, .04920463, .05095112, .05269761, .05444411, .0561906, .05793709, .05968359, .06143008, .06317657, .06492306, .06666956
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+=====bs_misreps_b=====
+
+bs_misreps_b:                                   {txt}Number of Observations
+{hline 15}                             {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4000      4000          -
+{txt}{c |}  {res}#                         {txt}Positive           {res}-         -          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4000      4000          -
+{txt}{c |}  {res}#                         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                                            4000
+   (1 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+bs_misreps_b {c |}{res}      4000           0           0          0          0
+@mean     0.000
+@sd     0.000
+@min     0.000
+@max     0.000
+@values 0
+@type float
+@label 
+@class constant
+@N_unique 1
+@N 4000
+ 
+_@NOTES
+ 
+=====bs_misreps_t=====
+
+bs_misreps_t:                                   {txt}Number of Observations
+{hline 15}                             {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #                     {txt}Zero           {res} 1811      1811          -
+{txt}{c |}  {res}#   #                     {txt}Positive       {res} 2189      2189          -
+{txt}{c |}  {res}#   #                                    {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4000      4000          -
+{txt}{c |}  {res}#   #   #   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     4                      4000
+   (5 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+bs_misreps_t {c |}{res}      4000       .7835    .8920912          0          4
+@mean     0.783
+@sd     0.892
+@min     0.000
+@max     4.000
+@values 0, 1, 2, 3, 4
+@names "0", "1", "2", "3", "4"
+@freq 1811, 1514, 442, 196, 37
+@type float
+@label 
+@class category
+@N_unique 5
+@N 4000
+ 
+_@NOTES
+ 
+=====p_pairs_bs=====
+
+p_pairs_bs:                                     {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}      {res}#                     {txt}Negative           {res}-         -          -
+{txt}{c |}      {res}#   #   #             {txt}Zero           {res}    1         1          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Positive       {res} 3999         3       3996
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res} 4000         4       3996
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 2}p_pairs_bs {c |}{res}      4000    .5005862    .2743396          0          1
+@mean     0.501
+@sd     0.274
+@min     0.000
+@max     1.000
+@example0 .10025062
+@histh .27000001, .68400002, .88200003, .99900001, .801, 1.251, 1.062, 1.179, 1.143, 1.17, 1.224, 1.278, 1.179, 1.017, 1.098, 1.008, 1.089, .99900001, 1.1160001, .954, .99900001, 1.089, 1.188, .94499999, 1.044, .85500002, .954, .954, 1.206, .81, 1.08, .90899998, .85500002, .83700001, .94499999, .92699999
+@histw .01388889, .04166667, .06944445, .09722222, .125, .15277778, .18055555, .20833333, .2361111, .2638889, .29166666, .31944445, .34722221, .375, .40277779, .43055555, .45833334, .4861111, .5138889, .54166669, .56944442, .59722221, .625, .65277779, .68055558, .70833331, .7361111, .7638889, .79166669, .81944442, .84722221, .875, .90277779, .93055558, .95833331, .9861111
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+=====p_rad_res=====
+
+p_rad_res:                                      {txt}Number of Observations
+{hline 12}                                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}          {res}#                 {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Zero           {res}   18        18          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Positive       {res} 3982         7       3975
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res} 4000        25       3975
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 3}p_rad_res {c |}{res}      4000    .4945006    .2894701          0          1
+@mean     0.495
+@sd     0.289
+@min     0.000
+@max     1.000
+@example0 .055
+@histh 1.251, 1.206, .91799998, .88200003, .90899998, 1.296, .801, 1.1160001, .76499999, .99000001, 1.143, .94499999, 1.044, .60299999, 1.197, .82800001, 1.053, .83700001, 1.3049999, 1.242, .89999998, 1.143, .972, 1.044, .74699998, 1.125, .89099997, 1.242, .99900001, .84600002, .90899998, 1.089, .89099997, .83700001, 1.053, .98100001
+@histw .01388889, .04166667, .06944445, .09722222, .125, .15277778, .18055555, .20833333, .2361111, .2638889, .29166666, .31944445, .34722221, .375, .40277779, .43055555, .45833334, .4861111, .5138889, .54166669, .56944442, .59722221, .625, .65277779, .68055558, .70833331, .7361111, .7638889, .79166669, .81944442, .84722221, .875, .90277779, .93055558, .95833331, .9861111
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+=====p_webb_res=====
+
+p_webb_res:                                     {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}          {res}#                 {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Zero           {res}   18        18          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Positive       {res} 3982        11       3971
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res} 4000        29       3971
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4000
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 2}p_webb_res {c |}{res}      4000    .4945381    .2893647          0          1
+@mean     0.495
+@sd     0.289
+@min     0.000
+@max     1.000
+@example0 .07
+@histh 1.341, 1.143, .86400002, .99900001, .81, 1.242, .85500002, 1.08, .792, 1.062, 1.08, .86400002, 1.017, .801, 1.062, .801, 1.062, .954, 1.278, 1.17, .93599999, 1.215, .86400002, .99000001, .81900001, 1.296, .83700001, 1.152, .954, .85500002, 1.089, .85500002, .972, .801, 1.197, .89099997
+@histw .01388889, .04166667, .06944445, .09722222, .125, .15277778, .18055555, .20833333, .2361111, .2638889, .29166666, .31944445, .34722221, .375, .40277779, .43055555, .45833334, .4861111, .5138889, .54166669, .56944442, .59722221, .625, .65277779, .68055558, .70833331, .7361111, .7638889, .79166669, .81944442, .84722221, .875, .90277779, .93055558, .95833331, .9861111
+@type float
+@label 
+@class other
+@N_unique .
+@N 4000
+ 
+_@NOTES
+ 
+{txt}
+{com}. 
+. // noi profiler report
+. // profiler off
+. 
+. exit, clear STATA

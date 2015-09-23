@@ -1,0 +1,21 @@
+<html>
+<body>
+
+<h1>$data.title</h1>
+
+<table>
+	<tr>
+		<td>N</td>
+		<td>$data.N</td>
+	</tr>
+	<tr>
+		<td>max</td>
+		<td>$data.get( "max" )</td>
+	</tr>
+	<tr>
+		<td>min</td>
+		<td>$data.get( "min" )</td>
+	</tr>
+</table>
+
+<p>Produced by statdoc</p>

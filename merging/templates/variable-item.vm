@@ -1,0 +1,126 @@
+#parse( "item-header.vm" )
+<!-- ======== START OF VARIABLE DATA ======== -->
+<div class="header">
+<div class="subTitle">Statdoc $project</div>
+<h2 title="Statdoc Variable ${item.getName()}" class="title">Variable ${item.getName()}</h2>
+</div>
+<div class="contentContainer">
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre><span class="strong">${item.getFullName()}</span>
+${item.getType()}</pre>
+</li>
+</ul>
+#if ( "$!{item.getSummary()}" != "" )
+<ul class="blockList">
+<li class="blockList">
+<div class="block">$!{item.getSummary()}</div>
+</li>
+</ul>
+#end
+#*
+<ul class="blockList">
+<li class="blockList">
+<div class="block">
+    #colors_table( $item )  
+</div>
+</li>
+</ul>
+*#
+</div>
+#warnings( $item )
+#if( $item.keySet().size() > 0 )
+<ul class="blockList">
+<li class="blockList">
+#propmap( $item )
+</li>
+</ul>
+#end
+
+#*
+
+SUB VARIABLES 
+
+*#
+#*
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variable Summary table, listing datasets and labels">
+<caption><span><a name="variables"><!-- --></a>Variable with the name ${item.getName()}</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Variable</th>
+<th class="colOne"  scope="col">Graph</th>
+<th class="colLast"  scope="col">Type</th>
+<th class="colLast"  scope="col">N</th>
+<th class="colLast"  scope="col">Descriptives</th>
+<th class="colLast" scope="col">Label</th>
+</tr>
+#set( $i = 1 )
+#foreach( $var in $item.getChildrenBy( "variable:" ) )
+#set( $i = $i + 1 )
+#set( $data = $var.getFileItem() )
+<tbody>
+#set ($uniqueId = "var_${var.getName()}_${var.hashCode()}_$i")
+#if ( "$varcolor" == "altColor" ) #set( $varcolor = "rowColor" ) #else #set( $varcolor = "altColor" ) #end
+<tr class="$varcolor"  style="background: ${var.myColor()};">
+<td class="colFirst"><a name="$data.getName()"><!--   --></a>
+<a href='javascript:toggle("$uniqueId");' title="Show more">[+]</a>
+<a href="#$data.getName()" title="Variable $var.getName()">$var.getName()</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<i><a href="../$data.getLink()" title="Data $data.getName()">$data.getAbbrevName(32)</a></i></td>
+#variable_tds( $var )
+</tr>
+</tbody>
+<tbody id="$uniqueId" style="display:none;">
+<tr class="$varcolor"  style="background: ${var.myColor()};">
+  <td class="colOne" colspan="8">
+<div class="block">
+#propmap( $var )
+#set( $estItems = $var.getChildrenByBy( "match", "cmd:statcmd", "cmd:estcmd" ) )
+#if ( $estItems.size() > 0 )
+<br>
+#cmdLines($estItems "Estimations and Descriptive Statistics with ${var.getName()}")
+#end
+<ul class="blockList">
+<li class="blockList">
+<pre class="wrap">$var.getContent()</pre>
+</li>
+</ul>
+</div>
+  </td>
+</tr>
+</tbody>
+#end
+</table>
+</li>
+</ul>
+*#
+
+#variableItems( $item.getChildrenBy( "variable:" ) "All variables with the name ${item.getName()}" )
+
+#*
+
+CmdItem (matched)
+
+*#
+#set( $estItems = $item.getChildrenByBy( "match", "cmd:statcmd", "cmd:estcmd" ) )
+#if ( $estItems.size() > 0 )
+<ul class="blockList">
+<li class="blockList">
+#cmdLines($estItems "Estimations and Descriptive Statistics with ${item.getName()}")
+</li>
+</ul>
+#end
+#set( $estItems = $item.getChildrenByBy( "match", "cmd:manipulate" ) )
+#if ( $estItems.size() > 0 )
+<ul class="blockList">
+<li class="blockList">
+#cmdLines($estItems "Data Manipulations with ${item.getName()}")
+</li>
+</ul>
+#end
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+#parse( "item-footer.vm" )

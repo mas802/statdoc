@@ -1,0 +1,27 @@
+{smcl}
+{txt}{sf}{ul off}
+
+{com}. /** 
+>  * A do file to run the standard stats for a whole data set. 
+>  *
+>  * Note that you must delete the files in the derived directory
+>  * for changes to be reflected in the output.
+>  *
+>  * @version 0.1
+> */
+. 
+. // profiler on
+. 
+. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Population profile_full data/Historical_pop_and_projections1950_2050/POP_PROJ_Data_847ec632-63d4-4f66-940c-f575aa2401b8.dta"
+{err}.dta too modern
+{p 4 4 2}
+File {bf}/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Population profile_full data/Historical_pop_and_projections1950_2050/POP_PROJ_Data_847ec632-63d4-4f66-940c-f575aa2401b8.dta{rm}
+is from a more recent version of Stata.
+Type {stata "update query"} to determine whether
+a free update of Stata is available, and browse
+{browse "http://www.stata.com/"} to determine if a new version is available.
+{p_end}
+{txt}{search r(610):r(610);}
+
+end of do-file
+{search r(610):r(610);}
