@@ -61,16 +61,16 @@ public class StataAnalyseDtaFileTask implements Task {
 
             String c = "use ";
             String t = "stata";
-            if (file.getFileName().endsWith("csv")) {
+            if (file.toString().toLowerCase().endsWith("csv")) {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "csv";
-            } else if (file.getFileName().endsWith("raw")) {
+            } else if (file.toString().toLowerCase().endsWith("raw")) {
                 dtaFileItem.put("_runCommand", "import delimited ");
                 c = "import delimited ";
                 t = "raw";
-            } else if (file.getFileName().endsWith("xls")
-                    || file.getFileName().endsWith("xlsx")) {
+            } else if (file.toString().toLowerCase().endsWith("xls")
+                    || file.toString().toLowerCase().endsWith("xlsx")) {
                 dtaFileItem.put("_runCommand", "import excel ");
                 c = "import excel ";
                 t = "excel";
