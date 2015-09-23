@@ -136,6 +136,8 @@ public class Statdoc {
         boolean derivedClear = false;
         boolean clear = false;
 
+        String versionCheck = "";
+
         boolean ok = true;
         for (int i = 0; i < args.length; i++) {
 
@@ -153,15 +155,26 @@ public class Statdoc {
                 } else {
                     ok = false;
                 }
+            } else if (args[i].equals("-vc")
+                    || args[i].equals("--version-check")) {
+                if (args.length > i + 1) {
+                    i++;
+                    versionCheck = args[i];
+                } else {
+                    ok = false;
+                }
             } else if (args[i].equals("-i") || args[i].equals("--initialise")) {
                 initialise = true;
-            } else if (args[i].equals("-d") || args[i].equals("--derived-clear")) {
-        	derivedClear = true;
+            } else if (args[i].equals("-d")
+                    || args[i].equals("--derived-clear")) {
+                derivedClear = true;
             } else if (args[i].equals("-c") || args[i].equals("--clear")) {
-        	clear = true;
+                clear = true;
             } else if (args[i].contains("=")) {
-                // parse later when properties are set up  
-            } else {
+                // parse later when properties are set up
+            } else if ( !args[i].trim().equals("") )  {
+                // report an error if another argument is encountered 
+                // (unless it is empty)
                 ok = false;
             }
         }
@@ -169,6 +182,12 @@ public class Statdoc {
         if (!ok) {
             System.err.println("Error with cmd options.");
             return;
+        }
+
+        if (versionCheck != "" && versionCheck.equals(version)) {
+            System.out.println("WARNING version check failed, caller expects "
+                    + versionCheck + " but this is " + version);
+
         }
 
         if (!sourceDir.toFile().exists() || !sourceDir.toFile().isDirectory()) {
@@ -214,15 +233,18 @@ public class Statdoc {
         for (String file : dirs) {
             File dir = new File(hub.outputDir.toFile(), file);
             dir.mkdir();
-            if ( clear ) {
-                for(File files: dir.listFiles()) files.delete();
+            if (clear) {
+                for (File files : dir.listFiles())
+                    files.delete();
             }
         }
 
-        if ( derivedClear ) {
-            for(File file: new File( hub.outputDir.toFile(), "derived" ).listFiles()) file.delete();
+        if (derivedClear) {
+            for (File file : new File(hub.outputDir.toFile(), "derived")
+                    .listFiles())
+                file.delete();
         }
-        
+
         for (String file : files) {
             InputStream f = Statdoc.class.getResourceAsStream("/initialroot/"
                     + file);
@@ -259,17 +281,20 @@ public class Statdoc {
             }
         }
 
-        hub.setGlobal("project", generalProp.getProperty("statdoc.project",
-                sourceDir.toFile().getCanonicalFile().getName()));
+        hub.setGlobal(
+                "project",
+                generalProp.getProperty("statdoc.project", sourceDir.toFile()
+                        .getCanonicalFile().getName()));
 
         hub.setProp(generalProp);
-        
+
         /*
          * Set the stata command
          */
         String[] stataProgs = generalProp.getProperty("statdoc.stata.path",
                 "stata").split("[\\s]*,[\\s]*");
-        File stataPath = StataUtils.resolveStataPath(stataProgs, System.getProperty("os.name", "generic"));
+        File stataPath = StataUtils.resolveStataPath(stataProgs,
+                System.getProperty("os.name", "generic"));
         if (!stataPath.canExecute() || stataPath.isDirectory()) {
             System.err.println(" ");
             System.err.println("No installations of Stata found, please edit");
@@ -303,10 +328,10 @@ public class Statdoc {
                 sourceDir, generalProp, hub, me.taskQueue));
 
         /*
-        // work through second stage file producing
-        me.workQueue("Stage 2a (parsing script files)", new InitiateScriptFilesParsingTask(
-                me.taskQueue));
-        */
+         * // work through second stage file producing
+         * me.workQueue("Stage 2a (parsing script files)", new
+         * InitiateScriptFilesParsingTask( me.taskQueue));
+         */
 
         // resolve all matchings
         me.workQueue("Stage 2b (resolve matching)", new MatchingTask(hub,
@@ -346,10 +371,10 @@ public class Statdoc {
                 "overview/help-doc.html"), "help-doc.vm", datah));
 
         // build the rest
-        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir.toFile(), hub,
-                me.taskQueue));
-        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir.toFile(), hub,
-                me.taskQueue));
+        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir.toFile(),
+                hub, me.taskQueue));
+        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir.toFile(),
+                hub, me.taskQueue));
         me.taskQueue.execute(new GenerateVariableinfoTask(hub, me.taskQueue));
 
         // work through second stage file producing
