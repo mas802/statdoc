@@ -37,6 +37,10 @@ public class Stata {
 
         @Override
         public void print(String s) {
+            if ( s.startsWith("file://")) {
+                s = "{browse \"" + s.substring(6) + "\":" + s + "}";
+            }
+            
             SFIToolkit.displayln(s);
             int i = SFIToolkit.pollnow();
             if (i != 0) {
