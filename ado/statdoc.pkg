@@ -4,5 +4,6 @@ d statdoc
 d Runs a statdoc task v 0.9.1
 d Distribution-Date: 14 August 2015
 f statdoc.ado
+f statdoc.sthlp
 f statdoc.jar
 h statdoc.jar
