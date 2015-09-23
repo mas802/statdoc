@@ -12,50 +12,41 @@
 . 
 . // profiler on
 . 
-. use  "/Users/schaffne/Dropbox/Stata_conference_2015/example/dta/auto.dta"
+. cap noi {c -(}
+. 
+. use  "/Users/mas/Dropbox/Stata_conference_2015/example/dta/auto.dta"
 {txt}(1978 Automobile Data)
-
 {com}. 
 . describe, short
 
-{txt}Contains data from {res}/Users/schaffne/Dropbox/Stata_conference_2015/example/dta/auto.dta
+{txt}Contains data from {res}/Users/mas/Dropbox/Stata_conference_2015/example/dta/auto.dta
 {txt}  obs:{res}            74                          1978 Automobile Data
 {txt} vars:{res}            12                          18 Sep 2015 06:54
 {txt} size:{res}         3,182                          
 {txt}Sorted by:  {res}foreign
-{txt}
 {com}. 
 . local N = r(N)
-{txt}
-{com}. local variables = r(k)
-{txt}
-{com}. 
+. local variables = r(k)
+. 
 . di "@N `N'"
 {res}@N 74
-{txt}
 {com}. di "@variables `variables'"
 {res}@variables 12
-{txt}
 {com}. 
 . datasignature
   {res}74:12(71728):3831085005:1395876116
-{txt}
 {com}. local datasig = "`r(datasignature)'"
-{txt}
-{com}. 
+. 
 . di "@datasignature `datasig'"
 {res}@datasignature 74:12(71728):3831085005:1395876116
-{txt}
 {com}. 
 . cap noi xtset
 {err}panel variable not set; use {bf:xtset} {it:varname} ...
-{txt}
 {com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
-{txt}
-{com}. 
+. 
 . notes _dta
 {res}
 _dta:
@@ -63,11 +54,9 @@ _dta:
 1.
 from Consumer Reports with permission
 {p_end}
-
 {com}. 
 . qui {c -(}
-{txt}
-{com}. 
+. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
 . di "=====`var'====="
@@ -702,9 +691,10 @@ foreign:  Car type                              {txt}Number of Observations
  
 _@NOTES
  
-{txt}
 {com}. 
 . // noi profiler report
 . // profiler off
-. 
+. {c )-}
+{txt}
+{com}. 
 . exit, clear STATA

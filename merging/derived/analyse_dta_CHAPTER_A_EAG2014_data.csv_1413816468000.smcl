@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/EducationataGlance/Chapter_A_Data_EducationalAttainment/CHAPTER_A_EAG2014_data.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/EducationataGlance/Chapter_A_Data_EducationalAttainment/CHAPTER_A_EAG2014_data.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/EducationataGlance/Chapter_A_Data_EducationalAttainment/CHAPTER_A_EAG2014_data.csv"
+{res}{text}(6 vars, 10737 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}        10,737                          
+{txt} vars:{res}             6                          
+{txt} size:{res}     1,814,553                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 10737
+{com}. di "@variables `variables'"
+{res}@variables 6
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}10737:6(80495):929671766:303084419
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 10737:6(80495):929671766:303084419
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,116 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====variablesinedugps2014=====
+@example0 Female graduates in services, upper secondary vocational programmes (%)
+@type str124
+@label Variables in EDU GPS 2014
+@class string
+@N_unique 74
+@N 10737
+{res} 
+_@NOTES
+ 
+=====units=====
+@freq 10737
+@values "Percentage"
+@example0 Percentage
+@type str10
+@label Units
+@class constant
+@N_unique 1
+@N 10737
+ 
+_@NOTES
+ 
+=====country=====
+@example0 Canada
+@type str28
+@label Country
+@class string
+@N_unique 45
+@N 10737
+ 
+_@NOTES
+ 
+=====time=====
+
+time:  Time                                     {txt}Number of Observations
+{hline 11}                                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                  {res}#         {txt}Negative           {res}-         -          -
+{txt}{c |}                  {res}#         {txt}Zero               {res}-         -          -
+{txt}{c |}                  {res}#         {txt}Positive       {res}10737     10737          -
+{txt}{c |}                  {res}#                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}              {res}#   #         {txt}Total          {res}10737     10737          -
+{txt}{c |}  {res}.   #   .   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1995               2012                     10737
+  (10 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}time {c |}{res}     10737    2008.121    4.077669       1995       2012
+@mean  2008.121
+@sd     4.078
+@min      1995
+@max      2012
+@values 1995, 2000, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012
+@names "1995", "2000", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012"
+@freq 90, 1350, 855, 855, 855, 855, 855, 855, 837, 3330
+@type int
+@label Time
+@class category
+@N_unique 10
+@N 10737
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   26        26          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 8037        85       7952
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 8063       111       7952
+{txt}{c |}  {res}#   #   #   .   .         {txt}Missing        {res} 2674
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                   100                     10737
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}      8063    26.47261    23.79276          0        100
+@mean    26.473
+@sd    23.793
+@min     0.000
+@max   100.000
+@example0 .
+@histh .03569639, .05465708, .03632519, .02079871, .01654223, .01378519, .01131837, .01194717, .01025425, .01044772, .00904502, .00943197, .01156021, .01044772, .01214064, .01310802, .01233412, .00977056, .00904502, .00715863, .00512712, .0065782, .00609451, .00652983, .00517549, .0032891, .00377279, .00324073, .00372442, .00382116, .00309562, .00299888, .00280541, .0020315, .00217661, .00183803, .00106412, .00067717, .00014511
+@histw 1.2820513, 3.8461537, 6.4102564, 8.9743586, 11.538462, 14.102564, 16.666666, 19.23077, 21.794872, 24.358974, 26.923077, 29.487179, 32.051281, 34.615383, 37.179485, 39.743591, 42.307693, 44.871796, 47.435898, 50, 52.564102, 55.128204, 57.692307, 60.256409, 62.820515, 65.384613, 67.948715, 70.512817, 73.07692, 75.641029, 78.205132, 80.769234, 83.333336, 85.897438, 88.46154, 91.025642, 93.589745, 96.153847, 98.717949
+@type float
+@label Value
+@class other
+@N_unique .
+@N 8063
+ 
+_@NOTES
+ 
+=====flags=====
+@freq 65, 2378, 2609, 19
+@values "c", "f", "m", "n"
+@type str1
+@label Flags
+@class category
+@N_unique 4
+@N 5071
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

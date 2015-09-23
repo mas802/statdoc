@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/Data_directory.xlsx"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/Data_directory.xlsx
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import excel  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/Data_directory.xlsx"
+{res}{com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}            47                          
+{txt} vars:{res}             5                          
+{txt} size:{res}        29,610                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 47
+{com}. di "@variables `variables'"
+{res}@variables 5
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}47:5(92177):1149745584:184050503
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 47:5(92177):1149745584:184050503
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,66 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====A=====
+@freq 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+@values "Better Life Index", "Capital stock", "Education by funding source and type", "Educational attainment", "Educational expenditure", "Enabling environment index", "Health expenditure", "Key short term indicators", "Migration - Immigrants by citizenship and age", "Migration - Immigrants by duration of stay", "Migration - Immigrants by labour force status", "Migration - Immigrants by occupation", "Migration - Immigrants by sector", "Migration - Immigrants by sex and age", "Migration - Immigration - by field of study", "Migration - International migration database", "Population - historical and projected", "Population - total", "Revenue - taxation revenue", "Social expenditure", "Taxing wages", "Topic", "World Bank World Governance Indicators"
+@example0 Topic
+@type str45
+@label 
+@class identifier
+@N_unique 23
+@N 23
+{res} 
+_@NOTES
+ 
+=====B=====
+@freq 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+@values "AWCOMP_data_taxing_wages2013.csv", "BLI_Data_Better_Life_Index_2013.csv", "BLI_Data_Better_Life_Index_2014.csv", "CHAPTER_A_EAG2014_data.csv", "CHAPTER_B_EAG2014_data.csv", "CapitalStocks103Countries.xlsx", "DIOC_CITIZEN_AGE_Data_Immigrants_by_citizenship_and_age.csv", "DIOC_DURATION_STAY_Data_Immigrants_by_duration_of_stay.csv", "DIOC_FIELD_STUDY_Data_Immigrants_by_field_of_study.csv", "DIOC_LFS_Data_Immigrants_by_labour_force_status.csv", "DIOC_OCCUPATION_DET_Data_Immigrants_by_detailed_occupation.csv", "DIOC_SECTOR_Data_23ab2a1d-61d4-4aad-ab94-59b2ef6e905b.csv", "DIOC_SEX_AGE_Data_0c235453-be88-40ea-9f17-f434f9e0a061.csv", "EnablingEnvironmentIndex109.xlsx", "EnablingEnvironmentIndexdata223.xlsx", "Filename", "KEI_Data_Key_Short_Term_Indicators.csv", "MIG_Data_International_Migration_Database.csv", "RFIN1_education_funding_type2011.csv", "SHA_Data_Health_Expenditure2013.csv", "wgi_data.dta"
+@example0 Filename
+@type str62
+@label 
+@class identifier
+@N_unique 21
+@N 21
+ 
+_@NOTES
+ 
+=====C=====
+@freq 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+@values "1950-2050", "1970-2011", "1973-2012", "1995-2009, although not a complete dataset for all these years", "1995-2012", "1996-2012", "2000-2011", "2000-2013", "2010-2011", "2011-2012", "2013", "2014", "?", "Data is very patchy, one ob for 1995, then 2000, then 2008, then yearly to 2011", "In most cases, 2000, then 2005-2012, but some cases have an ob for 1995 as well", "In some cases, 2005-20011, in some cases, from 1998-2011", "Index calculated in 2013", "Years"
+@example0 Years
+@type str79
+@label 
+@class identifier
+@N_unique 18
+@N 18
+ 
+_@NOTES
+ 
+=====D=====
+@freq 1, 1, 1, 19, 1, 1
+@values "(109 means on 109 countries, 223 means calculated for 223 countries)", "Berlemann and Wesselhoeft, personal communication", "Civicus website", "OECD stats database", "Source", "World Bank"
+@type str68
+@label 
+@class category
+@N_unique 6
+@N 24
+ 
+_@NOTES
+ 
+=====E=====
+@freq 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+@values "A breakdown of age and sex of immigrants -might be useful in determining the different EVC achieveable from moving about between countries, as in the citizenship premium if we wanted to do  ", "A breakdown of immigrants by labour force status - might be useful in determining the different EVC achieveable from moving about between countries, as in the citizenship premium if we wanted to do such a thing of course", "A breakdown of occupation of immigrants -might be useful in determining the different EVC achieveable from moving about between countries, as in the citizenship premium if we wanted to do  ", "A breakdown of sectors of immigrants -might be useful in determining the different EVC achieveable from moving about between countries, as in the citizenship premium if we wanted to do  ", "A dataset that contains all the inflows of immigrants, stock of foreign born, acquisition of nationality", "Another possible test of how the index is correlated with WDIs or measures of wellbeing or self reported happiness", "Gives a breakdown of how long immigrants have been in the country  might be useful in determining the different EVC achieveable from moving about between countries, as in the citizenship premium if we wanted to do such a thing of course", "Gives a breakdown of the field of study for immigrants - might be useful in determining the different EVC achieveable from moving about between countries, as in the citizenship premium if we wanted to do such a thing of course", "Historical breakdown of population data as well as projected population until 2050. Breakdown by gender, and then by all persons", "I don't know whether we would use this directly to estimate anything in the EVC. This might also be a test to see if EVC is correlated", "In case we wanted to compare the different levels of education spending with where the spending is coming from, eg, local, state, federal", "Information on tax rates, broken down by specific family types", "Net public spending as a percentage of GDP", "Not sure how useful this is, but it gives a breakdown of immigrants, their country of origin, and level of education", "Population taken at mid year, at 1 jan, at 31 Dec, net growth in population, net migration, natural increase in population, broken down by gender and also figures for all persons", "The access to capital stocks across countries would have a differential effect on opportunities and ability to access infrastructure - increased access to infrastructure reduces the transaction costs of activities (business or otherwise)", "This gives the US PPP expenditure on different types of students (primary, secondary, tertiary) but only in the year 2011. It also gives the change in expenditure, and it gives the percentage of Public expenditure on education as a percentage of total public expenditure, but only for selected years. I don't know if the WDI is any better", "This has health expenditure per capita, in national currency units, in US PPP$, general govt expenditure per capita (which would obviously be handy for calculation of EVC, the problem is that the data is only for a few years", "Total taxation revenue collected, broken down by level of government and whether it was a social security collection", "Use in EVC", "Various indicators, not sure how useful they are", "We can use this to work out the educational attainment for different cohorts, ages, or even as the probability that someone 25 years old who comes from a specific country will have tertiary education", "We could test how the EEI is correlated with the EVC, although some of the factors that go into making up the EEI will also be used to calculate the EVC. The idea is that some of these indicators of wellbeing might have more in common with the EVC than does GDP per capita -maybe it's not how much money people are making, it's what they are getting in return for their money "
+@example0 Use in EVC
+@type str376
+@label 
+@class identifier
+@N_unique 23
+@N 23
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/capital_stock/CapitalStocks103Countries.xlsx"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/capital_stock/CapitalStocks103Countries.xlsx
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import excel  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/capital_stock/CapitalStocks103Countries.xlsx"
+{res}{com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}           104                          
+{txt} vars:{res}            43                          
+{txt} size:{res}        37,024                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 104
+{com}. di "@variables `variables'"
+{res}@variables 43
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}104:43(58811):2957437625:172873312
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 104:43(58811):2957437625:172873312
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,1403 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====A=====
+@example0 Country Name
+@type str20
+@label 
+@class identifier
+@N_unique 104
+@N 104
+{res} 
+_@NOTES
+ 
+=====B=====
+
+B:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   45        45          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   59         1         58
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        46         58
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              7.74e+12                       104
+  (60 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}B {c |}{res}       104    3.07e+11    1.03e+12          0   7.74e+12
+@mean  3.07e+11
+@sd  1.03e+12
+@min     0.000
+@max  7.74e+12
+@example0 1970
+@histh 1.205e-12, 1.243e-14, 2.486e-14, 1.243e-14, 1.243e-14, 1.243e-14, 1.243e-14
+@histw 3.869e+11, 1.161e+12, 1.934e+12, 2.708e+12, 4.255e+12, 5.029e+12, 7.350e+12
+@type double
+@label 
+@class other
+@N_unique 60
+@N 104
+ 
+_@NOTES
+ 
+=====C=====
+
+C:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   45        45          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   59         1         58
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        46         58
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              7.98e+12                       104
+  (60 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}C {c |}{res}       104    3.17e+11    1.07e+12          0   7.98e+12
+@mean  3.17e+11
+@sd  1.07e+12
+@min     0.000
+@max  7.98e+12
+@example0 1971
+@histh 1.168e-12, 1.205e-14, 2.409e-14, 1.205e-14, 1.205e-14, 1.205e-14, 1.205e-14
+@histw 3.991e+11, 1.197e+12, 1.996e+12, 2.794e+12, 4.390e+12, 5.188e+12, 7.583e+12
+@type double
+@label 
+@class other
+@N_unique 60
+@N 104
+ 
+_@NOTES
+ 
+=====D=====
+
+D:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   45        45          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   59         1         58
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        46         58
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              8.25e+12                       104
+  (60 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}D {c |}{res}       104    3.28e+11    1.11e+12          0   8.25e+12
+@mean  3.28e+11
+@sd  1.11e+12
+@min     0.000
+@max  8.25e+12
+@example0 1972
+@histh 1.131e-12, 1.166e-14, 2.331e-14, 1.166e-14, 1.166e-14, 1.166e-14, 1.166e-14
+@histw 4.125e+11, 1.237e+12, 2.062e+12, 2.887e+12, 4.537e+12, 5.362e+12, 7.837e+12
+@type double
+@label 
+@class other
+@N_unique 60
+@N 104
+ 
+_@NOTES
+ 
+=====E=====
+
+E:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   45        45          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   59         1         58
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        46         58
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              8.57e+12                       104
+  (60 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}E {c |}{res}       104    3.40e+11    1.15e+12          0   8.57e+12
+@mean  3.40e+11
+@sd  1.15e+12
+@min     0.000
+@max  8.57e+12
+@example0 1973
+@histh 1.089e-12, 1.122e-14, 3.367e-14, 1.122e-14, 1.122e-14, 1.122e-14
+@histw 4.284e+11, 1.285e+12, 2.142e+12, 4.713e+12, 6.426e+12, 8.140e+12
+@type double
+@label 
+@class other
+@N_unique 60
+@N 104
+ 
+_@NOTES
+ 
+=====F=====
+
+F:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   44        44          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   60         1         59
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        45         59
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              8.92e+12                       104
+  (61 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}F {c |}{res}       104    3.54e+11    1.20e+12          0   8.92e+12
+@mean  3.54e+11
+@sd  1.20e+12
+@min     0.000
+@max  8.92e+12
+@example0 1974
+@histh 1.045e-12, 1.077e-14, 3.232e-14, 1.077e-14, 1.077e-14, 1.077e-14
+@histw 4.462e+11, 1.339e+12, 2.231e+12, 4.909e+12, 6.694e+12, 8.479e+12
+@type double
+@label 
+@class other
+@N_unique 61
+@N 104
+ 
+_@NOTES
+ 
+=====G=====
+
+G:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   40        40          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   64         1         63
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        41         63
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              9.23e+12                       104
+  (65 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}G {c |}{res}       104    3.68e+11    1.25e+12          0   9.23e+12
+@mean  3.68e+11
+@sd  1.25e+12
+@min     0.000
+@max  9.23e+12
+@example0 1975
+@histh 1.010e-12, 1.041e-14, 3.124e-14, 1.041e-14, 1.041e-14, 1.041e-14
+@histw 4.617e+11, 1.385e+12, 2.309e+12, 4.155e+12, 6.926e+12, 8.773e+12
+@type double
+@label 
+@class other
+@N_unique 65
+@N 104
+ 
+_@NOTES
+ 
+=====H=====
+
+H:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   37        37          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   67         1         66
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        38         66
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              9.48e+12                       104
+  (68 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}H {c |}{res}       104    3.79e+11    1.28e+12          0   9.48e+12
+@mean  3.79e+11
+@sd  1.28e+12
+@min     0.000
+@max  9.48e+12
+@example0 1976
+@histh 9.843e-13, 1.015e-14, 3.044e-14, 1.015e-14, 1.015e-14, 1.015e-14
+@histw 4.738e+11, 1.421e+12, 2.369e+12, 4.264e+12, 7.106e+12, 9.001e+12
+@type double
+@label 
+@class other
+@N_unique 68
+@N 104
+ 
+_@NOTES
+ 
+=====I=====
+
+I:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   37        37          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   67         1         66
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        38         66
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              9.75e+12                       104
+  (68 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}I {c |}{res}       104    3.92e+11    1.32e+12          0   9.75e+12
+@mean  3.92e+11
+@sd  1.32e+12
+@min     0.000
+@max  9.75e+12
+@example0 1977
+@histh 9.562e-13, 9.858e-15, 2.957e-14, 9.858e-15, 9.858e-15, 9.858e-15
+@histw 4.877e+11, 1.463e+12, 2.438e+12, 4.389e+12, 7.315e+12, 9.266e+12
+@type double
+@label 
+@class other
+@N_unique 68
+@N 104
+ 
+_@NOTES
+ 
+=====J=====
+
+J:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   37        37          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   67         1         66
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        38         66
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.01e+13                       104
+  (68 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}J {c |}{res}       104    4.05e+11    1.37e+12          0   1.01e+13
+@mean  4.05e+11
+@sd  1.37e+12
+@min     0.000
+@max  1.01e+13
+@example0 1978
+@histh 9.241e-13, 9.527e-15, 2.858e-14, 9.527e-15, 9.527e-15, 9.527e-15
+@histw 5.047e+11, 1.514e+12, 2.523e+12, 4.542e+12, 7.570e+12, 9.588e+12
+@type double
+@label 
+@class other
+@N_unique 68
+@N 104
+ 
+_@NOTES
+ 
+=====K=====
+
+K:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   34        34          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   70         1         69
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        35         69
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.05e+13                       104
+  (71 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}K {c |}{res}       104    4.20e+11    1.42e+12          0   1.05e+13
+@mean  4.20e+11
+@sd  1.42e+12
+@min     0.000
+@max  1.05e+13
+@example0 1979
+@histh 8.881e-13, 1.831e-14, 1.831e-14, 9.155e-15, 9.155e-15, 9.155e-15
+@histw 5.251e+11, 1.575e+12, 2.626e+12, 4.726e+12, 7.877e+12, 9.977e+12
+@type double
+@label 
+@class other
+@N_unique 71
+@N 104
+ 
+_@NOTES
+ 
+=====L=====
+
+L:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   27        27          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   77         1         76
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        28         76
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.09e+13                       104
+  (78 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}L {c |}{res}       104    4.37e+11    1.48e+12          0   1.09e+13
+@mean  4.37e+11
+@sd  1.48e+12
+@min     0.000
+@max  1.09e+13
+@example0 1980
+@histh 8.526e-13, 1.758e-14, 1.758e-14, 8.790e-15, 8.790e-15, 8.790e-15
+@histw 5.470e+11, 1.641e+12, 2.735e+12, 4.923e+12, 8.204e+12, 1.039e+13
+@type double
+@label 
+@class other
+@N_unique 78
+@N 104
+ 
+_@NOTES
+ 
+=====M=====
+
+M:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   26        26          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   78         1         77
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        27         77
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.13e+13                       104
+  (79 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}M {c |}{res}       104    4.52e+11    1.53e+12          0   1.13e+13
+@mean  4.52e+11
+@sd  1.53e+12
+@min     0.000
+@max  1.13e+13
+@example0 1981
+@histh 8.244e-13, 1.700e-14, 1.700e-14, 8.499e-15, 8.499e-15, 8.499e-15
+@histw 5.657e+11, 1.697e+12, 2.828e+12, 5.091e+12, 8.485e+12, 1.075e+13
+@type double
+@label 
+@class other
+@N_unique 79
+@N 104
+ 
+_@NOTES
+ 
+=====N=====
+
+N:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   24        24          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   80         1         79
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        25         79
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.17e+13                       104
+  (81 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}N {c |}{res}       104    4.66e+11    1.58e+12          0   1.17e+13
+@mean  4.66e+11
+@sd  1.58e+12
+@min     0.000
+@max  1.17e+13
+@example0 1982
+@histh 7.984e-13, 1.646e-14, 1.646e-14, 8.231e-15, 8.231e-15, 8.231e-15
+@histw 5.841e+11, 1.752e+12, 2.920e+12, 5.257e+12, 9.929e+12, 1.110e+13
+@type double
+@label 
+@class other
+@N_unique 81
+@N 104
+ 
+_@NOTES
+ 
+=====O=====
+
+O:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   24        24          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   80         1         79
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        25         79
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.20e+13                       104
+  (81 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}O {c |}{res}       104    4.79e+11    1.63e+12          0   1.20e+13
+@mean  4.79e+11
+@sd  1.63e+12
+@min     0.000
+@max  1.20e+13
+@example0 1983
+@histh 7.785e-13, 1.605e-14, 1.605e-14, 8.026e-15, 8.026e-15, 8.026e-15
+@histw 5.990e+11, 1.797e+12, 2.995e+12, 5.391e+12, 1.018e+13, 1.138e+13
+@type double
+@label 
+@class other
+@N_unique 81
+@N 104
+ 
+_@NOTES
+ 
+=====P=====
+
+P:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   22        22          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   82         1         81
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        23         81
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.23e+13                       104
+  (83 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}P {c |}{res}       104    4.91e+11    1.67e+12          0   1.23e+13
+@mean  4.91e+11
+@sd  1.67e+12
+@min     0.000
+@max  1.23e+13
+@example0 1984
+@histh 7.573e-13, 1.562e-14, 1.562e-14, 7.808e-15, 7.808e-15, 7.808e-15
+@histw 6.158e+11, 1.847e+12, 3.079e+12, 5.542e+12, 1.047e+13, 1.170e+13
+@type double
+@label 
+@class other
+@N_unique 83
+@N 104
+ 
+_@NOTES
+ 
+=====Q=====
+
+Q:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   21        21          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   83         1         82
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        22         82
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.28e+13                       104
+  (84 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}Q {c |}{res}       104    5.05e+11    1.73e+12          0   1.28e+13
+@mean  5.05e+11
+@sd  1.73e+12
+@min     0.000
+@max  1.28e+13
+@example0 1985
+@histh 7.307e-13, 1.507e-14, 1.507e-14, 7.533e-15, 7.533e-15, 7.533e-15
+@histw 6.382e+11, 1.915e+12, 3.191e+12, 5.744e+12, 1.085e+13, 1.213e+13
+@type double
+@label 
+@class other
+@N_unique 84
+@N 104
+ 
+_@NOTES
+ 
+=====R=====
+
+R:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   19        19          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   85         1         84
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        20         84
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.32e+13                       104
+  (86 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}R {c |}{res}       104    5.20e+11    1.79e+12          0   1.32e+13
+@mean  5.20e+11
+@sd  1.79e+12
+@min     0.000
+@max  1.32e+13
+@example0 1986
+@histh 7.040e-13, 1.451e-14, 1.451e-14, 7.257e-15, 7.257e-15, 7.257e-15
+@histw 6.625e+11, 1.987e+12, 3.312e+12, 4.637e+12, 1.126e+13, 1.259e+13
+@type double
+@label 
+@class other
+@N_unique 86
+@N 104
+ 
+_@NOTES
+ 
+=====S=====
+
+S:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   18        18          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   86         1         85
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        19         85
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.37e+13                       104
+  (87 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}S {c |}{res}       104    5.39e+11    1.85e+12          0   1.37e+13
+@mean  5.39e+11
+@sd  1.85e+12
+@min     0.000
+@max  1.37e+13
+@example0 1987
+@histh 6.793e-13, 1.401e-14, 1.401e-14, 7.003e-15, 7.003e-15, 7.003e-15
+@histw 6.865e+11, 2.060e+12, 3.433e+12, 4.806e+12, 1.167e+13, 1.304e+13
+@type double
+@label 
+@class other
+@N_unique 87
+@N 104
+ 
+_@NOTES
+ 
+=====T=====
+
+T:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   17        17          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   87         1         86
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        18         86
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.42e+13                       104
+  (88 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}T {c |}{res}       104    5.56e+11    1.91e+12          0   1.42e+13
+@mean  5.56e+11
+@sd  1.91e+12
+@min     0.000
+@max  1.42e+13
+@example0 1988
+@histh 6.567e-13, 1.354e-14, 1.354e-14, 6.770e-15, 6.770e-15, 6.770e-15
+@histw 7.101e+11, 2.130e+12, 3.551e+12, 4.971e+12, 1.207e+13, 1.349e+13
+@type double
+@label 
+@class other
+@N_unique 88
+@N 104
+ 
+_@NOTES
+ 
+=====U=====
+
+U:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   15        15          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   89         1         88
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104        16         88
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.47e+13                       104
+  (90 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}U {c |}{res}       104    5.75e+11    1.99e+12          0   1.47e+13
+@mean  5.75e+11
+@sd  1.99e+12
+@min     0.000
+@max  1.47e+13
+@example0 1989
+@histh 6.352e-13, 1.310e-14, 1.310e-14, 6.548e-15, 6.548e-15, 6.548e-15
+@histw 7.342e+11, 2.203e+12, 3.671e+12, 5.140e+12, 1.248e+13, 1.395e+13
+@type double
+@label 
+@class other
+@N_unique 90
+@N 104
+ 
+_@NOTES
+ 
+=====V=====
+
+V:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}    1         1          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  103         1        102
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         2        102
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              1.52e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}V {c |}{res}       104    6.29e+11    2.07e+12          0   1.52e+13
+@mean  6.29e+11
+@sd  2.07e+12
+@min     0.000
+@max  1.52e+13
+@example0 1990
+@histh 6.082e-13, 2.534e-14, 6.335e-15, 6.335e-15, 6.335e-15, 6.335e-15
+@histw 7.589e+11, 2.277e+12, 3.794e+12, 5.312e+12, 1.290e+13, 1.442e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====W=====
+
+W:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1991           1.56e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}W {c |}{res}       104    6.52e+11    2.15e+12       1991   1.56e+13
+@mean  6.52e+11
+@sd  2.15e+12
+@min  1991.000
+@max  1.56e+13
+@example0 1991
+@histh 5.902e-13, 2.459e-14, 6.147e-15, 6.147e-15, 6.147e-15, 6.147e-15
+@histw 7.821e+11, 2.346e+12, 3.910e+12, 5.474e+12, 1.330e+13, 1.486e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====X=====
+
+X:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1992           1.60e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}X {c |}{res}       104    6.73e+11    2.22e+12       1992   1.60e+13
+@mean  6.73e+11
+@sd  2.22e+12
+@min  1992.000
+@max  1.60e+13
+@example0 1992
+@histh 5.759e-13, 2.400e-14, 5.999e-15, 5.999e-15, 1.200e-14
+@histw 8.014e+11, 2.404e+12, 4.007e+12, 5.610e+12, 1.523e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====Y=====
+
+Y:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1993           1.64e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}Y {c |}{res}       104    6.93e+11    2.30e+12       1993   1.64e+13
+@mean  6.93e+11
+@sd  2.30e+12
+@min  1993.000
+@max  1.64e+13
+@example0 1993
+@histh 5.612e-13, 2.338e-14, 5.846e-15, 5.846e-15, 1.169e-14
+@histw 8.225e+11, 2.467e+12, 4.112e+12, 5.757e+12, 1.563e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====Z=====
+
+Z:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1994           1.69e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}Z {c |}{res}       104    7.13e+11    2.37e+12       1994   1.69e+13
+@mean  7.13e+11
+@sd  2.37e+12
+@min  1994.000
+@max  1.69e+13
+@example0 1994
+@histh 5.454e-13, 2.273e-14, 5.681e-15, 5.681e-15, 1.136e-14
+@histw 8.462e+11, 2.539e+12, 4.231e+12, 5.923e+12, 1.608e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AA=====
+
+AA:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1995           1.75e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AA {c |}{res}       104    7.33e+11    2.45e+12       1995   1.75e+13
+@mean  7.33e+11
+@sd  2.45e+12
+@min  1995.000
+@max  1.75e+13
+@example0 1995
+@histh 5.284e-13, 2.202e-14, 5.504e-15, 5.504e-15, 1.101e-14
+@histw 8.734e+11, 2.620e+12, 4.367e+12, 6.114e+12, 1.660e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AB=====
+
+AB:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1996           1.81e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AB {c |}{res}       104    7.55e+11    2.52e+12       1996   1.81e+13
+@mean  7.55e+11
+@sd  2.52e+12
+@min  1996.000
+@max  1.81e+13
+@example0 1996
+@histh 5.056e-13, 2.661e-14, 5.322e-15, 5.322e-15, 1.064e-14
+@histw 9.033e+11, 2.710e+12, 4.516e+12, 6.323e+12, 1.716e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AC=====
+
+AC:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1997           1.87e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AC {c |}{res}       104    7.78e+11    2.61e+12       1997   1.87e+13
+@mean  7.78e+11
+@sd  2.61e+12
+@min  1997.000
+@max  1.87e+13
+@example0 1997
+@histh 4.873e-13, 2.565e-14, 5.130e-15, 5.130e-15, 1.026e-14
+@histw 9.372e+11, 2.812e+12, 4.686e+12, 6.561e+12, 1.781e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AD=====
+
+AD:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1998           1.95e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AD {c |}{res}       104    8.03e+11    2.70e+12       1998   1.95e+13
+@mean  8.03e+11
+@sd  2.70e+12
+@min  1998.000
+@max  1.95e+13
+@example0 1998
+@histh 4.730e-13, 1.971e-14, 4.927e-15, 4.927e-15, 9.854e-15
+@histw 9.758e+11, 2.927e+12, 4.879e+12, 6.831e+12, 1.854e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AE=====
+
+AE:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1999           2.04e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AE {c |}{res}       104    8.29e+11    2.79e+12       1999   2.04e+13
+@mean  8.29e+11
+@sd  2.79e+12
+@min  1999.000
+@max  2.04e+13
+@example0 1999
+@histh 4.524e-13, 2.356e-14, 4.713e-15, 9.426e-15
+@histw 1.020e+12, 3.060e+12, 7.141e+12, 1.938e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AF=====
+
+AF:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2000           2.14e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AF {c |}{res}       104    8.55e+11    2.89e+12       2000   2.14e+13
+@mean  8.55e+11
+@sd  2.89e+12
+@min  2000.000
+@max  2.14e+13
+@example0 2000
+@histh 4.314e-13, 2.247e-14, 4.493e-15, 4.493e-15, 4.493e-15
+@histw 1.070e+12, 3.210e+12, 7.490e+12, 1.819e+13, 2.033e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AG=====
+
+AG:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2001           2.25e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AG {c |}{res}       104    8.84e+11    3.00e+12       2001   2.25e+13
+@mean  8.84e+11
+@sd  3.00e+12
+@min  2001.000
+@max  2.25e+13
+@example0 2001
+@histh 4.150e-13, 1.711e-14, 4.278e-15, 4.278e-15, 4.278e-15
+@histw 1.124e+12, 3.371e+12, 7.866e+12, 1.910e+13, 2.135e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AH=====
+
+AH:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2002           2.35e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AH {c |}{res}       104    9.11e+11    3.09e+12       2002   2.35e+13
+@mean  9.11e+11
+@sd  3.09e+12
+@min  2002.000
+@max  2.35e+13
+@example0 2002
+@histh 3.973e-13, 1.638e-14, 4.095e-15, 4.095e-15, 4.095e-15
+@histw 1.174e+12, 3.522e+12, 5.870e+12, 1.996e+13, 2.230e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AI=====
+
+AI:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2003           2.44e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AI {c |}{res}       104    9.36e+11    3.18e+12       2003   2.44e+13
+@mean  9.36e+11
+@sd  3.18e+12
+@min  2003.000
+@max  2.44e+13
+@example0 2003
+@histh 3.826e-13, 1.578e-14, 3.945e-15, 3.945e-15, 3.945e-15
+@histw 1.219e+12, 3.656e+12, 6.094e+12, 2.072e+13, 2.316e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AJ=====
+
+AJ:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2004           2.53e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AJ {c |}{res}       104    9.62e+11    3.27e+12       2004   2.53e+13
+@mean  9.62e+11
+@sd  3.27e+12
+@min  2004.000
+@max  2.53e+13
+@example0 2004
+@histh 3.689e-13, 1.521e-14, 3.803e-15, 3.803e-15, 3.803e-15
+@histw 1.264e+12, 3.793e+12, 6.322e+12, 1.896e+13, 2.402e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AK=====
+
+AK:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2005           2.63e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AK {c |}{res}       104    9.91e+11    3.37e+12       2005   2.63e+13
+@mean  9.91e+11
+@sd  3.37e+12
+@min  2005.000
+@max  2.63e+13
+@example0 2005
+@histh 3.550e-13, 1.464e-14, 3.660e-15, 3.660e-15, 3.660e-15
+@histw 1.314e+12, 3.941e+12, 6.568e+12, 1.970e+13, 2.496e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AL=====
+
+AL:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2006           2.73e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AL {c |}{res}       104    1.02e+12    3.47e+12       2006   2.73e+13
+@mean  1.02e+12
+@sd  3.47e+12
+@min  2006.000
+@max  2.73e+13
+@example0 2006
+@histh 3.414e-13, 1.408e-14, 3.519e-15, 3.519e-15, 3.519e-15
+@histw 1.366e+12, 4.098e+12, 6.831e+12, 2.049e+13, 2.596e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AM=====
+
+AM:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2007           2.84e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AM {c |}{res}       104    1.06e+12    3.57e+12       2007   2.84e+13
+@mean  1.06e+12
+@sd  3.57e+12
+@min  2007.000
+@max  2.84e+13
+@example0 2007
+@histh 3.287e-13, 1.017e-14, 6.778e-15, 3.389e-15, 3.389e-15
+@histw 1.419e+12, 4.256e+12, 7.093e+12, 2.128e+13, 2.695e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AN=====
+
+AN:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2008           2.93e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AN {c |}{res}       104    1.09e+12    3.67e+12       2008   2.93e+13
+@mean  1.09e+12
+@sd  3.67e+12
+@min  2008.000
+@max  2.93e+13
+@example0 2008
+@histh 3.179e-13, 9.832e-15, 6.555e-15, 3.277e-15, 3.277e-15
+@histw 1.467e+12, 4.401e+12, 7.335e+12, 2.200e+13, 2.787e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AO=====
+
+AO:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2009           3.01e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AO {c |}{res}       104    1.13e+12    3.76e+12       2009   3.01e+13
+@mean  1.13e+12
+@sd  3.76e+12
+@min  2009.000
+@max  3.01e+13
+@example0 2009
+@histh 3.094e-13, 9.569e-15, 6.379e-15, 3.190e-15, 3.190e-15
+@histw 1.507e+12, 4.522e+12, 7.536e+12, 2.261e+13, 2.864e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AP=====
+
+AP:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2010           3.06e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AP {c |}{res}       104    1.15e+12    3.81e+12       2010   3.06e+13
+@mean  1.15e+12
+@sd  3.81e+12
+@min  2010.000
+@max  3.06e+13
+@example0 2010
+@histh 3.049e-13, 9.431e-15, 6.287e-15, 3.144e-15, 3.144e-15
+@histw 1.529e+12, 4.588e+12, 7.646e+12, 1.988e+13, 2.906e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+=====AQ=====
+
+AQ:                                             {txt}Number of Observations
+{hline 5}                                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  104         1        103
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  104         1        103
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2011           3.10e+13                       104
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}AQ {c |}{res}       104    1.18e+12    3.86e+12       2011   3.10e+13
+@mean  1.18e+12
+@sd  3.86e+12
+@min  2011.000
+@max  3.10e+13
+@example0 2011
+@histh 3.013e-13, 9.320e-15, 6.213e-15, 3.107e-15, 3.107e-15
+@histw 1.548e+12, 4.643e+12, 7.738e+12, 2.012e+13, 2.940e+13
+@type double
+@label 
+@class other
+@N_unique .
+@N 104
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

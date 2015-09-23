@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Migration/Immigrants by citizenship and age/DIOC_CITIZEN_AGE_Data_Immigrants_by_citizenship_and_age.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Migration/Immigrants by citizenship and age/DIOC_CITIZEN_AGE_Data_Immigrants_by_citizenship_and_age.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Migration/Immigrants by citizenship and age/DIOC_CITIZEN_AGE_Data_Immigrants_by_citizenship_and_age.csv"
+{res}{text}(8 vars, 30113 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}        30,113                          
+{txt} vars:{res}             8                          
+{txt} size:{res}     4,516,950                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 30113
+{com}. di "@variables `variables'"
+{res}@variables 8
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}30113:8(21776):599126042:2512034471
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 30113:8(21776):599126042:2512034471
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,137 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====placeofbirth=====
+@freq 12454, 11733, 3518, 2408
+@values "All places of birth", "Foreign-born", "Native-born", "Unknown place of birth"
+@type str22
+@label Place of birth
+@class category
+@N_unique 4
+@N 30113
+{res} 
+_@NOTES
+ 
+=====educationlevel=====
+@freq 6549, 6399, 6397, 6260, 4508
+@values "All levels of education", "ISCED 0/1/2", "ISCED 3/4", "ISCED 5/6", "Unknown education"
+@type str23
+@label Education level
+@class category
+@N_unique 5
+@N 30113
+ 
+_@NOTES
+ 
+=====age=====
+@freq 7253, 7489, 7150, 7534, 687
+@values "15-24 years", "25-64 years", "65+ years", "All ages", "Unknown age"
+@type str11
+@label Age
+@class category
+@N_unique 5
+@N 30113
+ 
+_@NOTES
+ 
+=====citizenship=====
+@freq 10060, 8490, 8434, 3129
+@values "All citizenships", "Citizen of another country", "Citizen of the country of residence", "Unknown citizenship status"
+@type str35
+@label Citizenship
+@class category
+@N_unique 4
+@N 30113
+ 
+_@NOTES
+ 
+=====countryofresidence=====
+@freq 1598, 903, 1166, 840, 1392, 1140, 881, 768, 1120, 832, 1062, 768, 820, 1161, 798, 978, 760, 1078, 2074, 1619, 766, 1062, 1058, 1256, 1200, 1469, 720, 824
+@values "Australia", "Austria", "Belgium", "Canada", "Czech Republic", "Denmark", "Finland", "France", "Greece", "Hungary", "Ireland", "Italy", "Japan", "Luxembourg", "Mexico", "Netherlands", "New Zealand", "Norway", "OECD - Total", "Poland", "Portugal", "Slovak Republic", "Spain", "Sweden", "Switzerland", "Turkey", "United Kingdom", "United States"
+@type str15
+@label Country of residence
+@class category
+@N_unique 28
+@N 30113
+ 
+_@NOTES
+ 
+=====countryofbirth=====
+@freq 3088, 6266, 3296, 4693, 3192, 3060, 3544, 2974
+@values "Africa", "All countries of birth", "Asia", "Europe", "North America", "Oceania", "Other and unknown places of birth", "South and Central America and Caribbean"
+@type str39
+@label Country of birth
+@class category
+@N_unique 8
+@N 30113
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}30113     30113          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}30113     30113          -
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1              7.84e+08                     30113
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}     30113     1665582    1.43e+07          1   7.84e+08
+@mean  1.67e+06
+@sd  1.43e+07
+@min         1
+@max 783682530
+@example0 8034
+@histh 5.509e-08, 5.090e-10, 2.275e-10, 1.025e-10, 1.864e-11, 3.543e-11, 5.407e-11, 2.237e-11, 9.322e-12, 7.458e-12, 1.864e-11, 1.305e-11, 7.458e-12, 1.864e-12, 1.864e-12, 5.593e-12, 3.729e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12, 1.864e-12
+@histw 8905484, 26716450, 44527416, 62338384, 80149352, 97960320, 1.158e+08, 1.336e+08, 1.514e+08, 1.692e+08, 1.870e+08, 2.048e+08, 2.226e+08, 2.404e+08, 2.583e+08, 2.761e+08, 2.939e+08, 3.117e+08, 3.295e+08, 3.473e+08, 4.007e+08, 4.186e+08, 4.720e+08, 5.076e+08, 5.967e+08, 6.323e+08, 7.213e+08, 7.748e+08
+@type long
+@label Value
+@class other
+@N_unique .
+@N 30113
+ 
+_@NOTES
+ 
+=====flags=====
+
+flags:  Flags                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}30113
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                     30113
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}flags {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label Flags
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

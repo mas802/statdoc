@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/taxing_wages/AWCOMP_Data_Taxing_Wages2013.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/taxing_wages/AWCOMP_Data_Taxing_Wages2013.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/taxing_wages/AWCOMP_Data_Taxing_Wages2013.csv"
+{res}{text}(9 vars, 58576 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}        58,576                          
+{txt} vars:{res}             9                          
+{txt} size:{res}    12,769,568                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 58576
+{com}. di "@variables `variables'"
+{res}@variables 9
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}58576:9(41708):1608947872:817554313
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 58576:9(41708):1608947872:817554313
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,190 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====indicator=====
+@freq 3920, 3920, 3920, 3920, 3920, 3920, 3920, 3920, 3920, 3808, 3920, 3920, 3920, 3808, 3920
+@values "Average income tax rate", "Average rate of employees' social security contributions", "Average rate of employer's social security contributions", "Average rate of income tax and employees' social security contributions", "Average tax wedge", "Increase in net income after an increase of 1 currency unit in gross labour cost", "Increase in net income after an increase of 1 currency unit in gross wages", "Marginal tax wedge: Principal earner", "Net income after taxes in US dollars using PPP exchange rates", "Net income after taxes in national currency", "Net personal average tax rate", "Net personal marginal tax rate: Principal earner", "Total gross earnings before taxes in US dollars using PPP exchange rates", "Total gross earnings before taxes in national currency", "Total gross labour costs before taxes in US dollars using PPP exchange rates"
+@type str80
+@label Indicator
+@class category
+@N_unique 15
+@N 58576
+{res} 
+_@NOTES
+ 
+=====familytype=====
+@freq 7322, 7322, 7322, 7322, 7322, 7322, 7322, 7322
+@values "One-earner married couple at 100% of average earnings, 2 children", "Single person at 100% of average earnings, no child", "Single person at 167% of average earnings, no child", "Single person at 67% of average earnings, no child", "Single person at 67% of average earnings, with two children", "Two-earner married couple, one at 100% of average earnings and the other at 33 %, 2 children", "Two-earner married couple, one at 100% of average earnings and the other at 33 %, no child", "Two-earner married couple, one at 100% of average earnings and the other at 67 %, 2 children"
+@type str92
+@label Family type
+@class category
+@N_unique 8
+@N 58576
+ 
+_@NOTES
+ 
+=====country=====
+@example0 Australia
+@type str15
+@label Country
+@class string
+@N_unique 35
+@N 58576
+ 
+_@NOTES
+ 
+=====year=====
+
+year:  Year                                     {txt}Number of Observations
+{hline 11}                                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#   #       #   #         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #       #   #         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Positive       {res}58576     58576          -
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res}58576     58576          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2000               2013                     58576
+  (14 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}year {c |}{res}     58576      2006.5    4.031163       2000       2013
+@mean  2006.500
+@sd     4.031
+@min      2000
+@max      2013
+@values 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013
+@names "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013"
+@freq 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184, 4184
+@type int
+@label Year
+@class category
+@N_unique 14
+@N 58576
+ 
+_@NOTES
+ 
+=====unitofmeasureused=====
+@freq 224, 224, 224, 224, 224, 3360, 224, 224, 224, 224, 224, 224, 39200, 224, 224, 224, 224, 11984, 224, 224, 224
+@values "Australian Dollar", "Canadian Dollar", "Chilean Peso", "Czech Koruna", "Danish Krone", "Euro", "Forint", "Iceland Krona", "Mexican Peso", "New Israeli Sheqel", "New Zealand Dollar", "Norwegian Krone", "Percentage", "Pound Sterling", "Swedish Krona", "Swiss Franc", "Turkish Lira", "US Dollar", "Won", "Yen", "Zloty"
+@type str18
+@label Unit of measure used
+@class category
+@N_unique 21
+@N 58576
+ 
+_@NOTES
+ 
+=====powercode=====
+@freq 58576
+@values "Units"
+@example0 Units
+@type str5
+@label Power code
+@class constant
+@N_unique 1
+@N 58576
+ 
+_@NOTES
+ 
+=====referenceperiod=====
+
+referenceperiod:  Reference period              {txt}Number of Observations
+{hline 34}          {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}58576
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                     58576
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+referencep~d {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label Reference period
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative       {res}  433         -        433
+{txt}{c |}  {res}#                         {txt}Zero           {res}  728       728          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}57415      4073      53342
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}58576      4801      53775
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}-45.062        6.64e+07                     58576
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}     58576    209717.3     2305620    -45.062   6.64e+07
+@mean  2.10e+05
+@sd  2.31e+06
+@min   -45.062
+@max  6.64e+07
+@example0 42040.805
+@histh 6.952e-07, 2.550e-09, 2.973e-09, 2.019e-09, 1.475e-09, 7.252e-10, 2.417e-10, 9.670e-11, 2.417e-11, 7.252e-11, 4.835e-11, 7.252e-11, 7.252e-11, 8.461e-11, 1.450e-10, 1.088e-10, 1.088e-10, 1.330e-10, 1.209e-10, 7.252e-11, 9.670e-11, 1.209e-10, 7.252e-11, 1.450e-10, 9.670e-11, 7.252e-11, 6.044e-11, 1.209e-10, 7.252e-11, 7.252e-11, 6.044e-11, 8.461e-11, 7.252e-11, 3.626e-11, 9.670e-11, 3.626e-11, 4.835e-11, 3.626e-11, 3.626e-11, 6.044e-11, 2.417e-11, 2.417e-11, 4.835e-11, 2.417e-11, 2.417e-11
+@histw 706154.94, 2118554.8, 3530954.8, 4943354.5, 6355754.5, 7768154.5, 9180555, 10592954, 12005354, 13417754, 14830154, 16242554, 17654954, 19067354, 20479754, 21892154, 23304554, 24716954, 26129354, 27541754, 28954154, 30366554, 31778954, 33191354, 34603752, 36016152, 37428552, 38840952, 40253352, 41665752, 43078152, 44490552, 45902952, 47315352, 48727752, 50140152, 51552552, 52964952, 54377352, 55789752, 57202152, 58614552, 61439352, 64264152, 65676552
+@type float
+@label Value
+@class other
+@N_unique .
+@N 58576
+ 
+_@NOTES
+ 
+=====flags=====
+
+flags:  Flags                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}58576
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                     58576
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}flags {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label Flags
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

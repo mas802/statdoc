@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Social Expenditure/Social Expenditure - Aggregated data-Per head - at constant prices (2000) and constant PPPs (2000) in US dollars/SOCX_AGG_Data_Public_Per head_CP_PPP_2000US dollars.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Social Expenditure/Social Expenditure - Aggregated data-Per head - at constant prices (2000) and constant PPPs (2000) in US dollars/SOCX_AGG_Data_Public_Per head_CP_PPP_2000US dollars.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Social Expenditure/Social Expenditure - Aggregated data-Per head - at constant prices (2000) and constant PPPs (2000) in US dollars/SOCX_AGG_Data_Public_Per head_CP_PPP_2000US dollars.csv"
+{res}{text}(9 vars, 13110 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}        13,110                          
+{txt} vars:{res}             9                          
+{txt} size:{res}     2,923,530                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 13110
+{com}. di "@variables `variables'"
+{res}@variables 9
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}13110:9(98603):3658896337:1012638009
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 13110:9(98603):3658896337:1012638009
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,150 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====source=====
+@freq 13110
+@values "Public"
+@example0 Public
+@type str6
+@label Source
+@class constant
+@N_unique 1
+@N 13110
+{res} 
+_@NOTES
+ 
+=====branch=====
+@freq 1589, 1624, 598, 990, 2229, 1620, 1422, 1417, 612, 1009
+@values "Active labour market programmes", "Family", "Health", "Housing", "Incapacity related", "Old age", "Other social policy areas", "Survivors", "Total", "Unemployment"
+@type str31
+@label Branch
+@class category
+@N_unique 10
+@N 13110
+ 
+_@NOTES
+ 
+=====typeofexpenditure=====
+@freq 4450, 5234, 3426
+@values "Benefits in kind", "Cash benefits", "Total"
+@type str16
+@label Type of Expenditure
+@class category
+@N_unique 3
+@N 13110
+ 
+_@NOTES
+ 
+=====typeofprogramme=====
+@example0 Total
+@type str73
+@label Type of Programme
+@class string
+@N_unique 38
+@N 13110
+ 
+_@NOTES
+ 
+=====unit=====
+@freq 13110
+@values "Per head, at constant prices (2000) and constant PPPs (2000), in US dollars"
+@example0 Per head, at constant prices (2000) and constant PPPs (2000), in US dollars
+@type str75
+@label Unit
+@class constant
+@N_unique 1
+@N 13110
+ 
+_@NOTES
+ 
+=====country=====
+@example0 Australia
+@type str15
+@label Country
+@class string
+@N_unique 31
+@N 13110
+ 
+_@NOTES
+ 
+=====year=====
+
+year:  Year                                     {txt}Number of Observations
+{hline 11}                                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                  {res}#         {txt}Negative           {res}-         -          -
+{txt}{c |}                  {res}#         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#               #         {txt}Positive       {res}13110     13110          -
+{txt}{c |}  {res}#               #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res}13110     13110          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1980               2010                     13110
+   (8 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}year {c |}{res}     13110    1995.959    9.817133       1980       2010
+@mean  1995.959
+@sd     9.817
+@min      1980
+@max      2010
+@values 1980, 1985, 1990, 1995, 2000, 2005, 2009, 2010
+@names "1980", "1985", "1990", "1995", "2000", "2005", "2009", "2010"
+@freq 1610, 1613, 1788, 1919, 1935, 1936, 1872, 437
+@type int
+@label Year
+@class category
+@N_unique 8
+@N 13110
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}  557       557          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 9768       911       8857
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}10325      1468       8857
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing        {res} 2785
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                 16313                     13110
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}     10325    474.5187    1073.865          0      16313
+@mean   474.519
+@sd  1073.865
+@min     0.000
+@max 16313.000
+@example0 691.59998
+@histh .00187209, .00020519, .00009024, .00007386, .00005438, .00003657, .00003135, .00001544, .00001472, 9.024e-06, 9.024e-06, 9.737e-06, 4.275e-06, 4.512e-06, 4.037e-06, 1.187e-06, 4.037e-06, 1.900e-06, 9.499e-07, 2.137e-06, 1.900e-06, 1.187e-06, 9.499e-07, 9.499e-07, 1.425e-06, 2.375e-07, 2.375e-07, 2.375e-07, 2.375e-07
+@histw 203.91251, 611.73749, 1019.5625, 1427.3875, 1835.2125, 2243.0376, 2650.8625, 3058.6875, 3466.5125, 3874.3374, 4282.1626, 4689.9873, 5097.8125, 5505.6377, 5913.4624, 6321.2876, 6729.1123, 7136.9375, 7544.7627, 7952.5874, 8360.4121, 8768.2373, 9176.0625, 9583.8877, 9991.7129, 10807.362, 12846.487, 15701.263, 16109.088
+@type float
+@label Value
+@class other
+@N_unique .
+@N 10325
+ 
+_@NOTES
+ 
+=====flags=====
+@freq 2007, 613, 165
+@values "a", "m", "x"
+@type str1
+@label Flags
+@class category
+@N_unique 3
+@N 2785
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

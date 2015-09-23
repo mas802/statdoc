@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/EducationataGlance/Chapter_B_Data_EducationExpenditure/CHAPTER_B_EAG2014_data.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/EducationataGlance/Chapter_B_Data_EducationExpenditure/CHAPTER_B_EAG2014_data.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/EducationataGlance/Chapter_B_Data_EducationExpenditure/CHAPTER_B_EAG2014_data.csv"
+{res}{text}(6 vars, 3510 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}         3,510                          
+{txt} vars:{res}             6                          
+{txt} size:{res}       737,100                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 3510
+{com}. di "@variables `variables'"
+{res}@variables 6
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}3510:6(53112):2286794923:2119275866
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 3510:6(53112):2286794923:2119275866
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,116 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====variablesinedugps2014=====
+@freq 90, 90, 90, 90, 45, 45, 45, 270, 225, 270, 225, 270, 225, 45, 315, 45, 45, 45, 45, 45, 45, 45, 45, 45, 315, 225, 225
+@values "Change between 2000 and 2011 in private expenditure on educational institutions, primary, secondary and post-secondary non-tertiary (2005 = 100, constant prices)", "Change between 2000 and 2011 in private expenditure on educational institutions, tertiary level (2005 = 100, constant prices)", "Change between 2000 and 2011 in public expenditure on educational institutions, primary, secondary and post-secondary non-tertiary (2005 = 100, constant prices)", "Change between 2000 and 2011 in public expenditure on educational institutions, tertiary level (2005 = 100, constant prices)", "Change between 2008 and 2011 in public expenditure for all services including education (2008=100)", "Change between 2008 and 2011 in public expenditure on education (including subsidies to households, 2008=100)", "Change between 2008 and 2011 in public expenditure on education as a percentage of total public expenditure (including subsidies to households, 2008=100)", "Change in expenditure per student, primary, secondary and post-secondary non-tertiary education (2005=100)", "Change in expenditure per student, tertiary education (2005=100) ", "Change in expenditure, primary, secondary and post-secondary non-tertiary education (2005=100)", "Change in expenditure, tertiary education (2005=100) ", "Change in the number of students, primary, secondary and post-secondary non-tertiary education (2005=100) ", "Change in the number of students, tertiary education (2005=100) ", "Cumulative expenditure per student for all services over the average duration of tertiary education (equivalent USD using PPPs)", "Expenditure on educational institutions as a percentage of GDP, all levels of education", "Expenditure on educational institutions as a percentage of GDP, from private sources, all levels of education", "Expenditure on educational institutions as a percentage of GDP, from public sources, all levels of education", "Expenditure per student on  core and ancillary services, primary, secondary and post-secondary non-tertiary education (annual, equivalent USD using PPPs) ", "Expenditure per student, pre-primary education (annual, equivalent USD using PPPs) ", "Expenditure per student, primary education (annual, equivalent USD using PPPs) ", "Expenditure per student, secondary education (annual, equivalent USD using PPPs) ", "Expenditure per student, tertiary education including R&D activities (annual, equivalent USD using PPPs) ", "Private expenditure on educational institutions, primary, secondary and post-secondary non-tertiary education (%)", "Private expenditure on educational institutions, tertiary education (%)", "Public expenditure on education as a percentage of total public expenditure", "Public expenditure on educational institutions, primary, secondary and post-secondary non-tertiary education (%)", "Public expenditure on educational institutions, tertiary education (%)"
+@type str161
+@label Variables in EDU GPS 2014
+@class category
+@N_unique 27
+@N 3510
+{res} 
+_@NOTES
+ 
+=====country=====
+@example0 Australia
+@type str28
+@label Country
+@class string
+@N_unique 45
+@N 3510
+ 
+_@NOTES
+ 
+=====units=====
+@freq 1980, 1260, 270
+@values "Index", "Percentage", "USD Equivalent"
+@type str14
+@label Units
+@class category
+@N_unique 3
+@N 3510
+ 
+_@NOTES
+ 
+=====time=====
+
+time:  Time                                     {txt}Number of Observations
+{hline 11}                                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                  {res}#         {txt}Negative           {res}-         -          -
+{txt}{c |}                  {res}#         {txt}Zero               {res}-         -          -
+{txt}{c |}                  {res}#         {txt}Positive       {res} 3510      3510          -
+{txt}{c |}                  {res}#                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}                  {res}#         {txt}Total          {res} 3510      3510          -
+{txt}{c |}  {res}.   #   .   .   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1995               2011                      3510
+   (7 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}time {c |}{res}      3510    2006.974    5.046597       1995       2011
+@mean  2006.974
+@sd     5.047
+@min      1995
+@max      2011
+@values 1995, 2000, 2005, 2008, 2009, 2010, 2011
+@names "1995", "2000", "2005", "2008", "2009", "2010", "2011"
+@freq 225, 630, 180, 450, 360, 450, 1215
+@type int
+@label Time
+@class category
+@N_unique 7
+@N 3510
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}    4         4          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 2562        28       2534
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 2566        32       2534
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing        {res}  944
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                110520                      3510
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}      2566    1249.687    6487.304          0     110520
+@mean  1249.687
+@sd  6487.304
+@min     0.000
+@max  1.11e+05
+@example0 16267.3
+@histh .00028474, 4.556e-06, 8.033e-06, 4.196e-06, 1.678e-06, 7.193e-07, 4.796e-07, 4.796e-07, 2.398e-07, 1.199e-07, 4.796e-07, 2.398e-07, 1.199e-07, 1.199e-07, 1.199e-07, 1.199e-07, 1.199e-07, 1.199e-07, 1.199e-07, 1.199e-07, 2.398e-07, 1.199e-07, 2.398e-07, 1.199e-07
+@histw 1625.2935, 4875.8804, 8126.4673, 11377.054, 14627.641, 17878.229, 21128.814, 24379.402, 27629.988, 30880.574, 34131.16, 37381.75, 47133.508, 53634.684, 56885.27, 60135.855, 63386.445, 69887.617, 73138.203, 79639.375, 82889.969, 86140.555, 92641.727, 108894.66
+@type float
+@label Value
+@class other
+@N_unique .
+@N 2566
+ 
+_@NOTES
+ 
+=====flags=====
+@freq 775, 944, 2
+@values "f", "m", "n"
+@type str1
+@label Flags
+@class category
+@N_unique 3
+@N 1721
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

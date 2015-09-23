@@ -14,51 +14,44 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Population profile_full data/Historical_pop_and_projections1950_2050/POP_PROJ_Data_847ec632-63d4-4f66-940c-f575aa2401b8.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Population profile_full data/Historical_pop_and_projections1950_2050/POP_PROJ_Data_847ec632-63d4-4f66-940c-f575aa2401b8.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Population profile_full data/Historical_pop_and_projections1950_2050/POP_PROJ_Data_847ec632-63d4-4f66-940c-f575aa2401b8.csv"
+{res}{text}(7 vars, 322194 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}       322,194                          
+{txt} vars:{res}             7                          
+{txt} size:{res}    32,219,400                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 322194
+{com}. di "@variables `variables'"
+{res}@variables 7
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}322194:7(73597):276609959:4241774663
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 322194:7(73597):276609959:4241774663
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
-. 
+{res}@_subsample 142857
+{com}. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
 . di "=====`var'====="
@@ -318,7 +311,127 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====country=====
+@example0 Russian Federation
+@type str29
+@label Country
+@class string
+@N_unique 50
+@N 142857
+{res} 
+_@NOTES
+ 
+=====sex=====
+@freq 62196, 40393, 40268
+@values "All persons", "Females", "Males"
+@type str11
+@label Sex
+@class category
+@N_unique 3
+@N 142857
+ 
+_@NOTES
+ 
+=====variant=====
+@freq 142857
+@values "Baseline"
+@example0 Baseline
+@type str8
+@label Variant
+@class constant
+@N_unique 1
+@N 142857
+ 
+_@NOTES
+ 
+=====age=====
+@example0 Population (hist&proj) 65+,  persons
+@type str45
+@label Age
+@class string
+@N_unique 39
+@N 142857
+ 
+_@NOTES
+ 
+=====time=====
+
+time:  Time                                     {txt}Number of Observations
+{hline 11}                                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                  {res}#         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Positive       {res}142857     142857          -
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res}142857     142857          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1950               2020                     142857
+  (71 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}time {c |}{res}    142857    1985.076    20.50084       1950       2020
+@mean  1985.076
+@sd    20.501
+@min      1950
+@max      2020
+@example0 1972
+@histh .02080802, .01059781, .02051222, .01023571, .01013371, .02046122, .01017961, .00997051, .02014502, .01000111, .02034902, .01014901, .01040911, .02024702, .00978181, .01031731, .02031842, .01002151, .02071622, .01047031, .00991951, .02056322, .01029691, .01023061, .02052752, .01022551, .02082332, .01046521, .01035811, .02068562, .01027651, .01029691, .01990532, .01025101, .02123642, .01041421, .01015921, .02050202, .01039891, .01039891, .02019092, .01010311, .02098652, .01046011, .01066921, .02047652, .01031731, .01035811, .02104262, .00995011, .02025722
+@histw 1950.6863, 1952.0588, 1953.4314, 1954.804, 1956.1765, 1957.5491, 1958.9215, 1960.2941, 1961.6666, 1963.0392, 1964.4117, 1965.7843, 1967.1569, 1968.5294, 1969.902, 1971.2745, 1972.6471, 1974.0197, 1975.3922, 1976.7646, 1978.1372, 1979.5098, 1980.8823, 1982.2549, 1983.6274, 1985, 1986.3726, 1987.7451, 1989.1177, 1990.4902, 1991.8628, 1993.2354, 1994.6078, 1995.9803, 1997.3529, 1998.7255, 2000.098, 2001.4706, 2002.8431, 2004.2157, 2005.5883, 2006.9608, 2008.3334, 2009.7059, 2011.0785, 2012.4509, 2013.8235, 2015.196, 2016.5686, 2017.9412, 2019.3137
+@type int
+@label Time
+@class other
+@N_unique 71
+@N 142857
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}  173       173          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}142684     10524      132160
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}142857     10697      132160
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0               7716749                     142857
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}    142857    21752.41    175576.2          0    7716749
+@mean 21752.412
+@sd  1.76e+05
+@min     0.000
+@max  7.72e+06
+@example0 10714.5
+@histh 6.447e-06, 6.976e-08, 3.016e-08, 1.832e-08, 1.050e-08, 5.367e-09, 4.210e-09, 3.007e-09, 3.377e-09, 1.665e-09, 1.573e-09, 1.249e-09, 1.712e-09, 1.064e-09, 9.253e-10, 8.790e-10, 1.110e-09, 6.939e-10, 5.089e-10, 4.626e-10, 6.939e-10, 5.552e-10, 4.164e-10, 6.477e-10, 4.626e-10, 2.313e-10, 1.388e-10, 2.776e-10, 9.253e-11, 9.253e-11, 1.851e-10, 2.313e-10, 1.388e-10, 9.253e-11, 4.626e-11, 1.388e-10, 1.388e-10, 4.626e-11, 9.253e-11, 9.253e-11, 9.253e-11, 4.626e-11, 9.253e-11, 4.626e-11, 4.626e-11, 9.253e-11, 9.253e-11, 1.388e-10, 4.626e-11, 1.388e-10
+@histw 75654.398, 226963.2, 378272, 529580.81, 680889.63, 832198.44, 983507.25, 1134816, 1286124.9, 1437433.6, 1588742.5, 1740051.3, 1891360, 2042668.9, 2193977.8, 2345286.5, 2496595.3, 2647904, 2799212.8, 2950521.8, 3101830.5, 3253139.3, 3404448, 3555757, 3707065.8, 3858374.5, 4009683.3, 4160992, 4312301, 4463609.5, 4614918.5, 4766227.5, 4917536, 5068845, 5220153.5, 5371462.5, 5522771.5, 5674080, 5825389, 5976698, 6279315.5, 6430624, 6581933, 6733242, 6884550.5, 7035859.5, 7187168, 7338477, 7489786, 7641094.5
+@type float
+@label Value
+@class other
+@N_unique .
+@N 142857
+ 
+_@NOTES
+ 
+=====flags=====
+@freq 1512, 1015
+@values "B", "E"
+@type str1
+@label Flags
+@class dummy
+@N_unique 2
+@N 2527
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/CivicusEnablingEnvironmentIndex/EnablingEnvironmentIndex109.xlsx"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/CivicusEnablingEnvironmentIndex/EnablingEnvironmentIndex109.xlsx
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import excel  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/CivicusEnablingEnvironmentIndex/EnablingEnvironmentIndex109.xlsx"
+{res}{com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}           182                          
+{txt} vars:{res}            13                          
+{txt} size:{res}        27,118                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 182
+{com}. di "@variables `variables'"
+{res}@variables 13
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}182:13(44340):591342610:3203305645
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 182:13(44340):591342610:3203305645
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,245 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====A=====
+@example0 Countries
+@type str28
+@label 
+@class identifier
+@N_unique 110
+@N 110
+{res} 
+_@NOTES
+ 
+=====B=====
+@freq 29, 18, 1, 42, 20
+@values "Africa", "Asia-Pacific", "Continent", "Europe", "The Americas"
+@type str12
+@label 
+@class category
+@N_unique 5
+@N 110
+ 
+_@NOTES
+ 
+=====C=====
+@example0 Socio-economic
+@type str17
+@label 
+@class identifier
+@N_unique 110
+@N 110
+ 
+_@NOTES
+ 
+=====D=====
+@example0 Socio-cultural
+@type str17
+@label 
+@class string
+@N_unique 107
+@N 110
+ 
+_@NOTES
+ 
+=====E=====
+@example0 Governance environment
+@type str22
+@label 
+@class identifier
+@N_unique 110
+@N 110
+ 
+_@NOTES
+ 
+=====F=====
+@example0 EEI
+@type str17
+@label 
+@class identifier
+@N_unique 110
+@N 110
+ 
+_@NOTES
+ 
+=====G=====
+@freq 1, 1, 2, 4, 2, 7, 4, 7, 7, 7, 9, 8, 7, 7, 8, 4, 7, 7, 7, 2, 1, 1
+@values "31", "33", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "COUNT DATA SOURCES"
+@type str18
+@label 
+@class category
+@N_unique 22
+@N 110
+ 
+_@NOTES
+ 
+=====H=====
+@freq 24, 49, 8, 28, 1
+@values "14", "15", "16", "17", "SUBDIMENSIONS"
+@type str13
+@label 
+@class category
+@N_unique 5
+@N 110
+ 
+_@NOTES
+ 
+=====I=====
+
+I:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}  182
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                       182
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}I {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label 
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+=====J=====
+
+J:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}  182
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                       182
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}J {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label 
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+=====K=====
+
+K:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}  182
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                       182
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}K {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label 
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+=====L=====
+
+L:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}  182
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                       182
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}L {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label 
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+=====M=====
+
+M:                                              {txt}Number of Observations
+{hline 4}                                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                            Negative           {res}-         -          -
+{txt}{c |}                            Zero               {res}-         -          -
+{txt}{c |}                            Positive           {res}-         -          -
+{txt}{c |}                                           {hline 5}     {hline 5}      {hline 5}
+{c |}                            Total              {res}-         -          -
+{txt}{c |}                            Missing        {res}  182
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}.             -9.0e+307                       182
+   (0 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 11}M {c |}{res}         0
+@mean         .
+@sd 
+@min 
+@max 
+@example0 .
+@type byte
+@label 
+@class empty
+@N_unique 0
+@N 0
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

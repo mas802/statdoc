@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Total population/ALFS_POP_VITAL_Footnotes_All_Countries.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Total population/ALFS_POP_VITAL_Footnotes_All_Countries.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Population/Total population/ALFS_POP_VITAL_Footnotes_All_Countries.csv"
+{res}{text}(1 var, 15 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}            15                          
+{txt} vars:{res}             1                          
+{txt} size:{res}         1,755                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 15
+{com}. di "@variables `variables'"
+{res}@variables 1
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}15:1(64890):1433628106:2841313700
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 15:1(64890):1433628106:2841313700
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,19 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====v1=====
+@freq 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+@values "B,Break,Rupture", "C,Non-publishable and confidential value,Valeur non-publiable et confidentielle", "Code,English description,Description française", "D,Difference in methodology,Différence de méthodologie", "E,Estimated value,Valeur estimée", "F,Forecast value,Valeur projetée", "H,Missing value, holiday or weekend,Valeur manquante ; jour férié ou fin de semaine", "L,Missing value; data exist but were not collected,Valeur manquante ; donnée existe mais n'a pas été collecté", "Legend/Légende", "M,Missing value; data cannot exist,Valeur manquante ; donnée ne peut pas exister", "N,Non-publishable, but non-confidential value,Valeur non-publiable, mais non-confidentielle", "P,Provisional value,Valeur provisoire", "R,Confidential statistical information due to identifiable,Information statistique confidentielle due à identifiable", "S,Strike,Grève", "Z,Absolute zero observation,Observation zéro absolu"
+@example0 Legend/Légende
+@type str117
+@label 
+@class identifier
+@N_unique 15
+@N 15
+{res} 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

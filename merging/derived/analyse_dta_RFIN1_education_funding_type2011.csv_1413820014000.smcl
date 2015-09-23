@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/Expenditure by funding source and transaction type/RFIN1_education_funding_type2011.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/Expenditure by funding source and transaction type/RFIN1_education_funding_type2011.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/OECD data/Education/Expenditure by funding source and transaction type/RFIN1_education_funding_type2011.csv"
+{res}{text}(8 vars, 441 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}           441                          
+{txt} vars:{res}             8                          
+{txt} size:{res}        84,231                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 441
+{com}. di "@variables `variables'"
+{res}@variables 8
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}441:8(89599):2555153127:1559054859
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 441:8(89599):2555153127:1559054859
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,143 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====levelofeducation=====
+@freq 441
+@values "All levels of education + not allocated by level"
+@example0 All levels of education + not allocated by level
+@type str48
+@label Level of education
+@class constant
+@N_unique 1
+@N 441
+{res} 
+_@NOTES
+ 
+=====programmeorientation=====
+@freq 441
+@values "All educational programmes"
+@example0 All educational programmes
+@type str26
+@label Programme orientation
+@class constant
+@N_unique 1
+@N 441
+ 
+_@NOTES
+ 
+=====fundingsource=====
+@freq 441
+@values "All sources (combined public, private, and international expenditures)"
+@example0 All sources (combined public, private, and international expenditures)
+@type str70
+@label Funding source
+@class constant
+@N_unique 1
+@N 441
+ 
+_@NOTES
+ 
+=====typeoftransactions=====
+@freq 441
+@values "All types of transactions"
+@example0 All types of transactions
+@type str25
+@label Type of transactions
+@class constant
+@N_unique 1
+@N 441
+ 
+_@NOTES
+ 
+=====country=====
+@example0 Australia
+@type str15
+@label Country
+@class string
+@N_unique 34
+@N 441
+ 
+_@NOTES
+ 
+=====year=====
+
+year:  Year                                     {txt}Number of Observations
+{hline 11}                                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}                  {res}#         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #       #   #         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#   #       #   #         {txt}Positive       {res}  441       441          -
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res}  441       441          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1998               2011                       441
+  (14 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}year {c |}{res}       441    2004.644    4.014493       1998       2011
+@mean  2004.644
+@sd     4.014
+@min      1998
+@max      2011
+@values 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
+@names "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011"
+@freq 29, 30, 30, 31, 30, 31, 32, 33, 33, 32, 32, 32, 33, 33
+@type int
+@label Year
+@class category
+@N_unique 14
+@N 441
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   42        42          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  399        81        318
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res}  441       123        318
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0              6.26e+09                       441
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}       441    3.78e+07    3.97e+08          0   6.26e+09
+@mean  3.78e+07
+@sd  3.97e+08
+@min     0.000
+@max  6.26e+09
+@example0 55279.102
+@histh 3.325e-09, 7.609e-12, 7.609e-12, 7.609e-12, 7.609e-12
+@histw 1.490e+08, 1.937e+09, 3.129e+09, 4.321e+09, 6.109e+09
+@type float
+@label Value
+@class other
+@N_unique .
+@N 441
+ 
+_@NOTES
+ 
+=====flags=====
+@freq 42
+@values "m"
+@example0 
+@type str1
+@label Flags
+@class constant
+@N_unique 1
+@N 42
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

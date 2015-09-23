@@ -14,50 +14,42 @@
 . 
 . cap noi {c -(}
 . 
-. use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/OECDBetterLifeIndex/BLI_Data_Better_Life_Index_2013.csv"
-{err}{p 0 4 2}
-file /Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/OECDBetterLifeIndex/BLI_Data_Better_Life_Index_2013.csv
-not Stata format
-{p_end}
-{txt}{search r(610):r(610);}
-{com}. 
+. import delimited  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/OECDBetterLifeIndex/BLI_Data_Better_Life_Index_2013.csv"
+{res}{text}(7 vars, 3390 obs){com}. 
 . describe, short
-. 
+
+{txt}Contains data
+  obs:{res}         3,390                          
+{txt} vars:{res}             7                          
+{txt} size:{res}       257,640                          
+{txt}Sorted by:  
+{res}     Note:  dataset has changed since last saved
+{com}. 
 . local N = r(N)
 . local variables = r(k)
 . 
 . di "@N `N'"
-. di "@variables `variables'"
-. 
+{res}@N 3390
+{com}. di "@variables `variables'"
+{res}@variables 7
+{com}. 
 . datasignature
-. local datasig = "`r(datasignature)'"
+  {res}3390:7(72061):2317190364:4134004318
+{com}. local datasig = "`r(datasignature)'"
 . 
 . di "@datasignature `datasig'"
-. 
+{res}@datasignature 3390:7(72061):2317190364:4134004318
+{com}. 
 . cap noi xtset
-. if ( !_rc ) {c -(}
+{err}panel variable not set; use {bf:xtset} {it:varname} ...
+{com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
 . 
 . notes _dta
-. 
+{res}{com}. 
 . qui {c -(}
-. // check if there are too many observations
-. // and cut down if necessary
-. local sample = max(floor(1000000/`variables'),30)
-. notes search "@statdoc.full"
-. if ( r(found) == 1 | `N' > `sample' ) {c -(}
-.     noi di "@_subsample `sample'"
-.     
-.     tempvar r n
-.     gen `r' = uniform()
-.     sort `r'
-.     gen `n' = _n
-.     drop if _n > `sample'
-.     drop `n' `r'
-. {c )-}
-. {c )-}
 . 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -318,7 +310,127 @@ not Stata format
 {txt}218{com}. 
 . 
 . {c )-}
-. 
+=====measure=====
+@freq 3390
+@values "Value"
+@example0 Value
+@type str5
+@label Measure
+@class constant
+@N_unique 1
+@N 3390
+{res} 
+_@NOTES
+ 
+=====inequality=====
+@freq 370, 370, 881, 888, 881
+@values "High", "Low", "Men", "Total", "Women"
+@type str5
+@label Inequality
+@class category
+@N_unique 5
+@N 3390
+ 
+_@NOTES
+ 
+=====bliedition=====
+
+bliedition:  BLI edition                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 3390      3390          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 3390      3390          -
+{txt}{c |}  {res}#                         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}2013                                         3390
+   (1 unique value)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 2}bliedition {c |}{res}      3390        2013           0       2013       2013
+@mean      2013
+@sd     0.000
+@min      2013
+@max      2013
+@values 2013
+@type int
+@label BLI edition
+@class constant
+@N_unique 1
+@N 3390
+ 
+_@NOTES
+ 
+=====country=====
+@example0 Australia
+@type str18
+@label Country
+@class string
+@N_unique 37
+@N 3390
+ 
+_@NOTES
+ 
+=====indicator=====
+@freq 109, 111, 109, 109, 111, 111, 185, 111, 183, 109, 109, 111, 111, 185, 185, 185, 185, 109, 185, 185, 111, 185, 185, 111
+@values "Air pollution", "Assault rate", "Consultation on rule-making", "Dwellings without basic facilities", "Educational attainment", "Employees working very long hours", "Employment rate", "Homicide rate", "Household net adjusted disposable income", "Household net financial wealth", "Housing expenditure", "Job security", "Life expectancy", "Life satisfaction", "Long-term unemployment rate", "Personal earnings", "Quality of support network", "Rooms per person", "Self-reported health", "Student skills", "Time devoted to leisure and personal care", "Voter turnout", "Water quality", "Years in education"
+@type str41
+@label Indicator
+@class category
+@N_unique 24
+@N 3390
+ 
+_@NOTES
+ 
+=====value=====
+
+value:  Value                                   {txt}Number of Observations
+{hline 13}                               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}   14        14          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 3376      2030       1346
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 3390      2044       1346
+{txt}{c |}  {res}#   .   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                115918                      3390
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}value {c |}{res}      3390    4309.709    12598.11          0     115918
+@mean  4309.709
+@sd 12598.110
+@min     0.000
+@max  1.16e+05
+@example0 1.2
+@histh .00025972, 1.069e-06, 2.583e-06, 4.186e-06, 2.494e-06, 3.652e-06, 2.939e-06, 4.008e-06, 3.563e-06, 2.672e-06, 1.959e-06, 1.692e-06, 1.603e-06, 2.138e-06, 2.405e-06, 6.235e-07, 1.336e-06, 5.344e-07, 8.907e-08, 6.235e-07, 7.125e-07, 8.907e-08, 6.235e-07, 8.907e-08, 2.672e-07, 2.672e-07
+@histw 1655.9714, 4967.9141, 8279.8574, 11591.8, 14903.743, 18215.686, 21527.629, 24839.572, 28151.514, 31463.457, 34775.398, 38087.344, 41399.285, 44711.23, 48023.172, 51335.113, 54647.059, 57959, 61270.941, 64582.887, 67894.828, 71206.773, 74518.711, 81142.602, 97702.313, 114262.03
+@type float
+@label Value
+@class other
+@N_unique .
+@N 3390
+ 
+_@NOTES
+ 
+=====flags=====
+@freq 1113
+@values "E"
+@example0 E
+@type str1
+@label Flags
+@class constant
+@N_unique 1
+@N 1113
+ 
+_@NOTES
+ 
+{com}. 
 . // noi profiler report
 . // profiler off
 . {c )-}

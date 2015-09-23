@@ -9,6 +9,8 @@
 
 // profiler on
 
+cap noi {
+
 $loadCommand
 
 describe, short
@@ -311,6 +313,7 @@ noi di as res " "
 
 // noi profiler report
 // profiler off
+}
 
 exit, clear STATA
 
