@@ -15,7 +15,6 @@
  */
 package statdoc.tests;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -124,9 +123,6 @@ public class ParseDoFileTest {
             e.printStackTrace();
         }
 
-        
-        
-        
         /*
          * FileItem item = hub.getFiles().iterator().next(); StataDoFileTask
          * task = new StataDoFileTask(item, null);
@@ -154,9 +150,8 @@ public class ParseDoFileTest {
     @Test
     public void testIndentProblem1() {
 
-        String content = "if substr(\"${JK_s`i'}\",1,2)==\"S_\" {" + "\n" +
-                "indented line" + "\n" +
-                "}";
+        String content = "if substr(\"${JK_s`i'}\",1,2)==\"S_\" {" + "\n"
+                + "indented line" + "\n" + "}";
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("desc", new String[] { "sum" });
@@ -165,19 +160,62 @@ public class ParseDoFileTest {
 
         // System.out.println( i.getContent() );
 
-        for ( Item c : i.getChildrenBy("cmd:") ) {
-            System.out.println( c.get("indent") + " : " + c.getContent() );
+        for (Item c : i.getChildrenBy("cmd:")) {
+            System.out.println(c.get("indent") + " : " + c.getContent());
         }
-        
+
         Collection<Item> cmds = i.getChildrenBy("cmd:");
         Iterator<Item> it = cmds.iterator();
+
+        assertEquals(0, it.next().get("indent"));
+        assertEquals(1, it.next().get("indent"));
+        assertEquals(0, it.next().get("indent"));
+
+    }
+
+    /**
+     * test the following line
+     * 
+     * sum distid *`i'
+     * 
+     * should match nothing as plain wildcard
+     */
+    @Test
+    public void testMatchingProblem1() {
+
+        String content = "sum a bd distid *`i' * a*";
+
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("desc", new String[] { "sum" });
+
+        Item i = runDoParser(content, map);
+
+        // System.out.println( i.getContent() );
+
+        for (Item c : i.getChildrenBy("cmd:")) {
+            System.out.println(c.get("indent") + " : " + c.getContent());
+        }
+
+        Collection<Item> cmds = i.getChildrenBy("cmd:");
+        Iterator<Item> it = cmds.iterator();
+
+        Item line = it.next();
+
+        assertEquals(0, line.get("indent"));
+
+        System.out.println(line.getChildren());
+
+        Collection<Item> matches = line.getChildrenBy("match:");
+        Iterator<Item> itm = matches.iterator();
+
+        for( Item match: matches ) {
+            System.out.println(match.get("regex"));
+        }
         
-        assertEquals( 0, it.next().get("indent") );
-        assertEquals( 1, it.next().get("indent") );
-        assertEquals( 0, it.next().get("indent") );
+        assertEquals(5, matches.size());
         
     }
-    
+
     /*
      * helper method to run do file
      */
@@ -195,14 +233,13 @@ public class ParseDoFileTest {
             StatdocItemHub hub = new StatdocItemHub();
             hub.setStataCmdTypes(cmdTypes);
             hub.sourceDir = new File("/").toPath();
-            
+
             StataDoFileTask t2 = new StataDoFileTask(file.toPath(),
                     "cmd:stata:do", hub, null);
 
             t2.run();
 
-            org.junit.Assert
-                    .assertEquals(1, hub.getFiles().size());
+            org.junit.Assert.assertEquals(1, hub.getFiles().size());
 
             i = hub.getFiles().iterator().next();
 
@@ -213,7 +250,7 @@ public class ParseDoFileTest {
 
         return i;
     }
-    
+
     @Test
     public void testSplit() {
 

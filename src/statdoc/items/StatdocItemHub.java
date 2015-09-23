@@ -328,7 +328,7 @@ public class StatdocItemHub {
             List<Item> matchList = new ArrayList<Item>();
 
             // only resolve regex if it contains info
-            if (regex.length() > 2) {
+            if (regex.matches(".*[a-zA-Z].*")) {
                 /*
                  * check data files first
                  * 
@@ -420,6 +420,8 @@ public class StatdocItemHub {
                     m.addChild(i);
                 }
             } else if ( matchList.size() >= maxmatch ){
+                // FIXME this does not remove the prev matched items
+                
                 m.addWarning("too many matches for this term");
                 String stripterm = m.get("term").toString()
                         .replaceAll("[^a-zA-Z0-9_]", "").trim();

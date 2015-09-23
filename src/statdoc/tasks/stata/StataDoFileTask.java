@@ -53,8 +53,8 @@ public class StataDoFileTask implements Task {
     private MatchItem currentIn;
     private MatchItem currentOut;
 
-    public StataDoFileTask(Path file, String type,
-            StatdocItemHub hub, ThreadPoolExecutor taskList) {
+    public StataDoFileTask(Path file, String type, StatdocItemHub hub,
+            ThreadPoolExecutor taskList) {
         this.file = file;
         this.taskList = taskList;
         this.type = type;
@@ -123,7 +123,8 @@ public class StataDoFileTask implements Task {
                 // encountered
                 // inside the mata block
 
-            } else if (trimLine.equals("mata") || trimLine.equals("mata:") || trimLine.startsWith("mata ")) {
+            } else if (trimLine.equals("mata") || trimLine.equals("mata:")
+                    || trimLine.startsWith("mata ")) {
                 // start mata block
                 mode = ReadMode.MataBlock;
 
@@ -249,7 +250,7 @@ public class StataDoFileTask implements Task {
                     }
 
                     // deal with indent reduction
-                    if (StataUtils.balanceChars(trimLine, "{" , "}") == -1) {
+                    if (StataUtils.balanceChars(trimLine, "{", "}") == -1) {
                         indent--;
                     }
 
@@ -281,7 +282,7 @@ public class StataDoFileTask implements Task {
                     }
 
                     // deal with indent increase
-                    if (StataUtils.balanceChars(trimLine, "{" , "}") == 1) {
+                    if (StataUtils.balanceChars(trimLine, "{", "}") == 1) {
                         indent++;
                     }
 
@@ -361,11 +362,11 @@ public class StataDoFileTask implements Task {
             }
 
         }
-        
-        if ( fileItem.containsKey("statdocrun") ) {
-            taskList.execute( new StataRunDoFileTask(fileItem, hub, taskList));
+
+        if (fileItem.containsKey("statdocrun")) {
+            taskList.execute(new StataRunDoFileTask(fileItem, hub, taskList));
         }
-        
+
         Thread.currentThread().setName(
                 "Thread " + Thread.currentThread().getId());
     }
@@ -398,7 +399,7 @@ public class StataDoFileTask implements Task {
 
         String[] parts = StataUtils.splitSave(currentCmd.trim(), "//");
         if (parts.length > 1) {
-            info.put("comment", "//"+parts[1]);
+            info.put("comment", "//" + parts[1]);
         }
         parts = StataUtils.splitSave(parts[0].trim(), ",");
         if (parts.length > 1) {
@@ -593,22 +594,27 @@ public class StataDoFileTask implements Task {
                         .get(field).toString());
                 int counter = 0;
                 for (String param : params) {
-                    if (param.trim().length() > 0 && !param.matches("[\\d]+")
-                            && param.matches(".*[a-zA-Z].*")) {
+                    // check for content and not number
+                    if (param.trim().length() > 0 && !param.matches("[\\d]+")) {
+                        String regex = StataUtils.stataTokenToRegex(param
+                                .replaceAll("\"", ""));
+                        
+                        // check if there is at least one character to match
+                        if (regex.matches(".*[a-zA-Z].*")) {
 
-                        counter++;
-                        MatchItem var = hub.createMatch(cmdItem.getLine() + "-"
-                                + counter, "variable");
-                        var.put("term", param);
-                        var.put("regex", StataUtils.stataTokenToRegex(param
-                                .replaceAll("\"", "")));
-                        var.put("relation", type);
-                        var.put("origin", cmdItem);
-                        var.put("field", field);
+                            counter++;
+                            MatchItem var = hub.createMatch(cmdItem.getLine()
+                                    + "-" + counter, "variable");
+                            var.put("term", param);
+                            var.put("regex", regex);
+                            var.put("relation", type);
+                            var.put("origin", cmdItem);
+                            var.put("field", field);
 
-                        cmdItem.addChild("match:input:file", currentIn);
-                        cmdItem.addChild("match:output:file", currentOut);
-                        cmdItem.addChild("match:var", var);
+                            cmdItem.addChild("match:input:file", currentIn);
+                            cmdItem.addChild("match:output:file", currentOut);
+                            cmdItem.addChild("match:var", var);
+                        }
                     }
                 }
             }
