@@ -8,6 +8,10 @@ local homedir = "/Users/mas/"
 local basedir = "`homedir'/workspace/web/statdoc"
 local dropdir = "`homedir'/Dropbox"
 
+
+// merging
+statdoc, source("`dropdir'/National_Pride_Large_Data/") output("`basedir'/merging/") i d
+
 // example
 statdoc, source("`dropdir'/Stata_conference_2015/example") output("`basedir'/example/")
 
@@ -16,9 +20,6 @@ statdoc, source("`dropdir'/Stata_conference_2015/example") output("`basedir'/exa
 
 // itsp
 statdoc, source("`dropdir'/Stata_conference_2015/itsp") output("`basedir'/itsp/")
-
-// merging
-statdoc, source("`dropdir'/National_Pride_Large_Data") output("`basedir'/merging/")
 
 // ado
 // nothing right now

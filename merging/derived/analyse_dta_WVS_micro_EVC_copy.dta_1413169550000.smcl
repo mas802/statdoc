@@ -12,9 +12,10 @@
 . 
 . // profiler on
 . 
+. cap noi {c -(}
+. 
 . use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/WVS/WVS_micro_EVC_copy.dta"
-{txt}
-{com}. 
+. 
 . describe, short
 
 {txt}Contains data from {res}/Users/mas/Dropbox/National_Pride_Large_Data/Data/WVS/WVS_micro_EVC_copy.dta
@@ -22,45 +23,33 @@
 {txt} vars:{res}         1,707                          13 Oct 2014 13:05
 {txt} size:{res}   801,438,804                          
 {txt}Sorted by:  
-
 {com}. 
 . local N = r(N)
-{txt}
-{com}. local variables = r(k)
-{txt}
-{com}. 
+. local variables = r(k)
+. 
 . di "@N `N'"
 {res}@N 330354
-{txt}
 {com}. di "@variables `variables'"
 {res}@variables 1707
-{txt}
 {com}. 
 . datasignature
   {res}330354:1707(87616):2328980098:1954542582
-{txt}
 {com}. local datasig = "`r(datasignature)'"
-{txt}
-{com}. 
+. 
 . di "@datasignature `datasig'"
 {res}@datasignature 330354:1707(87616):2328980098:1954542582
-{txt}
 {com}. 
 . cap noi xtset
 {err}panel variable not set; use {bf:xtset} {it:varname} ...
-{txt}
 {com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
-{txt}
-{com}. 
+. 
 . notes _dta
-{res}{txt}
-{com}. 
+{res}{com}. 
 . qui {c -(}
 {res}@_subsample 585
-{txt}
 {com}. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -58369,9 +58358,10 @@ _@NOTES
  
 _@NOTES
  
-{txt}
 {com}. 
 . // noi profiler report
 . // profiler off
-. 
+. {c )-}
+{txt}
+{com}. 
 . exit, clear STATA

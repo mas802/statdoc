@@ -12,9 +12,10 @@
 . 
 . // profiler on
 . 
+. cap noi {c -(}
+. 
 . use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/3 - Economy & Growth.dta"
-{txt}
-{com}. 
+. 
 . describe, short
 
 {txt}Contains data from {res}/Users/mas/Dropbox/National_Pride_Large_Data/Data/3 - Economy & Growth.dta
@@ -22,45 +23,33 @@
 {txt} vars:{res}           281                          9 Oct 2014 14:36
 {txt} size:{res}    32,155,056                          
 {txt}Sorted by:  {res}countryname  countrycode  year
-{txt}
 {com}. 
 . local N = r(N)
-{txt}
-{com}. local variables = r(k)
-{txt}
-{com}. 
+. local variables = r(k)
+. 
 . di "@N `N'"
 {res}@N 13932
-{txt}
 {com}. di "@variables `variables'"
 {res}@variables 281
-{txt}
 {com}. 
 . datasignature
   {res}13932:281(67662):3351724465:1127138628
-{txt}
 {com}. local datasig = "`r(datasignature)'"
-{txt}
-{com}. 
+. 
 . di "@datasignature `datasig'"
 {res}@datasignature 13932:281(67662):3351724465:1127138628
-{txt}
 {com}. 
 . cap noi xtset
 {err}panel variable not set; use {bf:xtset} {it:varname} ...
-{txt}
 {com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
-{txt}
-{com}. 
+. 
 . notes _dta
-{res}{txt}
-{com}. 
+{res}{com}. 
 . qui {c -(}
 {res}@_subsample 3558
-{txt}
 {com}. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
@@ -9481,9 +9470,10 @@ pa_nus_pr~05 {c |}{res}        39    264.3395    883.8529   .3194223   4192.825
  
 _@NOTES
  
-{txt}
 {com}. 
 . // noi profiler report
 . // profiler off
-. 
+. {c )-}
+{txt}
+{com}. 
 . exit, clear STATA

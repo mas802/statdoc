@@ -12,9 +12,10 @@
 . 
 . // profiler on
 . 
+. cap noi {c -(}
+. 
 . use  "/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/WorldBankWorldwideGovernanceIndicators/wgi/wgi_data.dta"
-{txt}
-{com}. 
+. 
 . describe, short
 
 {txt}Contains data from {res}/Users/mas/Dropbox/National_Pride_Large_Data/Data/EVC_data/Indexes/WorldBankWorldwideGovernanceIndicators/wgi/wgi_data.dta
@@ -22,45 +23,33 @@
 {txt} vars:{res}             8                          31 Jul 2014 14:59
 {txt} size:{res}        87,290                          
 {txt}Sorted by:  
-
 {com}. 
 . local N = r(N)
-{txt}
-{com}. local variables = r(k)
-{txt}
-{com}. 
+. local variables = r(k)
+. 
 . di "@N `N'"
 {res}@N 3010
-{txt}
 {com}. di "@variables `variables'"
 {res}@variables 8
-{txt}
 {com}. 
 . datasignature
   {res}3010:8(40515):1531485188:2726731126
-{txt}
 {com}. local datasig = "`r(datasignature)'"
-{txt}
-{com}. 
+. 
 . di "@datasignature `datasig'"
 {res}@datasignature 3010:8(40515):1531485188:2726731126
-{txt}
 {com}. 
 . cap noi xtset
 {err}panel variable not set; use {bf:xtset} {it:varname} ...
-{txt}
 {com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
-{txt}
-{com}. 
+. 
 . notes _dta
-{res}{txt}
-{com}. 
+{res}{com}. 
 . qui {c -(}
-{txt}
-{com}. 
+. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
 . di "=====`var'====="
@@ -561,9 +550,10 @@ ControlofC~n {c |}{res}      2845   -.0058401     1.00293  -2.057458   2.585616
  
 _@NOTES
  
-{txt}
 {com}. 
 . // noi profiler report
 . // profiler off
-. 
+. {c )-}
+{txt}
+{com}. 
 . exit, clear STATA
