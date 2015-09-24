@@ -22,6 +22,9 @@ program statdoc
 	else if ("`subcmd'" == ",") {
 		statdoc_main , `0'
 	} 
+	else if ("`subcmd'" == "") {
+		statdoc_main
+	} 
 	else {
 		di "invalid command."
 	}
