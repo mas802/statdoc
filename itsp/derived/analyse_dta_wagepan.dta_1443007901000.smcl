@@ -1,0 +1,1772 @@
+{smcl}
+{txt}{sf}{ul off}
+
+{com}. /** 
+>  * A do file to run the standard stats for a whole data set. 
+>  *
+>  * Note that you must delete the files in the derived directory
+>  * for changes to be reflected in the output.
+>  *
+>  * @version 0.1
+> */
+. 
+. // profiler on
+. 
+. cap noi {c -(}
+. 
+. use  "/Users/mas/Dropbox/Stata_conference_2015/itsp/wagepan.dta"
+. 
+. describe, short
+
+{txt}Contains data from {res}/Users/mas/Dropbox/Stata_conference_2015/itsp/wagepan.dta
+{txt}  obs:{res}         4,360                          
+{txt} vars:{res}            44                          17 May 2006 16:51
+{txt} size:{res}       222,360                          
+{txt}Sorted by:  {res}nr  year
+{com}. 
+. local N = r(N)
+. local variables = r(k)
+. 
+. di "@N `N'"
+{res}@N 4360
+{com}. di "@variables `variables'"
+{res}@variables 44
+{com}. 
+. datasignature
+  {res}4360:44(72285):1575232148:2862904644
+{com}. local datasig = "`r(datasignature)'"
+. 
+. di "@datasignature `datasig'"
+{res}@datasignature 4360:44(72285):1575232148:2862904644
+{com}. 
+. cap noi xtset
+{txt}{col 8}panel variable:  {res}nr (balanced)
+{com}. if ( !_rc ) {c -(}
+.     di "@timevar `r(timevar)'"
+{res}@timevar 
+{com}.     di "@panelvar `r(panelvar)'"
+{res}@panelvar nr
+{com}. {c )-}
+. 
+. notes _dta
+{res}{com}. 
+. qui {c -(}
+. 
+. foreach var of varlist * {c -(}
+{txt}  2{com}. 
+. di "=====`var'====="
+{txt}  3{com}. qui {c -(}
+{txt}  4{com}. local category_cutoff = 30
+{txt}  5{com}. 
+. // this takes very long on large datasets (and does mostly the same as other things below)
+. // codebook `var'
+. 
+. local isstr = ""
+{txt}  6{com}. local unique = ""
+{txt}  7{com}. local total = ""
+{txt}  8{com}. local class = ""
+{txt}  9{com}. 
+. local type : type `var' 
+{txt} 10{com}. local label : variable label `var' 
+{txt} 11{com}. 
+. local class = "other"
+{txt} 12{com}. 
+. // test for string
+. capture confirm string variable `var'
+{txt} 13{com}. if ( !_rc ) {c -(}
+{txt} 14{com}.     // we now it is a string
+.     local isstr = "YES"
+{txt} 15{com}.     capture tab `var', matcell( freq )
+{txt} 16{com}.     if ( !_rc ) {c -(}
+{txt} 17{com}.     
+.         // not too many obs
+.         local total = `r(N)'
+{txt} 18{com}.         local unique = r(r)
+{txt} 19{com}. 
+.         if ( `unique' < `category_cutoff' ) {c -(}
+{txt} 20{com}.         forvalues i=1/`unique' {c -(}
+{txt} 21{com}.             if ( `i' == 1 ) {c -(}
+{txt} 22{com}.                 noi di "@freq " _continue
+{txt} 23{com}.             {c )-}
+{txt} 24{com}.             noi di freq[`i',1] _continue
+{txt} 25{com}.             if ( `i' == `unique' ) {c -(}
+{txt} 26{com}.                 noi di ""
+{txt} 27{com}.             {c )-}
+{txt} 28{com}.             else {c -(}
+{txt} 29{com}.                 noi di ", " _continue
+{txt} 30{com}.             {c )-}
+{txt} 31{com}.         {c )-}
+{txt} 32{com}. 
+.         levelsof `var', local(levels)
+{txt} 33{com}.         local i = 1
+{txt} 34{com}.         foreach l of local levels {c -(}
+{txt} 35{com}.             if ( `i' == 1 ) {c -(}
+{txt} 36{com}.                 noi di "@values " _continue
+{txt} 37{com}.             {c )-}
+{txt} 38{com}.             noi di `""`l'""' _continue
+{txt} 39{com}.             if ( `i' == `unique' ) {c -(}
+{txt} 40{com}.                 noi di ""
+{txt} 41{com}.             {c )-}
+{txt} 42{com}.             else {c -(}
+{txt} 43{com}.                 noi di ", " _continue
+{txt} 44{com}.             {c )-}
+{txt} 45{com}.             local i = `i' + 1
+{txt} 46{com}.         {c )-}
+{txt} 47{com}.         {c )-}
+{txt} 48{com}.         
+.         if ( `total' == 0 ) {c -(}
+{txt} 49{com}.             local class = "empty"
+{txt} 50{com}.         {c )-}
+{txt} 51{com}.         else if ( `unique' == 1 ) {c -(}
+{txt} 52{com}.             local class = "constant"
+{txt} 53{com}.         {c )-}
+{txt} 54{com}.         else if ( `unique' == 2 ) {c -(}
+{txt} 55{com}.             local class = "dummy"
+{txt} 56{com}.         {c )-}
+{txt} 57{com}.         else if ( `unique' < `category_cutoff' & `unique' < `total' ) {c -(}
+{txt} 58{com}.             local class = "category"
+{txt} 59{com}.         {c )-}
+{txt} 60{com}.         else if (`unique' == `total') {c -(}
+{txt} 61{com}.             local class = "identifier"
+{txt} 62{com}.         {c )-} 
+{txt} 63{com}.         else {c -(}
+{txt} 64{com}.             local class = "string"
+{txt} 65{com}.         {c )-}        
+{txt} 66{com}.     {c )-}
+{txt} 67{com}.     else {c -(}
+{txt} 68{com}.         // lots of observations, not sure what to do yet
+.         // should get random samples here
+.         noi di "@example0 " `var'[1]
+{txt} 69{com}.     {c )-}
+{txt} 70{com}. {c )-}
+{txt} 71{com}. else {c -(}
+{txt} 72{com}.     // else assume it is numeric
+. 
+.     noi inspect `var'
+{txt} 73{com}. 
+.     local total = r(N)
+{txt} 74{com}.     local unique = r(N_unique)
+{txt} 75{com}. 
+.     if ( `unique' < `category_cutoff' ) {c -(}
+{txt} 76{com}.         local cat = "YES"
+{txt} 77{com}.     {c )-}
+{txt} 78{com}. 
+.     if ( "`unique'" != "." ) {c -(}
+{txt} 79{com}.         if ( `total' == 0 ) {c -(}
+{txt} 80{com}.             local class = "empty"
+{txt} 81{com}.         {c )-}
+{txt} 82{com}.         else if ( `unique' == 1 ) {c -(}
+{txt} 83{com}.             local class = "constant"
+{txt} 84{com}.         {c )-}
+{txt} 85{com}.         else if ( `unique' == 2 ) {c -(}
+{txt} 86{com}.             local class = "dummy"
+{txt} 87{com}.         {c )-}
+{txt} 88{com}.         else if ( `unique' < `category_cutoff' & `unique' < `total' ) {c -(}
+{txt} 89{com}.             capture confirm string variable `var'
+{txt} 90{com}.             if ( !_rc ) {c -(}
+{txt} 91{com}.                 local class = "other"
+{txt} 92{com}.             {c )-} 
+{txt} 93{com}.             else {c -(}
+{txt} 94{com}.                 local class = "category"
+{txt} 95{com}.             {c )-}
+{txt} 96{com}.         {c )-}
+{txt} 97{com}.         else if (`r(N_unique)' == `r(N)') {c -(}
+{txt} 98{com}.             local class = "identifier"
+{txt} 99{com}.         {c )-}
+{txt}100{com}.     {c )-}
+{txt}101{com}. 
+. // TODO this takes too long?   sum `var', detail
+.     noi sum `var'
+{txt}102{com}.     local min = r(min)
+{txt}103{com}.     local max = r(max)
+{txt}104{com}.     local nobs = r(N)
+{txt}105{com}.     
+.     // TODO maybe the precision should be handled later (vm?)
+.     if ( ( "`type'" != "double" & "`type'" != "float" ) & "`class'" == "constant" ) {c -(}
+{txt}106{com}.         noi di "@mean " %9.0f r(mean)
+{txt}107{com}.     {c )-} 
+{txt}108{com}.     else {c -(}
+{txt}109{com}.         noi di "@mean " %9.3f r(mean)
+{txt}110{com}.     {c )-}
+{txt}111{com}.     noi di "@sd " %9.3f `r(sd)'
+{txt}112{com}.     // noi di "@skewness " %9.3f `r(skewness)'
+.     // noi di "@kurtosis " %9.3f `r(kurtosis)'
+.     
+.     if ( "`type'" == "double" | "`type'" == "float" ) {c -(}
+{txt}113{com}.       noi di "@min " %9.3f `r(min)'
+{txt}114{com}.       noi di "@max " %9.3f `r(max)'
+{txt}115{com}.       // noi di "@p50 " %9.3f `r(p50)'
+.     {c )-} 
+{txt}116{com}.     else {c -(}
+{txt}117{com}.       noi di "@min " %9.0f `r(min)'
+{txt}118{com}.       noi di "@max " %9.0f `r(max)'
+{txt}119{com}.       // noi di "@p50 " %9.0f `r(p50)'
+.     {c )-}
+{txt}120{com}. {c )-}
+{txt}121{com}. 
+. 
+. if ( ( "`class'" == "constant" ) & ( "`isstr'"!= "YES" ) ) {c -(}
+{txt}122{com}.     noi di "@values " `var'[1]
+{txt}123{com}. {c )-}
+{txt}124{com}. else if ( "`class'" == "category" | "`class'" == "dummy" ) {c -(}
+{txt}125{com}.     cap noi {c -(}
+{txt}126{com}.         if ( "`isstr'" != "YES" ) {c -(}
+{txt}127{com}.             cap tab `var', matcell( freq ) matrow( name )
+{txt}128{com}.             if ( _rc != 0 | ("`r(r)'" != "`unique'") ) {c -(}
+{txt}129{com}.                 local class = "other"
+{txt}130{com}.                 local unique = r(r)
+{txt}131{com}.             {c )-}
+{txt}132{com}.             else {c -(}
+{txt}133{com}.                 forvalues i=1/`unique' {c -(}
+{txt}134{com}.                     if ( `i' == 1 ) {c -(}
+{txt}135{com}.                         noi di "@values " _continue
+{txt}136{com}.                     {c )-}
+{txt}137{com}.                     noi di name[`i',1] _continue
+{txt}138{com}.                     if ( `i' == `unique' ) {c -(}
+{txt}139{com}.                         noi di ""
+{txt}140{com}.                     {c )-}
+{txt}141{com}.                     else {c -(}
+{txt}142{com}.                         noi di ", " _continue
+{txt}143{com}.                     {c )-}
+{txt}144{com}.                 {c )-}
+{txt}145{com}.                 forvalues i=1/`unique' {c -(}
+{txt}146{com}.                     if ( `i' == 1 ) {c -(}
+{txt}147{com}.                         noi di "@names " _continue
+{txt}148{com}.                     {c )-}
+{txt}149{com}.                     local val = name[`i',1]
+{txt}150{com}.                     local lab :label (`var') `val'
+{txt}151{com}.                     noi di `""`lab'""' _continue
+{txt}152{com}.                     if ( `i' == `unique' ) {c -(}
+{txt}153{com}.                         noi di ""
+{txt}154{com}.                     {c )-}
+{txt}155{com}.                     else {c -(}
+{txt}156{com}.                         noi di ", " _continue
+{txt}157{com}.                     {c )-}
+{txt}158{com}.                 {c )-}
+{txt}159{com}.                 forvalues i=1/`unique' {c -(}
+{txt}160{com}.                     if ( `i' == 1 ) {c -(}
+{txt}161{com}.                         noi di "@freq " _continue
+{txt}162{com}.                     {c )-}
+{txt}163{com}.                     noi di freq[`i',1] _continue
+{txt}164{com}.                     if ( `i' == `unique' ) {c -(}
+{txt}165{com}.                         noi di ""
+{txt}166{com}.                     {c )-}
+{txt}167{com}.                     else {c -(}
+{txt}168{com}.                         noi di ", " _continue
+{txt}169{com}.                     {c )-}
+{txt}170{com}.                 {c )-}
+{txt}171{com}.             {c )-}
+{txt}172{com}.         {c )-}
+{txt}173{com}.     {c )-}
+{txt}174{com}. {c )-}
+{txt}175{com}. else {c -(}
+{txt}176{com}.     noi di "@example0 " `var'[1]
+{txt}177{com}. {c )-}
+{txt}178{com}. 
+. // histogram
+. if ( "`isstr'" != "YES" & ("`class'" == "other" | "`class'" == "identifier") ) {c -(}
+{txt}179{com}. cap noi {c -(}
+{txt}180{com}.     tempvar h w
+{txt}181{com}.     twoway__histogram_gen `var', gen( `h' `w' )
+{txt}182{com}.     forvalues i=1/`=r(n_x)' {c -(}
+{txt}183{com}.         if ( `i' == 1 ) {c -(}
+{txt}184{com}.             noi di "@histh " _continue
+{txt}185{com}.         {c )-}
+{txt}186{com}.         noi di `h'[`i'] _continue
+{txt}187{com}.         if ( `i' == `=r(n_x)' ) {c -(}
+{txt}188{com}.             noi di ""
+{txt}189{com}.         {c )-}
+{txt}190{com}.         else {c -(}
+{txt}191{com}.             noi di ", " _continue
+{txt}192{com}.         {c )-}
+{txt}193{com}.     {c )-}
+{txt}194{com}.     forvalues i=1/`=r(n_x)' {c -(}
+{txt}195{com}.         if ( `i' == 1 ) {c -(}
+{txt}196{com}.             noi di "@histw " _continue
+{txt}197{com}.         {c )-}
+{txt}198{com}.         noi di `w'[`i'] _continue
+{txt}199{com}.         if ( `i' == `=r(n_x)' ) {c -(}
+{txt}200{com}.             noi di ""
+{txt}201{com}.         {c )-}
+{txt}202{com}.         else {c -(}
+{txt}203{com}.             noi di ", " _continue
+{txt}204{com}.         {c )-}
+{txt}205{com}.     {c )-}
+{txt}206{com}.     {c )-}
+{txt}207{com}. {c )-}
+{txt}208{com}. 
+. noi di "@type `type'"
+{txt}209{com}. noi di "@label `label'"
+{txt}210{com}. noi di "@class `class'"
+{txt}211{com}. noi di "@N_unique `unique'"
+{txt}212{com}. noi di "@N `total'"
+{txt}213{com}. 
+. noi di as res " "
+{txt}214{com}. noi di "_@NOTES"
+{txt}215{com}. 
+. noi notes `var'
+{txt}216{com}. 
+. noi di as res " "
+{txt}217{com}. {c )-}
+{txt}218{com}. 
+. 
+. {c )-}
+=====nr=====
+
+{res}nr:  person identifier                          {txt}Number of Observations
+{hline 22}                      {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#   #                     {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#   #                     {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#   #       #             {txt}Positive       {res} 4360      4360          -
+{txt}{c |}  {res}#   #   #   #                            {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}13                12548                      4360
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 10}nr {c |}{res}      4360    5262.059     3496.15         13      12548
+@mean  5262.059
+@sd  3496.150
+@min        13
+@max     12548
+@example0 13
+@histh .00011066, .00006324, .00015809, .00011066, .00009485, .00009485, .00013174, .00007378, .00012647, .00016336, .0001212, .00008431, .00008958, .00010539, .00007904, .00009485, .00008958, .00003162, .00004216, .00004216, .00003689, .0000527, .0000527, .00008431, .00009485, .00011593, .00005797, .00009485, .00008958, .00006324, .00003689, .00001054, .00001054, .00009485, .00006851
+@histw 187.09723, 535.29169, 883.48608, 1231.6805, 1579.875, 1928.0695, 2276.2639, 2624.4583, 2972.6528, 3320.8472, 3669.0417, 4017.2361, 4365.4307, 4713.625, 5061.8193, 5410.0137, 5758.2085, 6106.4028, 6454.5972, 6802.7915, 7150.9863, 7499.1807, 7847.375, 8195.5693, 8543.7637, 8891.958, 9240.1523, 9588.3477, 9936.542, 10284.736, 10632.931, 11329.319, 11677.514, 12025.708, 12373.902
+@type int
+@label person identifier
+@class other
+@N_unique .
+@N 4360
+ 
+_@NOTES
+ 
+=====year=====
+
+year:  1980 to 1987                             {txt}Number of Observations
+{hline 19}                         {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#       #       #         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#       #       #         {txt}Zero               {res}-         -          -
+{txt}{c |}  {res}#       #       #         {txt}Positive       {res} 4360      4360          -
+{txt}{c |}  {res}#   #   #   #   #                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #   #   #         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}1980               1987                      4360
+   (8 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}year {c |}{res}      4360      1983.5    2.291551       1980       1987
+@mean  1983.500
+@sd     2.292
+@min      1980
+@max      1987
+@values 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987
+@names "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987"
+@freq 545, 545, 545, 545, 545, 545, 545, 545
+@type int
+@label 1980 to 1987
+@class category
+@N_unique 8
+@N 4360
+ 
+_@NOTES
+ 
+=====agric=====
+
+agric:  =1 if in agriculture                    {txt}Number of Observations
+{hline 28}                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4220      4220          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  140       140          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}agric {c |}{res}      4360    .0321101    .1763127          0          1
+@mean     0.032
+@sd     0.176
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4220, 140
+@type byte
+@label =1 if in agriculture
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====black=====
+
+black:  =1 if black                             {txt}Number of Observations
+{hline 19}                         {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3856      3856          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  504       504          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}black {c |}{res}      4360    .1155963    .3197769          0          1
+@mean     0.116
+@sd     0.320
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3856, 504
+@type byte
+@label =1 if black
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====bus=====
+
+bus:  =1 if business & repair serv.             {txt}Number of Observations
+{hline 35}         {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4029      4029          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  331       331          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}bus {c |}{res}      4360    .0759174    .2648963          0          1
+@mean     0.076
+@sd     0.265
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4029, 331
+@type byte
+@label =1 if business & repair serv.
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====construc=====
+
+construc:  =1 if in construction                {txt}Number of Observations
+{hline 32}            {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4033      4033          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  327       327          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 4}construc {c |}{res}      4360        .075    .2634216          0          1
+@mean     0.075
+@sd     0.263
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4033, 327
+@type byte
+@label =1 if in construction
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====ent=====
+
+ent:  =1 if entertainment                       {txt}Number of Observations
+{hline 25}                   {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4294      4294          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   66        66          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}ent {c |}{res}      4360    .0151376    .1221142          0          1
+@mean     0.015
+@sd     0.122
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4294, 66
+@type byte
+@label =1 if entertainment
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====exper=====
+
+exper:  labor mkt experience                    {txt}Number of Observations
+{hline 28}                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}      {res}#                     {txt}Negative           {res}-         -          -
+{txt}{c |}      {res}#                     {txt}Zero           {res}    2         2          -
+{txt}{c |}      {res}#                     {txt}Positive       {res} 4358      4358          -
+{txt}{c |}      {res}#   #                                {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #   #                 {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #   #   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                    18                      4360
+  (19 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}exper {c |}{res}      4360    6.514679    2.825873          0         18
+@mean     6.515
+@sd     2.826
+@min         0
+@max        18
+@values 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+@names "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"
+@freq 2, 57, 268, 376, 464, 511, 523, 531, 533, 485, 275, 169, 81, 34, 22, 14, 10, 3, 2
+@type byte
+@label labor mkt experience
+@class category
+@N_unique 19
+@N 4360
+ 
+_@NOTES
+ 
+=====fin=====
+
+fin:  =1 if finance                             {txt}Number of Observations
+{hline 19}                         {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4199      4199          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  161       161          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}fin {c |}{res}      4360    .0369266    .1886033          0          1
+@mean     0.037
+@sd     0.189
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4199, 161
+@type byte
+@label =1 if finance
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====hisp=====
+
+hisp:  =1 if Hispanic                           {txt}Number of Observations
+{hline 21}                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3680      3680          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  680       680          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}hisp {c |}{res}      4360    .1559633    .3628622          0          1
+@mean     0.156
+@sd     0.363
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3680, 680
+@type byte
+@label =1 if Hispanic
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====poorhlth=====
+
+poorhlth:  =1 if in poor health                 {txt}Number of Observations
+{hline 31}             {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4286      4286          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   74        74          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 4}poorhlth {c |}{res}      4360    .0169725     .129183          0          1
+@mean     0.017
+@sd     0.129
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4286, 74
+@type byte
+@label =1 if in poor health
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====hours=====
+
+hours:  annual hours worked                     {txt}Number of Observations
+{hline 27}                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}          {res}#                 {txt}Negative           {res}-         -          -
+{txt}{c |}          {res}#                 {txt}Zero               {res}-         -          -
+{txt}{c |}          {res}#                 {txt}Positive       {res} 4360      4360          -
+{txt}{c |}          {res}#                                {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}      {res}#   #                 {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}.   #   #   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}120                4992                      4360
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}hours {c |}{res}      4360    2191.257    566.3523        120       4992
+@mean  2191.257
+@sd   566.352
+@min       120
+@max      4992
+@example0 2672
+@histh .00001017, 8.474e-06, .0000322, .00003728, .0000644, .00004576, .00007287, .00009152, .0001288, .00011355, .00015422, .00017456, .0002915, .00050334, .00253875, .00067113, .00062367, .00050165, .00035929, .00017964, .00016948, .00013219, .00014405, .00008982, .00006779, .00004406, .00002881, .00002034, .00002712, .00001864, .00001525, .00001356, 3.390e-06, 1.695e-06, 5.084e-06, 5.084e-06
+@histw 187.66667, 323, 458.33334, 593.66669, 729, 864.33331, 999.66669, 1135, 1270.3334, 1405.6666, 1541, 1676.3334, 1811.6666, 1947, 2082.3333, 2217.6667, 2353, 2488.3333, 2623.6667, 2759, 2894.3333, 3029.6667, 3165, 3300.3333, 3435.6667, 3571, 3706.3333, 3841.6667, 3977, 4112.3335, 4247.6665, 4383, 4518.3335, 4653.6665, 4789, 4924.3335
+@type int
+@label annual hours worked
+@class other
+@N_unique .
+@N 4360
+ 
+_@NOTES
+ 
+=====manuf=====
+
+manuf:  =1 if in manufacturing                  {txt}Number of Observations
+{hline 30}              {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3129      3129          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 1231      1231          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}manuf {c |}{res}      4360    .2823394    .4501893          0          1
+@mean     0.282
+@sd     0.450
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3129, 1231
+@type byte
+@label =1 if in manufacturing
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====married=====
+
+married:  =1 if married                         {txt}Number of Observations
+{hline 23}                     {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 2446      2446          -
+{txt}{c |}  {res}#   #                     {txt}Positive       {res} 1914      1914          -
+{txt}{c |}  {res}#   #                                    {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 5}married {c |}{res}      4360    .4389908    .4963208          0          1
+@mean     0.439
+@sd     0.496
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 2446, 1914
+@type byte
+@label =1 if married
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====min=====
+
+min:  =1 if mining                              {txt}Number of Observations
+{hline 18}                          {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4292      4292          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   68        68          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}min {c |}{res}      4360    .0155963    .1239218          0          1
+@mean     0.016
+@sd     0.124
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4292, 68
+@type byte
+@label =1 if mining
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====nrthcen=====
+
+nrthcen:  =1 if north central                   {txt}Number of Observations
+{hline 29}               {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3236      3236          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 1124      1124          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 5}nrthcen {c |}{res}      4360    .2577982    .4374725          0          1
+@mean     0.258
+@sd     0.437
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3236, 1124
+@type byte
+@label =1 if north central
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====nrtheast=====
+
+nrtheast:  =1 if north east                     {txt}Number of Observations
+{hline 27}                 {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3531      3531          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  829       829          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 4}nrtheast {c |}{res}      4360    .1901376    .3924546          0          1
+@mean     0.190
+@sd     0.392
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3531, 829
+@type byte
+@label =1 if north east
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ1=====
+
+occ1:  =1 if professional, technical            {txt}Number of Observations
+{hline 36}        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3907      3907          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  453       453          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ1 {c |}{res}      4360    .1038991    .3051646          0          1
+@mean     0.104
+@sd     0.305
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3907, 453
+@type byte
+@label =1 if professional, technical
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ2=====
+
+occ2:  =1 if mgr, official, proprietor          {txt}Number of Observations
+{hline 38}      {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3961      3961          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  399       399          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ2 {c |}{res}      4360    .0915138    .2883714          0          1
+@mean     0.092
+@sd     0.288
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3961, 399
+@type byte
+@label =1 if mgr, official, proprietor
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ3=====
+
+occ3:  =1 if sales                              {txt}Number of Observations
+{hline 18}                          {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4127      4127          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  233       233          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ3 {c |}{res}      4360    .0534404    .2249358          0          1
+@mean     0.053
+@sd     0.225
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4127, 233
+@type byte
+@label =1 if sales
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ4=====
+
+occ4:  =1 if clerical                           {txt}Number of Observations
+{hline 21}                       {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3874      3874          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  486       486          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ4 {c |}{res}      4360    .1114679    .3147468          0          1
+@mean     0.111
+@sd     0.315
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3874, 486
+@type byte
+@label =1 if clerical
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ5=====
+
+occ5:  =1 if craftsman, foreman                 {txt}Number of Observations
+{hline 31}             {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3426      3426          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  934       934          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ5 {c |}{res}      4360    .2142202    .4103273          0          1
+@mean     0.214
+@sd     0.410
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3426, 934
+@type byte
+@label =1 if craftsman, foreman
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ6=====
+
+occ6:  =1 if operative                          {txt}Number of Observations
+{hline 22}                      {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3479      3479          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  881       881          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ6 {c |}{res}      4360    .2020642    .4015859          0          1
+@mean     0.202
+@sd     0.402
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3479, 881
+@type byte
+@label =1 if operative
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ7=====
+
+occ7:  =1 if laborer, farmer                    {txt}Number of Observations
+{hline 28}                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3959      3959          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  401       401          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ7 {c |}{res}      4360    .0919725    .2890202          0          1
+@mean     0.092
+@sd     0.289
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3959, 401
+@type byte
+@label =1 if laborer, farmer
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ8=====
+
+occ8:  =1 if farm laborer, foreman              {txt}Number of Observations
+{hline 34}          {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4296      4296          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   64        64          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ8 {c |}{res}      4360    .0146789    .1202778          0          1
+@mean     0.015
+@sd     0.120
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4296, 64
+@type byte
+@label =1 if farm laborer, foreman
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====occ9=====
+
+occ9:  =1 if service                            {txt}Number of Observations
+{hline 20}                        {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3851      3851          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  509       509          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}occ9 {c |}{res}      4360    .1167431    .3211508          0          1
+@mean     0.117
+@sd     0.321
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3851, 509
+@type byte
+@label =1 if service
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====per=====
+
+per:  =1 if personal service                    {txt}Number of Observations
+{hline 28}                {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4287      4287          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}   73        73          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}per {c |}{res}      4360    .0167431    .1283221          0          1
+@mean     0.017
+@sd     0.128
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4287, 73
+@type byte
+@label =1 if personal service
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====pro=====
+
+pro:  =1 if professional & related              {txt}Number of Observations
+{hline 34}          {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4027      4027          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  333       333          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}pro {c |}{res}      4360    .0763761    .2656295          0          1
+@mean     0.076
+@sd     0.266
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4027, 333
+@type byte
+@label =1 if professional & related
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====pub=====
+
+pub:  =1 if public administration               {txt}Number of Observations
+{hline 33}           {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4185      4185          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  175       175          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}pub {c |}{res}      4360    .0401376    .1963044          0          1
+@mean     0.040
+@sd     0.196
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4185, 175
+@type byte
+@label =1 if public administration
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====rur=====
+
+rur:  =1 if live in rural area                  {txt}Number of Observations
+{hline 30}              {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3471      3471          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  889       889          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}rur {c |}{res}      4360    .2038991     .402941          0          1
+@mean     0.204
+@sd     0.403
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3471, 889
+@type byte
+@label =1 if live in rural area
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====south=====
+
+south:  =1 if south                             {txt}Number of Observations
+{hline 19}                         {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 2831      2831          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 1529      1529          -
+{txt}{c |}  {res}#   #                                    {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}south {c |}{res}      4360    .3506881    .4772402          0          1
+@mean     0.351
+@sd     0.477
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 2831, 1529
+@type byte
+@label =1 if south
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====educ=====
+
+educ:  years of schooling                       {txt}Number of Observations
+{hline 25}                   {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}              {res}#             {txt}Negative           {res}-         -          -
+{txt}{c |}              {res}#             {txt}Zero               {res}-         -          -
+{txt}{c |}              {res}#             {txt}Positive       {res} 4360      4360          -
+{txt}{c |}              {res}#                            {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}              {res}#             {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}.   .   #   #   #         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}3                    16                      4360
+  (13 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}educ {c |}{res}      4360    11.76697    1.746181          3         16
+@mean    11.767
+@sd     1.746
+@min         3
+@max        16
+@values 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+@names "3", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"
+@freq 8, 16, 40, 16, 144, 136, 376, 736, 1848, 432, 328, 248, 32
+@type byte
+@label years of schooling
+@class category
+@N_unique 13
+@N 4360
+ 
+_@NOTES
+ 
+=====tra=====
+
+tra:  =1 if transportation                      {txt}Number of Observations
+{hline 26}                  {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 4074      4074          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  286       286          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}tra {c |}{res}      4360    .0655963    .2476035          0          1
+@mean     0.066
+@sd     0.248
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 4074, 286
+@type byte
+@label =1 if transportation
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====trad=====
+
+trad:  =1 if trade                              {txt}Number of Observations
+{hline 18}                          {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3191      3191          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 1169      1169          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#   #                     {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}trad {c |}{res}      4360    .2681193    .4430309          0          1
+@mean     0.268
+@sd     0.443
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3191, 1169
+@type byte
+@label =1 if trade
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====union=====
+
+union:  =1 if in union                          {txt}Number of Observations
+{hline 22}                      {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3296      3296          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 1064      1064          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}union {c |}{res}      4360    .2440367    .4295639          0          1
+@mean     0.244
+@sd     0.430
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3296, 1064
+@type byte
+@label =1 if in union
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====lwage=====
+
+lwage:  log(wage)                               {txt}Number of Observations
+{hline 17}                           {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}              {res}#             {txt}Negative       {res}   43         -         43
+{txt}{c |}              {res}#             {txt}Zero               {res}-         -          -
+{txt}{c |}              {res}#             {txt}Positive       {res} 4317         -       4317
+{txt}{c |}              {res}#                            {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}              {res}#             {txt}Total          {res} 4360         -       4360
+{txt}{c |}  {res}.   .   .   #   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}-3.579079       4.05186                      4360
+(More than 99 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 7}lwage {c |}{res}      4360    1.649147    .5326094  -3.579079    4.05186
+@mean     1.649
+@sd     0.533
+@min    -3.579
+@max     4.052
+@example0 1.1975402
+@histh .00108203, .00216405, .00432811, .00432811, .0119023, .00324608, .01082027, .0119023, .02055851, .03029675, .05951148, .09738242, .27158874, .48474804, .70007139, .83640677, .76715708, .66869265, .42523658, .19476484, .06275756, .02380459, .01298432, .00757419, .00216405, .00108203, .00108203
+@histw -3.4730935, -1.3533883, -1.1414177, -.92944723, -.71747673, -.50550622, -.29353571, -.08156518, .13040534, .34237584, .55434638, .76631689, .9782874, 1.1902579, 1.4022285, 1.6141989, 1.8261695, 2.0381401, 2.2501104, 2.462081, 2.6740515, 2.8860221, 3.0979924, 3.309963, 3.5219336, 3.7339041, 3.9458747
+@type float
+@label log(wage)
+@class other
+@N_unique .
+@N 4360
+ 
+_@NOTES
+ 
+=====d81=====
+
+d81:  =1 if year == 1981                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d81 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1981
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====d82=====
+
+d82:  =1 if year == 1982                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d82 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1982
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====d83=====
+
+d83:  =1 if year == 1983                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d83 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1983
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====d84=====
+
+d84:  =1 if year == 1984                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d84 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1984
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====d85=====
+
+d85:  =1 if year == 1985                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d85 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1985
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====d86=====
+
+d86:  =1 if year == 1986                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d86 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1986
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====d87=====
+
+d87:  =1 if year == 1987                        {txt}Number of Observations
+{hline 24}                    {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res} 3815      3815          -
+{txt}{c |}  {res}#                         {txt}Positive       {res}  545       545          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   .                     {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                     1                      4360
+   (2 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 9}d87 {c |}{res}      4360        .125    .3307568          0          1
+@mean     0.125
+@sd     0.331
+@min         0
+@max         1
+@values 0, 1
+@names "0", "1"
+@freq 3815, 545
+@type byte
+@label =1 if year == 1987
+@class dummy
+@N_unique 2
+@N 4360
+ 
+_@NOTES
+ 
+=====expersq=====
+
+expersq:  exper^2                               {txt}Number of Observations
+{hline 17}                           {hline 30}
+                                            Total   Integers   Nonintegers
+{c |}  {res}#                         {txt}Negative           {res}-         -          -
+{txt}{c |}  {res}#                         {txt}Zero           {res}    2         2          -
+{txt}{c |}  {res}#                         {txt}Positive       {res} 4358      4358          -
+{txt}{c |}  {res}#                                        {txt}{hline 5}     {hline 5}      {hline 5}
+{c |}  {res}#                         {txt}Total          {res} 4360      4360          -
+{txt}{c |}  {res}#   #   .   .   .         {txt}Missing            {res}-
+{txt}{c +}{hline 22}{col 45}{hline 5}
+{res}0                   324                      4360
+  (19 unique values)
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 5}expersq {c |}{res}      4360    50.42477    40.78199          0        324
+@mean    50.425
+@sd    40.782
+@min         0
+@max       324
+@values 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324
+@names "0", "1", "4", "9", "16", "25", "36", "49", "64", "81", "100", "121", "144", "169", "196", "225", "256", "289", "324"
+@freq 2, 57, 268, 376, 464, 511, 523, 531, 533, 485, 275, 169, 81, 34, 22, 14, 10, 3, 2
+@type int
+@label exper^2
+@class category
+@N_unique 19
+@N 4360
+ 
+_@NOTES
+ 
+{com}. 
+. // noi profiler report
+. // profiler off
+. {c )-}
+{txt}
+{com}. 
+. exit, clear STATA

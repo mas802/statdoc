@@ -12,9 +12,10 @@
 . 
 . // profiler on
 . 
+. cap noi {c -(}
+. 
 . use  "/Users/mas/Dropbox/Public/cameron/CPS_2012_micro.dta"
-{txt}
-{com}. 
+. 
 . describe, short
 
 {txt}Contains data from {res}/Users/mas/Dropbox/Public/cameron/CPS_2012_micro.dta
@@ -22,45 +23,33 @@
 {txt} vars:{res}             9                          25 Jun 2014 18:21
 {txt} size:{res}     1,904,865                          
 {txt}Sorted by:  
-
 {com}. 
 . local N = r(N)
-{txt}
-{com}. local variables = r(k)
-{txt}
-{com}. 
+. local variables = r(k)
+. 
 . di "@N `N'"
 {res}@N 65685
-{txt}
 {com}. di "@variables `variables'"
 {res}@variables 9
-{txt}
 {com}. 
 . datasignature
   {res}65685:9(99506):575618589:3089225318
-{txt}
 {com}. local datasig = "`r(datasignature)'"
-{txt}
-{com}. 
+. 
 . di "@datasignature `datasig'"
 {res}@datasignature 65685:9(99506):575618589:3089225318
-{txt}
 {com}. 
 . cap noi xtset
 {err}panel variable not set; use {bf:xtset} {it:varname} ...
-{txt}
 {com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
-{txt}
-{com}. 
+. 
 . notes _dta
-{res}{txt}
-{com}. 
+{res}{com}. 
 . qui {c -(}
-{txt}
-{com}. 
+. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
 . di "=====`var'====="
@@ -621,9 +610,10 @@ age2:                                           {txt}Number of Observations
  
 _@NOTES
  
-{txt}
 {com}. 
 . // noi profiler report
 . // profiler off
-. 
+. {c )-}
+{txt}
+{com}. 
 . exit, clear STATA

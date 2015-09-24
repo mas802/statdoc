@@ -12,9 +12,10 @@
 . 
 . // profiler on
 . 
+. cap noi {c -(}
+. 
 . use  "/Users/mas/Dropbox/Public/cameron/t4_post_G6__4_Jul_2014.dta"
-{txt}
-{com}. 
+. 
 . describe, short
 
 {txt}Contains data from {res}/Users/mas/Dropbox/Public/cameron/t4_post_G6__4_Jul_2014.dta
@@ -22,45 +23,33 @@
 {txt} vars:{res}            13                          4 Jul 2014 19:58
 {txt} size:{res}       208,000                          
 {txt}Sorted by:  
-
 {com}. 
 . local N = r(N)
-{txt}
-{com}. local variables = r(k)
-{txt}
-{com}. 
+. local variables = r(k)
+. 
 . di "@N `N'"
 {res}@N 4000
-{txt}
 {com}. di "@variables `variables'"
 {res}@variables 13
-{txt}
 {com}. 
 . datasignature
   {res}4000:13(60387):270575628:1761457722
-{txt}
 {com}. local datasig = "`r(datasignature)'"
-{txt}
-{com}. 
+. 
 . di "@datasignature `datasig'"
 {res}@datasignature 4000:13(60387):270575628:1761457722
-{txt}
 {com}. 
 . cap noi xtset
 {err}panel variable not set; use {bf:xtset} {it:varname} ...
-{txt}
 {com}. if ( !_rc ) {c -(}
 .     di "@timevar `r(timevar)'"
 .     di "@panelvar `r(panelvar)'"
 . {c )-}
-{txt}
-{com}. 
+. 
 . notes _dta
-{res}{txt}
-{com}. 
+{res}{com}. 
 . qui {c -(}
-{txt}
-{com}. 
+. 
 . foreach var of varlist * {c -(}
 {txt}  2{com}. 
 . di "=====`var'====="
@@ -741,9 +730,10 @@ p_webb_res:                                     {txt}Number of Observations
  
 _@NOTES
  
-{txt}
 {com}. 
 . // noi profiler report
 . // profiler off
-. 
+. {c )-}
+{txt}
+{com}. 
 . exit, clear STATA
