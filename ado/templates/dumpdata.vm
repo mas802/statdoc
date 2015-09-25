@@ -1,8 +1,0 @@
-
-DATADUMP
-
-#foreach( $key in $data.keySet() ) 
-
-$key -> $data.get( $key )
-
-#end
