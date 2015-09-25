@@ -1,8 +1,14 @@
 # 0.9.2-beta (unreleased)
 
+
+
+# 0.9.2-beta (25/09/2015)
+
 - images get copied to output folder
 - add @statdocrun functionality
 - add logo
+- fixing matching
+- EmbedFileTask to embed files
 
 ## known limitations/bugs
 
