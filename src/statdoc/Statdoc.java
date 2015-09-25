@@ -71,8 +71,7 @@ public class Statdoc {
             "compare.vm", "analyse-dta.do.vm", "dumpdata.vm" };
 
     // ThreadPoolExecutor taskQueue = new ArrayBlockingQueue<Task>(16000);
-    ThreadPoolExecutor taskQueue = new ThreadPoolExecutor(4, 1000, 60,
-            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20000));
+    ThreadPoolExecutor taskQueue;
 
     /**
      * This method will only complete after all jobs in the queue have completed
@@ -321,7 +320,11 @@ public class Statdoc {
 
         // initialise the main class.
         Statdoc me = new Statdoc();
-
+        
+        // setup the taskQueue
+        me.taskQueue = new ThreadPoolExecutor(4, 1000, 60,
+                TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20000));
+        
         // start of the first round of just reading in all files
         // and processing all files
         me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(
