@@ -1,5 +1,17 @@
-# 0.9.2-beta (unreleased)
+# 0.9.3-beta (unreleased)
 
+- add option to run single @statdocrun do file with -r --statdocrun
+- add option to single single dta file with -a --analyse-data 
+
+## known limitations/bugs
+
+- --analyse-data produces html with many dead links
+- matching is not perfect yet
+- hickups on non *nix platforms to be expected
+- stata needs to be restarted to make it work
+- unit testing has hugh gaps
+- trailing /// gets marked as a comments in do files
+- issues with regex parsing
 
 
 # 0.9.2-beta (25/09/2015)
