@@ -80,8 +80,8 @@ public class StataRunDoFileTask implements Task {
 
             // stop execution if no Stata exec
             if (hub.getStataPath() == null) {
-                // TODO dtaFileItem.addWarning("Please provide a valid Stata "
-                //        + "executable in statdoc.properties.");
+                fileItem.addWarning("Please provide a valid Stata "
+                        + "executable in statdoc.properties.");
                 return;
             }
 

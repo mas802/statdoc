@@ -32,11 +32,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import statdoc.items.FileItem;
 import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
 import statdoc.tasks.MatchingTask;
 import statdoc.tasks.Task;
 import statdoc.tasks.files.UpdateDirTask;
+import statdoc.tasks.stata.StataRunDoFileTask;
 import statdoc.tasks.stata.StataUtils;
 import statdoc.tasks.vm.GeneralVMTask;
 import statdoc.tasks.vm.GenerateFileinfoTask;
@@ -131,6 +133,7 @@ public class Statdoc {
         // do not initialise
         Path sourceDir = (new File(".")).toPath();
         Path outputDir = (new File("statdoc")).toPath();
+        Path statdocrunFile = null;
         boolean initialise = false;
         boolean derivedClear = false;
         boolean clear = false;
@@ -151,6 +154,13 @@ public class Statdoc {
                 if (args.length > i + 1) {
                     i++;
                     sourceDir = (new File(args[i])).toPath();
+                } else {
+                    ok = false;
+                }
+            } else if (args[i].equals("-r") || args[i].equals("--statdocrun")) {
+                if (args.length > i + 1) {
+                    i++;
+                    statdocrunFile = (new File(args[i])).toPath();
                 } else {
                     ok = false;
                 }
@@ -206,7 +216,12 @@ public class Statdoc {
         /*
          * Setup the hub that handles all items from now on.
          */
-        System.out.println("Statdoc generates automagical documentation for ");
+        if ( statdocrunFile == null ) {
+            System.out.println("Statdoc generates automagical documentation for ");
+        } else {
+            System.out.println("Statdocrun for the following do file ");
+            System.out.println( statdocrunFile.toAbsolutePath() );
+        }
         System.out.println("input: " + sourceDir.toAbsolutePath());
         System.out.println("output: " + outputDir.toAbsolutePath());
         System.out.println("Version " + version);
@@ -318,85 +333,97 @@ public class Statdoc {
         }
         hub.setStataCmdTypes(stataCmd);
 
-        // initialise the main class.
-        Statdoc me = new Statdoc();
-        
-        // setup the taskQueue
-        me.taskQueue = new ThreadPoolExecutor(4, 1000, 60,
-                TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20000));
-        
-        // start of the first round of just reading in all files
-        // and processing all files
-        me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(
-                sourceDir, generalProp, hub, me.taskQueue));
-
-        /*
-         * // work through second stage file producing
-         * me.workQueue("Stage 2a (parsing script files)", new
-         * InitiateScriptFilesParsingTask( me.taskQueue));
-         */
-
-        // resolve all matchings
-        me.workQueue("Stage 2b (resolve matching)", new MatchingTask(hub,
-                me.taskQueue));
-
-        // set up map for overview files
-        Item overview = new Item("overview", "overview",
-                "overview/overview-summary.html", "overview:summary");
-
-        Map<String, Object> data = new TreeMap<String, Object>(hub.getGlobals());
-        data.put("cmds", hub.getCmds());
-        data.put("section", "overview");
-        data.put("item", overview);
-
-        // build general index file
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
-                "index.html"), "index.vm", data));
-
-        // build the comapre file
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
-                "compare.html"), "compare.vm", data));
-
-        // build overview files
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
-                "overview/overview-frame.html"), "overview-frame.vm", data));
-        me.taskQueue
-                .execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
-                        "overview/overview-summary.html"),
-                        "overview-summary.vm", data));
-
-        Item help = new Item("help", "help", "overview/help-doc.html", "help");
-        Map<String, Object> datah = new TreeMap<String, Object>(
-                hub.getGlobals());
-        datah.put("section", "help");
-        datah.put("item", help);
-        me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
-                "overview/help-doc.html"), "help-doc.vm", datah));
-
-        // build the rest
-        me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir.toFile(),
-                hub, me.taskQueue));
-        me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir.toFile(),
-                hub, me.taskQueue));
-        me.taskQueue.execute(new GenerateVariableinfoTask(hub, me.taskQueue));
-
-        // work through second stage file producing
-        me.workQueue("Stage 3 (templates)");
-
-        System.out.println("Process complete in: "
-                + ((System.currentTimeMillis() - starttime) / 1000)
-                + " seconds.");
-
-        me.taskQueue.shutdown();
-
-        System.out.println(" ");
-        System.out.println(hub.stats());
-        System.out.println(" ");
-        System.out
-                .println("All done, copy the following URL into your browser:");
-        System.out.println("file://" + hub.outputDir.toAbsolutePath()
-                + "/index.html");
-        System.out.println(" ");
+        if ( statdocrunFile != null ) {
+            
+            FileItem fi = hub.createFile(statdocrunFile, "script:do");
+            StataRunDoFileTask srdfTask = new StataRunDoFileTask( fi, hub, null);
+            srdfTask.run();
+            
+            System.out.println(" ");
+            System.out.println("ran do file");
+            System.out.println(" ");
+            
+        } else {
+            // initialise the main class.
+            Statdoc me = new Statdoc();
+            
+            // setup the taskQueue
+            me.taskQueue = new ThreadPoolExecutor(4, 1000, 60,
+                    TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20000));
+            
+            // start of the first round of just reading in all files
+            // and processing all files
+            me.workQueue("Stage 1 (reading files and data)", new UpdateDirTask(
+                    sourceDir, generalProp, hub, me.taskQueue));
+    
+            /*
+             * // work through second stage file producing
+             * me.workQueue("Stage 2a (parsing script files)", new
+             * InitiateScriptFilesParsingTask( me.taskQueue));
+             */
+    
+            // resolve all matchings
+            me.workQueue("Stage 2b (resolve matching)", new MatchingTask(hub,
+                    me.taskQueue));
+    
+            // set up map for overview files
+            Item overview = new Item("overview", "overview",
+                    "overview/overview-summary.html", "overview:summary");
+    
+            Map<String, Object> data = new TreeMap<String, Object>(hub.getGlobals());
+            data.put("cmds", hub.getCmds());
+            data.put("section", "overview");
+            data.put("item", overview);
+    
+            // build general index file
+            me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
+                    "index.html"), "index.vm", data));
+    
+            // build the comapre file
+            me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
+                    "compare.html"), "compare.vm", data));
+    
+            // build overview files
+            me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
+                    "overview/overview-frame.html"), "overview-frame.vm", data));
+            me.taskQueue
+                    .execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
+                            "overview/overview-summary.html"),
+                            "overview-summary.vm", data));
+    
+            Item help = new Item("help", "help", "overview/help-doc.html", "help");
+            Map<String, Object> datah = new TreeMap<String, Object>(
+                    hub.getGlobals());
+            datah.put("section", "help");
+            datah.put("item", help);
+            me.taskQueue.execute(new GeneralVMTask(new File(hub.outputDir.toFile(),
+                    "overview/help-doc.html"), "help-doc.vm", datah));
+    
+            // build the rest
+            me.taskQueue.execute(new GenerateFileinfoTask(hub.outputDir.toFile(),
+                    hub, me.taskQueue));
+            me.taskQueue.execute(new GenerateTokeninfoTask(hub.outputDir.toFile(),
+                    hub, me.taskQueue));
+            me.taskQueue.execute(new GenerateVariableinfoTask(hub, me.taskQueue));
+    
+            // work through second stage file producing
+            me.workQueue("Stage 3 (templates)");
+    
+            System.out.println("Process complete in: "
+                    + ((System.currentTimeMillis() - starttime) / 1000)
+                    + " seconds.");
+    
+            me.taskQueue.shutdown();
+    
+            System.out.println(" ");
+            System.out.println(hub.stats());
+            System.out.println(" ");
+            System.out
+                    .println("All done, copy the following URL into your browser:");
+            System.out.println("file://" + hub.outputDir.toAbsolutePath()
+                    + "/index.html");
+            System.out.println(" ");
+        }
     }
 
 }
