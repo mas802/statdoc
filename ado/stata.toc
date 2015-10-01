@@ -1,0 +1,4 @@
+********************************************** stata.toc
+v 3
+d Statdoc testing
+p statdoc [run statdoc testing version from within stata]
