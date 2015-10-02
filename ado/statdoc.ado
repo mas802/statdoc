@@ -70,7 +70,7 @@ program statdoc_main
 	di "with Stata in `exe'"
 	di "in directory `source'"
 	di "to output in directory `output'"
-	di "options: `init' `der' `clear'"
+	di "options: " `init' `der' `clear'
 	di " "
 	
 	javacall statdoc.Stata run, args( "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" `init' `der' `cl')
