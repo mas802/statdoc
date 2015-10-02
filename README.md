@@ -30,17 +30,7 @@ take quite some time.
 You can also invoke Statdoc from the command line or directly from within Stata
 (experimental). 
 
-```
-net from https://mas802.github.io/statdoc/ado
-net install statdoc
-```
-
-You will have to restart Stata at this point.
-
-```
-cd <the/root/directory/of/your/project> // VERY IMPORTANT
-statdoc
-```
+STATA INSTALL CURRENTLY BROKEN, WORKING ON A FIX ASAP
 
 how to code
 ===========
