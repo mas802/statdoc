@@ -2,7 +2,7 @@
 v 3
 d statdoc
 d Runs a statdoc task v 0.9.2
-d Distribution-Date: 24 September 2015
+d Distribution-Date: 25 September 2015
 f statdoc.ado
 f statdoc.sthlp
 f statdoc.jar
