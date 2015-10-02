@@ -73,7 +73,7 @@ program statdoc_main
 	di "options: `init' `der' `clear'"
 	di " "
 	
-	javacall statdoc.Stata run, args( "-vc" "`version'" "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" "`init'" "`der'" "`cl'")
+	javacall statdoc.Stata run, args( "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" "`init'" "`der'" "`cl'")
 		
 end
 
