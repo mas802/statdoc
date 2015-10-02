@@ -51,17 +51,17 @@ program statdoc_main
 	
 	local init = ""
 	if ( "`initialise'" != "" ) {
-		local init = "-i"
+		local init = `""-i""'
 	}
 	
 	local der = ""
 	if ( "`derived-clear'" != "" ) {
-		local der = "-d"
+		local der = `""-d""'
 	}
 	
 	local cl = ""
 	if ( "`clear'" != "" ) {
-		local cl = "-c"
+		local cl = `""-c""'
 	}
 	
 	local exe = c(sysdir_stata)
@@ -70,10 +70,10 @@ program statdoc_main
 	di "with Stata in `exe'"
 	di "in directory `source'"
 	di "to output in directory `output'"
-	di "options: `init' `der' `clear'"
+	di "options: " `init' " " `der' " " `clear'
 	di " "
 	
-	javacall statdoc.Stata run, args( "-vc" "`version'" "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" "`init'" "`der'" "`cl'")
+	javacall statdoc.Stata run, args( "-vc" "`version'" "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" `init' `der' `cl' )
 		
 end
 
