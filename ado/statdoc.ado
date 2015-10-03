@@ -38,7 +38,7 @@ program statdoc_main
 	version 13
 	syntax , [Output(string)] [Source(string)] [Initialise] [Derived-clear] [Clear]
 	
-	local version = "0.9.2"
+	local version = "0.9.3"
 
 	if ( "`source'" == "" ) {
 		local source = c(pwd)
