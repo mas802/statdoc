@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -194,12 +195,15 @@ public class Statdoc {
             } else if (!args[i].trim().equals("")) {
                 // report an error if another argument is encountered
                 // (unless it is empty)
+                System.err.println("Error with option ###" + args[i] + "###");
                 ok = false;
             }
         }
 
         if (!ok) {
-            System.err.println("Error with cmd options.");
+            System.err.println("Error with cmd options:");
+            System.err.println( Arrays.toString(args) );
+            System.err.println( "" );
             return;
         }
 
