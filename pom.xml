@@ -66,7 +66,7 @@
 						<configuration>
 							<tasks>
 								<tstamp>
-									<format property="timesp" pattern="MM/dd/yyyy hh:mm:ss aa"
+									<format property="timesp" pattern="yyyyMMddHHmmss"
 										unit="hour" />
 								</tstamp>
 								<echo>Using env.test.properties</echo>
