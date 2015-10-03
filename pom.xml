@@ -67,12 +67,11 @@
 							<tasks>
 								<tstamp>
 									<format property="timesp" pattern="MM/dd/yyyy hh:mm:ss aa"
-										offset="-5" unit="hour" />
+										unit="hour" />
 								</tstamp>
 								<echo>Using env.test.properties</echo>
 
-								<echo file="ado/statdoc.pkg" append="false">**********************************************
-statdoc.pkg
+								<echo file="ado/statdoc.pkg" append="false">********************************************** statdoc.pkg
 v 3
 d statdoc
 d Runs a statdoc task v ${project.version}

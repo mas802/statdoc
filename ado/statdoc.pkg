@@ -1,9 +1,8 @@
-**********************************************
-statdoc.pkg
+********************************************** statdoc.pkg
 v 3
 d statdoc
 d Runs a statdoc task v 0.9.3-beta
-d Distribution-Date: 10/04/2015 02:53:03 AM
+d Distribution-Date: 10/04/2015 08:16:21 AM
 f statdoc.ado
 f statdoc.sthlp
 f statdoc.jar
