@@ -53,6 +53,43 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<tstamp>
+									<format property="timesp" pattern="MM/dd/yyyy hh:mm:ss aa"
+										offset="-5" unit="hour" />
+								</tstamp>
+								<echo>Using env.test.properties</echo>
+
+								<echo file="ado/statdoc.pkg" append="false">**********************************************
+statdoc.pkg
+v 3
+d statdoc
+d Runs a statdoc task v ${project.version}
+d Distribution-Date: ${timesp}
+f statdoc.ado
+f statdoc.sthlp
+f statdoc.jar
+h statdoc.jar
+								</echo>
+								<copy
+									file="${project.build.directory}/statdoc-${project.version}-jar-with-dependencies.jar"
+									tofile="${basedir}/ado/statdoc.jar" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
