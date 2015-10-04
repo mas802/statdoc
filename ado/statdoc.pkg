@@ -3,7 +3,7 @@ v 3
 d statdoc
 d Runs a statdoc task v 0.9.3-beta
 d Distribution-Date: 20151004
-d Distribution-Time: 210549
+d Distribution-Time: 211833
 f statdoc.ado
 f statdoc.sthlp
 f statdoc.jar

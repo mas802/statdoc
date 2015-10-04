@@ -391,6 +391,7 @@ public class StataDoFileTask implements Task {
         info.put("indent", indent);
 
         currentCmd = currentCmd.replaceAll("/\\*(.*?)\\*/", "");
+        currentCmd = currentCmd.replaceAll("///", " ");
         // [prefix :] command [varlist] [=exp] [if] [in] [weight]
         // [using filename] [, options]
 

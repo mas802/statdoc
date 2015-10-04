@@ -216,6 +216,43 @@ public class ParseDoFileTest {
         
     }
 
+    /**
+     * test the following line
+     * 
+     * sum abc, ///
+     * option
+     * 
+     * should match nothing as plain wildcard
+     */
+    @Test
+    public void testTripleSlash() {
+
+        String content = "sum a b c, ///\noption";
+
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("desc", new String[] { "sum" });
+
+        Item i = runDoParser(content, map);
+
+        // System.out.println( i.getContent() );
+
+        for (Item c : i.getChildrenBy("cmd:")) {
+            System.out.println(c.get("indent") + " : " + c.getContent());
+        }
+
+        Collection<Item> cmds = i.getChildrenBy("cmd:");
+        Iterator<Item> it = cmds.iterator();
+
+        Item line = it.next();
+        assertEquals(1, cmds.size());
+
+        assertEquals(0, line.get("indent"));
+
+        System.out.println(line.getContent());
+
+        
+    }
+
     /*
      * helper method to run do file
      */
