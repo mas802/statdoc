@@ -2,6 +2,7 @@
 
 - add option to run single @statdocrun do file with -r --statdocrun
 - add option to single single dta file with -a --analyse-data 
+- fixed #10: trailing /// gets marked as a comments in do files
 
 ## known limitations/bugs
 
@@ -10,7 +11,6 @@
 - hickups on non *nix platforms to be expected
 - stata needs to be restarted to make it work
 - unit testing has hugh gaps
-- trailing /// gets marked as a comments in do files
 - issues with regex parsing
 
 

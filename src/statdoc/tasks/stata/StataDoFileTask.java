@@ -72,6 +72,11 @@ public class StataDoFileTask implements Task {
         try {
             String content = new String(Files.readAllBytes(file));
 
+            // TODO check if this does not cause problems, intended to fix
+            // actual <html> tags in the source (which will break display)
+            content = content.replaceAll("<", "&lt;");
+            content = content.replaceAll(">", "&gt;");
+
             fileItem.setContent(content);
         } catch (Exception e) {
             System.err.println("Error for: " + file + " - "

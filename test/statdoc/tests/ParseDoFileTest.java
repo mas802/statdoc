@@ -376,4 +376,33 @@ public class ParseDoFileTest {
 
     }
 
+    /**
+     * test html in do file (shoulb be escaped
+     *
+     */
+    @Test
+    public void testHTMLTag() {
+
+        String content = "regex(\"<td>\")";
+
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("desc", new String[] { "sum" });
+
+        Item i = runDoParser(content, map);
+
+        Collection<Item> cmds = i.getChildrenBy("cmd:");
+        Iterator<Item> it = cmds.iterator();
+
+        Item line = it.next();
+        assertEquals(1, cmds.size());
+
+        assertEquals(0, line.get("indent"));
+
+        assertTrue( !line.getContent().contains("<") );
+        assertTrue( !line.getContent().contains(">") );
+        
+        System.out.println(line.getContent());
+
+        
+    }
 }
