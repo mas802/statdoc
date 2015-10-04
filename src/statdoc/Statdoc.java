@@ -200,6 +200,7 @@ public class Statdoc {
             }
         }
 
+        // TODO, maybe this should not fail, but just produce an error
         if (!ok) {
             System.err.println("Error with cmd options:");
             System.err.println( Arrays.toString(args) );
@@ -207,10 +208,10 @@ public class Statdoc {
             return;
         }
 
-        if (versionCheck != "" && versionCheck.equals(version)) {
-            System.out.println("WARNING version check failed, caller expects "
+        if (versionCheck != "" && !versionCheck.equals(version)) {
+            System.err.println("WARNING version check failed, caller expects "
                     + versionCheck + " but this is " + version);
-
+            System.err.println("");
         }
 
         if (!sourceDir.toFile().exists() || !sourceDir.toFile().isDirectory()) {

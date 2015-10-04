@@ -66,10 +66,10 @@
 						<configuration>
 							<tasks>
                 <tstamp>
-                  <format property="timesp" pattern="yyyyMMddHH"/>
+                  <format property="timesp" pattern="yyyyMMdd"/>
                 </tstamp>
                 <tstamp>
-                  <format property="timespt" pattern="mmss" />
+                  <format property="timespt" pattern="HHmmss" />
                 </tstamp>
 								<echo>Using env.test.properties</echo>
 
