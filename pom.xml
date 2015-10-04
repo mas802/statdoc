@@ -65,10 +65,12 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<tstamp>
-									<format property="timesp" pattern="yyyyMMddHHmmss"
-										unit="hour" />
-								</tstamp>
+                <tstamp>
+                  <format property="timesp" pattern="yyyyMMddHH"/>
+                </tstamp>
+                <tstamp>
+                  <format property="timespt" pattern="mmss" />
+                </tstamp>
 								<echo>Using env.test.properties</echo>
 
 								<echo file="ado/statdoc.pkg" append="false">********************************************** statdoc.pkg
@@ -76,6 +78,7 @@ v 3
 d statdoc
 d Runs a statdoc task v ${project.version}
 d Distribution-Date: ${timesp}
+d Distribution-Time: ${timespt}
 f statdoc.ado
 f statdoc.sthlp
 f statdoc.jar
