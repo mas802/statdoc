@@ -51,3 +51,7 @@ classpath or exclude the Stata integration class (statadoc.Stata, see above).
 If you do not want to deal with maven, you should be fine just including 
 the apache velocity jar file with dependencies.
 
+logo
+====
+
+[![the logo](http://img.youtube.com/vi/6a-nS9UOzo4/0.jpg)](http://www.youtube.com/watch?v=6a-nS9UOzo4)
