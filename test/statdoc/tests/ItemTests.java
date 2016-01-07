@@ -246,4 +246,65 @@ public class ItemTests {
         
     }
     
+
+    @Test
+    public void testMatchedLongerShorter() {
+
+        Item item = new Item("testitem", "testitem", "testitem");
+        item.put("testfield", "other \"test/test2\"");
+
+        MatchItem match2 = new MatchItem("match2", "test:");
+        match2.put("term", "test");
+        match2.put("field", "testfield");
+        item.addChild(match2);
+
+        Item resolve2 = new Item("resolve2", "resolve2", "resolveFunction2");
+        match2.addChild(resolve2);
+        
+        MatchItem match = new MatchItem("match", "test:");
+        match.put("term", "\"test/test2\"");
+        match.put("field", "testfield");
+        item.addChild(match);
+
+        Item resolve = new Item("resolve", "resolve", "resolveLongerOnly");
+        match.addChild(resolve);
+
+
+        String matched = item.getMatched("testfield");
+        System.out.println(matched);
+        // org.junit.Assert.assertEquals(matched.length(), 51);
+        org.junit.Assert.assertTrue(matched.contains("../resolveLongerOnly"));
+        org.junit.Assert.assertFalse(matched.contains("../resolveFunction2"));
+    }
+
+    @Test
+    public void testMatchedSameLength() {
+
+        Item item = new Item("testitem", "testitem", "testitem");
+        item.put("testfield", "test1 \"test/test2\"");
+
+        MatchItem match2 = new MatchItem("match2", "test:");
+        match2.put("term", "test1");
+        match2.put("field", "testfield");
+        item.addChild(match2);
+
+        Item resolve2 = new Item("resolve2", "resolve2", "resolveFirst");
+        match2.addChild(resolve2);
+        
+        MatchItem match = new MatchItem("match", "test:");
+        match.put("term", "test2");
+        match.put("field", "testfield");
+        item.addChild(match);
+
+        Item resolve = new Item("resolve", "resolve", "resolveSecond");
+        match.addChild(resolve);
+
+
+        String matched = item.getMatched("testfield");
+        System.out.println(matched);
+        // org.junit.Assert.assertEquals(matched.length(), 51);
+        org.junit.Assert.assertTrue(matched.contains("../resolveFirst"));
+        org.junit.Assert.assertTrue(matched.contains("../resolveSecond"));
+    }
+
 }

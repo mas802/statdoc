@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
-
+import statdoc.items.CmdItem;
 import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
 import statdoc.tasks.files.TextFileTask;
@@ -253,6 +253,44 @@ public class ParseDoFileTest {
         
     }
 
+
+    /*
+     * save "H:/DATA/ProdIPAUS/dta/Biweek_Utility.dta" , replace
+// Generate Annual dataset
+205 [+] use "H:/DATA/ProdIPAUS/dta/Utility.dta" , clear
+     */
+    @Test
+    public void testQuotedFilenameTreatment() {
+
+//        String content = "save \"H:/DATA/ProdIPAUS/dta/Biweek_Utility.dta\" , replace";
+        String content = "// Generate bi-weekly dataset\nsave \"H:/DATA/ProdIPAUS/dta/Utility.dta\" , clear";
+
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("outputcmd", new String[] { "save" });
+
+        Item i = runDoParser(content, map);
+
+        // System.out.println( i.getContent() );
+
+        System.out.println(  " : " + i.getChildren());
+        for (Item c : i.getChildren()) {
+            System.out.println(  " : " + c.keySet());
+        }
+
+        Collection<Item> cmds = i.getChildrenBy("cmd:");
+        Iterator<Item> it = cmds.iterator();
+
+        CmdItem line = (CmdItem)it.next(); 
+        System.out.println("===" + line.get("parameters") + "===");
+        System.out.println(  " : " + line.getChildren());
+        for (Item c : line.getChildren()) {
+            System.out.println(  c.getType() + " : " + c.keySet());
+            if ( c.containsKey("field")) System.out.println(c.get("field"));
+            if ( c.containsKey("term")) System.out.println(c.get("term"));
+        } 
+        
+    }   
+    
     /*
      * helper method to run do file
      */
@@ -288,6 +326,9 @@ public class ParseDoFileTest {
         return i;
     }
 
+    
+    
+    
     @Test
     public void testSplit() {
 
@@ -405,4 +446,7 @@ public class ParseDoFileTest {
 
         
     }
+    
+    
+    
 }

@@ -508,9 +508,10 @@ public class StataDoFileTask implements Task {
             } else {
                 cmdfile = parameters;
             }
+            
             // use, set that MatchItem accordingly
             currentIn = hub.createMatch(cmdItem.getLine(), "file:data");
-            currentIn.put("term", cmdfile.replaceAll("\"", ""));
+            currentIn.put("term", cmdfile);
             currentIn.put("regex",
                     StataUtils.stataTokenToRegex(cmdfile.replaceAll("\"", "")));
             currentIn.put("relation", "use");
@@ -526,7 +527,7 @@ public class StataDoFileTask implements Task {
             }
 
             MatchItem in = hub.createMatch(cmdItem.getLine(), "file:data");
-            in.put("term", cmdfile.replaceAll("\"", ""));
+            in.put("term", cmdfile);
             in.put("regex",
                     StataUtils.stataTokenToRegex(cmdfile.replaceAll("\"", "")));
             in.put("relation", "use");

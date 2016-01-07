@@ -17,6 +17,7 @@ package statdoc.items;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,6 +169,22 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
             ArrayList<String> replace = new ArrayList<String>();
             int counter = 0;
 
+            // a set that orders items inversly by term length
+            TreeSet<MatchItem> lengthOrderedSet = new TreeSet<MatchItem>(
+                    new Comparator<MatchItem>() {
+
+                        @Override
+                        public int compare(MatchItem o1, MatchItem o2) {
+                            int l1 = o1.get("term").toString().length(); 
+                            int l2 = o2.get("term").toString().length(); 
+                            return (l1==l2)?o1.compareTo(o2):l2-l1;
+                        }
+                    }
+            );
+            
+            /*
+             * filter Items and put into set
+             */
             for (Item item : this.getChildrenBy("match:")) {
                 MatchItem m = (MatchItem) item;
 
@@ -175,44 +192,51 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
                         && (!m.containsKey("field") || m.get("field").equals(
                                 property))) {
                     String term = m.get("term").toString().trim();
-
                     if (!term.equals("")) {
-                        term = StatdocUtils.stringToRegex(term);
-                        Collection<Item> links = m.getChildren();
-
-                        Pattern pattern = Pattern.compile("(?<=[\\W]|^)" + term
-                                + "(?:(?=[\\W]|$)|(?<=\\())");
-
-                        if (links.size() == 1) {
-                            String linkStr = "ERROR";
-                            for (Item link : links) {
-                                linkStr = "<a href=\"../" + link.getLink()
-                                        + "\">" + term + "</a>";
-                            }
-                            result = pattern.matcher(result).replaceAll(
-                                    matchToken + counter + matchToken);
-                            replace.add(linkStr);
-                            counter++;
-                        } else if (links.size() > 1) {
-                            // TODO this could be handled better/differently
-                            String linkStr = "ERROR (m)";
-                            String title = "<a title=\"multiple matches: ";
-                            for (Item link : links) {
-                                // title = title + " " + link.getFullName();
-                                linkStr = " href=\"../" + link.getLink()
-                                        + "\">" + term + "</a>";
-                            }
-                            linkStr = title + "\"" + linkStr;
-                            result = pattern.matcher(result).replaceAll(
-                                    matchToken + counter + matchToken);
-                            replace.add(linkStr);
-                            counter++;
-                        } else {
-                            throw new RuntimeException("no children in " + m
-                                    + " " + m.get("term"));
-                        }
+                        lengthOrderedSet.add(m);
                     }
                 }
+            }
+            
+            for (MatchItem m : lengthOrderedSet) {
+                String term = m.get("term").toString().trim();
+               
+                term = StatdocUtils.stringToRegex(term);
+                Collection<Item> links = m.getChildren();
+
+                Pattern pattern = Pattern.compile("(?<=[\\W]|^)" + term
+                        + "(?:(?=[\\W]|$)|(?<=\\())");
+
+                if (links.size() == 1) {
+                    String linkStr = "ERROR";
+                    for (Item link : links) {
+                        linkStr = "<a href=\"../" + link.getLink()
+                                + "\">" + term + "</a>";
+                    }
+                    result = pattern.matcher(result).replaceAll(
+                            matchToken + counter + matchToken);
+                    replace.add(linkStr);
+                    counter++;
+                } else if (links.size() > 1) {
+                    // TODO this could be handled better/differently
+                    String linkStr = "ERROR (m)";
+                    String title = "<a title=\"multiple matches: ";
+                    for (Item link : links) {
+                        // title = title + " " + link.getFullName();
+                        linkStr = " href=\"../" + link.getLink()
+                                + "\">" + term + "</a>";
+                    }
+                    linkStr = title + "\"" + linkStr;
+                    result = pattern.matcher(result).replaceAll(
+                            matchToken + counter + matchToken);
+                    replace.add(linkStr);
+                    counter++;
+                } else {
+                    throw new RuntimeException("no children in " + m
+                            + " " + m.get("term"));
+                }
+                    
+                
             }
 
             for (int i = 0; i < replace.size(); i++) {
