@@ -1,7 +1,7 @@
 #parse( "item-header.vm" )
 <div class="header">
 <h1 class="title">How This Documentation Is Organized</h1>
-<div class="subTitle">This automagicaly generated documentation has pages corresponding 
+<div class="subTitle">This automagically generated documentation has pages corresponding 
 to the items in the navigation bar, described as follows.</div>
 </div>
 <div class="contentContainer">
@@ -23,16 +23,16 @@ descriptive statistics run.</p>
 
 <li class="blockList">
 <h2>Variables</h2>
-<p>The <a href="../variables/variables-summary.html">Variables</a> page lists all variables found throught the
-data files found in the folder. Currently only Stata (.dta) and csv files are suported (and the latter are
-analysed using Stata as well). The variables are organised by their name and each name as a subpage that
+<p>The <a href="../variables/variables-summary.html">Variables</a> page lists all variables found through the
+data files found in the folder. Currently only Stata (.dta) and csv files are supported (and the latter are
+analyzed using Stata as well). The variables are organized by their name and each name as a subpage that
 list detailed information about the respective variable in the relevant data file.
 </p>
 </li>
 
 <li class="blockList">
 <h2>Files</h2>
-<p>The documentation can recognise a number of different file formats each get their own subsection 
+<p>The documentation can recognize a number of different file formats each get their own subsection 
 in the <a href="../files/files-summary.html">Files</a> page:</p>
 <ul>
 <li>Data</li>
@@ -45,13 +45,13 @@ in the <a href="../files/files-summary.html">Files</a> page:</p>
 
 <li class="blockList">
 <h2>Data</h2>
-<p>Recognised data files are examined for the varibales they contain and are linked to the script files 
+<p>Recognized data files are examined for the variables they contain and are linked to the script files 
 where they are produced or used.</p>
 </li>
 
 <li class="blockList">
 <h2>Scripts</h2>
-<p>Scripts are the central hub for the documentation that link datafiles and variables across inputs and
+<p>Scripts are the central hub for the documentation that link data files and variables across inputs and
 outputs. Currently the script files are parsed for specific types of commands, including:</p>
 <ul>
 <li class="cmd_systemcmd">System (changes to the logic and program environment)</li>
@@ -62,36 +62,36 @@ outputs. Currently the script files are parsed for specific types of commands, i
 <li class="cmd_estcmd">Estimations (commands that perform estimations)</li>
 <li class="cmd_runcmd">Call (commands that call other script files)</li>
 </ul>
-<p>The classification of commands for Stata can be changed in the <b>config/statacmdtype.txt</b> 
+<p>The classification of commands for Stata can be changed in the <b>statdoc.properties</b> 
 configuration file. Statdoc tries to find the corresponding inputs and outputs for each script
 and lists them at the top of the page. You can help Statdoc in this task by using unique file
 names throughout the project. It is able to perform limited wildcard matching for filenames
-that include locals and globals if the remainer of the file name is sufficiently unique.</p>
-<p>Scripts can contain documenting comments, which are marked with /** */ (not there are exactely two
+that include locals and globals if the remainder of the file name is sufficiently unique.</p>
+<p>Scripts can contain documenting comments, which are marked with /** */ (note that there are exactly two
 stars). These comments will be parsed for additional tags (e.g. @author) that will be added to
-the documentaion.</p>
-<p>Statdoc also recognises when a log file is writen and will display the log file alongside
+the documentation.</p>
+<p>Statdoc also recognizes when a log file is written and will display the log file alongside
 the commands it has found (look for the the log button in the top right corner of the command
 list).</p>
 </li>
 
 <li class="blockList">
 <h2>Images</h2>
-<p>Statdoc recognises image files and displays them if the relative path is intact (i.e. the statdoc
+<p>Statdoc recognizes image files and displays them if the relative path is intact (i.e. the Statdoc
 folder must be in the root folder of the project).</p>
 </li>
 
 
 <li class="blockList">
 <h2>Documents</h2>
-<p>Statdoc recognises Document files and can link them to script files (e.g. log files). 
+<p>Statdoc recognizes Document files and can link them to script files (e.g. log files). 
 In the future Statdoc might index the document file for more cross links (also see Tokens).</p>
 </li>
 
 
 <li class="blockList">
 <h2>Other Files</h2>
-<p>Other Files list all other files currently not recognised/processed by Statdoc.</p>
+<p>Other Files list all other files currently not recognized/processed by Statdoc.</p>
 </li>
 
 <li class="blockList">
@@ -113,19 +113,19 @@ but might be expanded in the future. Then it would serve as the main index.</p>
 
 <li class="blockList">
 <h2>How to Make it Work Well</h2>
-<p>Statdoc tries hard to discover features of yout Statistics project by itself. There are a few things
+<p>Statdoc tries hard to discover features of out Statistics project by itself. There are a few things
 you can do to help though:
 </p>
 <ul>
 	<li><b>General</b></li>
-    <li>Use unique, descriptive and concise names for files and variables. Start names for related thins
+    <li>Use unique, descriptive and concise names for files and variables. Start names for related things
     with the same string (e.g. same file with different data on the end).</li>
     <li><b>Scripts</b></li>
     <li>Use a documenting comment (starting with /** at the beginning of the file).</li>
     <li>Start your script by setting up a log file.</li>
-    <li>If possible try to strictly seperate data manipulation and data analysis (differnt files).</li>
-    <li>Use descriptive adn unique tokens for local variables.</li>
-    <li>Avoid extensive abbreviation, use full variablenames.</li>
+    <li>If possible try to strictly separate data manipulation and data analysis (different files).</li>
+    <li>Use descriptive and unique tokens for local variables.</li>
+    <li>Avoid extensive abbreviation, use full variable names.</li>
     <li>When using multiple input files in a loop, make sure there is a unique stub present that allows Statdoc
     to properly identify the files.</li>
     <li><b>Data</b></li>
@@ -136,117 +136,17 @@ you can do to help though:
 
 
 <li class="blockList">
-<h2>How to Customise It</h2>
-<p>A lot of things are customisable for Statdoc. Starting with stylesheet.css, where variouse aspects of 
-the display in html can be adjusted, e.g. the color of most elements. Furthermore all html pages are
+<h2>How to Customize It</h2>
+<p>A lot of things are customizable for Statdoc. Starting with stylesheet.css, where various aspects of 
+the display in HTML can be adjusted, e.g. the color of most elements. Furthermore all HTML pages are
 produced with the templates in the templates directory, this allows a lot of freedom in defining what 
 is displayed in which order and where. In the same folder there are also a number of .do files that
-govern how information is extracted from Stata files. Finally the config folder holds some configuration 
-files which allow customisations of how data is read.
+govern how information is extracted from Stata files. Finally the statdoc.properties file holds some
+properties which allow customizations of how data is read.
 </p>
 </li>
 
 </ul>
 <em>This help file applies to documentation generated using the default configuration.</em><
 /div>
-<div class="contentContainer">
-<ul class="blockList">
-<li class="blockList">
-<h2>Bugs, Todos and Future Features</h2>
-<p>The following is a loose collection of things that do not work (yet), need to
-be revised and ideas for future functionality.</p>
-</li>
-<li class="blockList">
-<h2>Todos</h2>
-<pre>
-CRITICAL TO 1.0
-+ add some information about varibales to static main screen (pics?)
-+ rethink variables-summary.vm (pictures instead of colortable)
-+ Add licence (apache) to resource files
-- rework Console.java
-+ think about good command line options and document them
-- upload to github
-- implement downloadable Stata package
-+ Write a proper help doc (uptodate).
-+ readme.md
-- clean javadoc
-
-BUGS
-- StataParseDoFileTask is inaccurate if variable named after keyword (eg weight)
-- drop is (has to be) recorded as a manipulation, promoting dropped variables
-- files marked as not recognised when they are just not parsed (documents)
-- height of source/log iframe not 100% on Windows and Linux
-
-CHECK
-+ w3 validator
-- Windows 7: Chrome, Firefox, IE 9+
-- Android: BuiltIn
-- iOS iPhone and iPad Safari (iOS 7, maybe 6)
-- Mac OSX: CHrome, Firefox, Safari
-- Linux: Firefox, Chrome
-
-ITEMS/DISPLAY
-
-VARIABLES
-+ work with csv files
-
-FILES
-- implement FOLDERS and have them as a category, make sure they work ok
-
-data
-- work on the do files in template
-- use tsset to derive more info about data 
-
-scripts
-- work in .sh files as well
-- work in .m files as well
-- work in .log/.html
-
-dofiles
-- dofile deal with blocks (program loops {}) better (start/end)
-- add a warning if an index goes out of bounds
-- doc on top: general info (allow more space before)
-+ doc inbetween, document program, loops or single lines
-- link images to graph lines and eventually to variables (essential)
-
-images
-- Display thumbnails in overviews (can be small sized large versions)
-- work out .eps files (does not really work)
-- deal with unavailable source files (i.e. check that the folder is a subfolder)
-
-documents
-- parse/tokenize if relevant (i.e. only recognise tokens that exist from before)
-
-TOKENS
-- make sure to capture the n-gram level
-
-FLOW (currently no top-level for this)
-+ focus on scripts
-- tree for each file that does not have a "parent" and unused
-- what about loops?
-- work out relationships between variables
-    e.g. siblings = used together in regression/stats
-        dependvar = marker for first variable in estimation commands 
-        manipulate = together in manipulation, this could be directional
-
-IDEAS
-- display icons for files (maybe also other stuff)
-- have a daemon mode that reacts to file changes
-- have a server mode that allows you to actively change things from within
-- Make sure only to update the relevant files (at least for stata)
-- fix whether update or rebuild
-- probably everything should go into a database after all, easier to search
-- actually best the DB should use something like hibernate
-- run as a service on AWS with a dropbox folder
-- run parsed do files that output to line dependen log files
-
-PROBLEMS
-+ deal with too many files (reduced tokens to one page per starting letter)
-- deal with large files for read in
-- htmlCompressor
-
-</pre>
-</li>
-</ul>
-</div>
 #parse( "item-footer.vm" )
