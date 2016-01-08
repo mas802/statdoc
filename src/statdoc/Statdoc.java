@@ -132,8 +132,8 @@ public class Statdoc {
 
         // default values, current directory, output into statdoc
         // do not initialise
-        Path sourceDir = (new File(".")).toPath();
-        Path outputDir = (new File("statdoc")).toPath();
+        Path sourceDir = (new File(".")).toPath().toAbsolutePath();
+        Path outputDir = (new File("statdoc")).toPath().toAbsolutePath();
         Path statdocrunFile = null;
         Path singleDataFile = null;
         boolean initialise = false;
@@ -235,6 +235,13 @@ public class Statdoc {
         } else {
             System.out.println("Statdocrun for the following do file ");
             System.out.println(statdocrunFile.toAbsolutePath());
+
+            if (!statdocrunFile.toFile().exists() || statdocrunFile.toFile().isDirectory()) {
+                System.out.println("ERROR, file does not exist or is directory "
+                        + statdocrunFile.toAbsolutePath()
+                        + " exists and is not a directory.");
+                return;
+            }
         }
         System.out.println("input: " + sourceDir.toAbsolutePath());
         System.out.println("output: " + outputDir.toAbsolutePath());
@@ -250,7 +257,6 @@ public class Statdoc {
 
         if (statdocrunFile != null) {
 
-            // todo, check if file exists
             FileItem fi = hub.createFile(statdocrunFile, "file:script:do");
             StataRunDoFileTask srdfTask = new StataRunDoFileTask(fi, hub, null);
             srdfTask.run();

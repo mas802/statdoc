@@ -16,10 +16,13 @@ program statdoc
 	version 13
  	gettoken subcmd 0 : 0
 
-	if ( "`subcmd'" == "rkeyval" ) {
-		statdoc_rkeyval `0'
-	} 
-	else if ("`subcmd'" == ",") {
+  if ( "`subcmd'" == "rkeyval" ) {
+    statdoc_rkeyval `0'
+  } 
+  else  if ( "`subcmd'" == "do" ) {
+    statdoc_do `0'
+  } 
+  else if ("`subcmd'" == ",") {
 		statdoc_main , `0'
 	} 
 	else if ("`subcmd'" == "") {
@@ -75,6 +78,39 @@ program statdoc_main
 	
 	javacall statdoc.Stata run, args( "-vc" "`version'" "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" `init' `der' `cl' )
 		
+end
+
+ 
+ /**
+  * do: run statdoc single do file @statdocrun
+  */
+cap program drop statdoc_do
+program statdoc_do
+  version 13
+  syntax anything(name=dofile), [Output(string)]
+  
+  local version = "v0.9.3-beta"
+ 
+  if ( "`output'" == "" ) {
+    local dir = c(pwd)
+    local output = "`dir'/statdoc"
+  }
+   
+  if ( `dofile' == "" ) {
+    di "Please specify a file name "
+  }
+  else {
+    local exe = c(sysdir_stata)
+  
+    di "executing statdoc "
+    di "with Stata in `exe'"
+    di "to run file " `dofile'
+    di "to output in directory `output'"
+    di " "
+    
+    javacall statdoc.Stata run, args( "-vc" "`version'" "-r" `dofile' "-o" "`output'" "statdoc.stata.path=`exe'" )
+  }
+      
 end
 
 

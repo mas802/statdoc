@@ -38,9 +38,9 @@ public class FileItem extends Item {
         this.type = type;
         this.name = file.getFileName().toString();
         this.link = "files/"
-                + rootDir.relativize(file).toString()
+                + this.rootDir.relativize(file).toString()
                         .replaceAll("[\\\\\\/]", "_") + ".html";
-        this.fullName = rootDir.relativize(file).toString();
+        this.fullName = this.rootDir.relativize(file).toString();
         ;
     }
 
