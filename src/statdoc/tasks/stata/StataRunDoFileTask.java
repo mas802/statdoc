@@ -97,8 +97,10 @@ public class StataRunDoFileTask implements Task {
 
             StringBuilder sb = new StringBuilder();
 
-            Item tempItem = new Item("", "", "");
+            Item tempItem = new Item("result_" + fileItem.getName(), "result_" + fileItem.getName(), "result:");
 
+            fileItem.addChild("result:", tempItem);
+            
             String line;
             while ((line = reader.readLine()) != null) {
                 // System.out.println(line);
@@ -118,8 +120,8 @@ public class StataRunDoFileTask implements Task {
                             param[0].trim(), map);                 
                     
                     // reset temp vars
-                    sb = new StringBuilder();
-                    // FIXME here we should at least copy tempItem = new Item("", "", "");
+                    // sb = new StringBuilder();
+                    // FIXME here we could at  copy tempItem = new Item("", "", "");
                     
 //                } else if (cleanline.startsWith("_@NOTES")) {
 //                    innotes = true;
@@ -130,12 +132,12 @@ public class StataRunDoFileTask implements Task {
                 } else {
 
                     hub.checkAndAddMetadata(tempItem, cleanline);
-                    sb.append(line);
-                    sb.append("\n");
                 }
+                sb.append(line);
+                sb.append("\n");
             }
 
-            tempItem.setContent(StataUtils.smcl2html(sb.toString(), true));
+            tempItem.setContent(StataUtils.smcl2plain(sb.toString(), true));
 
             reader.close();
         } catch (Exception ex) {

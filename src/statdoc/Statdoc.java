@@ -261,6 +261,7 @@ public class Statdoc {
             StataRunDoFileTask srdfTask = new StataRunDoFileTask(fi, hub, null);
             srdfTask.run();
 
+            System.out.println(fi.getChildrenBy("result:").iterator().next().getContent());
             System.out.println(" ");
             System.out.println("ran do file");
             System.out.println(" ");
