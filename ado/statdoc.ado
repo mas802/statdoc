@@ -89,13 +89,17 @@ program statdoc_do
   version 13
   syntax anything(name=dofile), [Output(string)]
   
-  local version = "v0.9.3-beta"
+  local version = "v0.9.3-beta.2"
  
   if ( "`output'" == "" ) {
     local dir = c(pwd)
     local output = "`dir'/statdoc"
   }
-   
+
+  if ( "`source'" == "" ) {
+    local source = c(pwd)
+  }
+     
   if ( `dofile' == "" ) {
     di "Please specify a file name "
   }
@@ -108,7 +112,7 @@ program statdoc_do
     di "to output in directory `output'"
     di " "
     
-    javacall statdoc.Stata run, args( "-vc" "`version'" "-r" `dofile' "-o" "`output'" "statdoc.stata.path=`exe'" )
+    javacall statdoc.Stata run, args( "-vc" "`version'" "-r" `dofile' "-s" "`source'" "-o" "`output'" "statdoc.stata.path=`exe'" )
   }
       
 end

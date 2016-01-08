@@ -60,7 +60,7 @@ import statdoc.utils.TemplateUtil;
  */
 public class Statdoc {
 
-    private final static String version = "v0.9.3-beta";
+    private final static String version = "v0.9.3-beta.2";
 
     // directory for all the files from initialroot
     private static final String[] dirs = new String[] { "overview", "files",

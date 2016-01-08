@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>statdoc</groupId>
 	<artifactId>statdoc</artifactId>
-	<version>0.9.3-beta</version>
+	<version>0.9.3-beta.2</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
