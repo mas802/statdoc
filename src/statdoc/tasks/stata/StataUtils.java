@@ -1,5 +1,5 @@
 /*
- *   Copyright 2014-2015 Markus Schaffner
+ *   Copyright 2014-2016 Markus Schaffner
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -87,6 +87,8 @@ public class StataUtils {
 
             new String[] { "\\{search (.*?):(.*?)\\}", M1 + "$2" + M0 },
             new String[] { "\\{search (.*?)\\}", M1 + "$1" + M0 },
+
+            new String[] { "\\{browse (.*?):(.*?)\\}", M1 + "$2" + M0 },
 
             new String[] { "\\{cmd:(.*?)\\}", M4 + "$1" + M0 },
 

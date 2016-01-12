@@ -5,6 +5,7 @@
  *
  * @Author Markus Schaffner
  * @KevValue someKey someValue which goes until the end of the line
+ * @statdocrun
  *
  */
 set more off

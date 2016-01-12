@@ -1,4 +1,4 @@
-package statdoc.tests;
+package statdoc.tests.items;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;

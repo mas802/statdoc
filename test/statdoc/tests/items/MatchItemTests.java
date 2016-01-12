@@ -1,4 +1,4 @@
-package statdoc.tests;
+package statdoc.tests.items;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +8,7 @@ import statdoc.items.Item;
 import statdoc.items.MatchItem;
 
 @RunWith(JUnit4.class)
-public class ItemTests {
+public class MatchItemTests {
 
     @Test
     public void testMatchedFirst() {
