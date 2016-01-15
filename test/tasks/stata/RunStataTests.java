@@ -16,28 +16,14 @@
 package tasks.stata;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.*;
-import statdoc.items.CmdItem;
 import statdoc.items.FileItem;
-import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
-import statdoc.tasks.files.TextFileTask;
-import statdoc.tasks.stata.StataDoFileTask;
 import statdoc.tasks.stata.StataRunDoFileTask;
-import statdoc.tasks.stata.StataUtils;
 
 /**
  * test running Stata from Java

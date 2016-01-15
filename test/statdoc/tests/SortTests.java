@@ -18,7 +18,6 @@ package statdoc.tests;
 import java.util.Collection;
 import java.util.TreeSet;
 
-
 import org.junit.Test;
 
 import statdoc.items.Item;

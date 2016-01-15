@@ -1,5 +1,7 @@
 package statdoc.tests.items;
 
+import static org.junit.Assert.assertEquals;
+
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
@@ -9,7 +11,6 @@ import org.junit.runners.JUnit4;
 
 import statdoc.items.FileItem;
 import statdoc.items.StatdocItemHub;
-import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class FileItemTests {

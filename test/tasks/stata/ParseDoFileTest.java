@@ -15,6 +15,9 @@
  */
 package tasks.stata;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,7 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.*;
 import statdoc.items.CmdItem;
 import statdoc.items.Item;
 import statdoc.items.StatdocItemHub;
@@ -206,7 +208,7 @@ public class ParseDoFileTest {
         System.out.println(line.getChildren());
 
         Collection<Item> matches = line.getChildrenBy("match:");
-        Iterator<Item> itm = matches.iterator();
+        // Iterator<Item> itm = matches.iterator();
 
         for( Item match: matches ) {
             System.out.println(match.get("regex"));

@@ -15,17 +15,17 @@
  */
 package statdoc.tasks.stata;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import statdoc.items.CmdItem;
-import statdoc.items.MatchItem;
 import statdoc.items.FileItem;
+import statdoc.items.MatchItem;
 import statdoc.items.StatdocItemHub;
 import statdoc.tasks.Task;
 
