@@ -292,6 +292,29 @@ public class ParseDoFileTest {
         } 
         
     }   
+
+    /* 
+     * test input block
+     */
+    @Test
+    public void testInput() {
+
+        String content = "sum \n input \n some text \nend";
+
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("outputcmd", new String[] { "save" });
+        map.put("desc", new String[] { "sum" });
+
+        Item i = runDoParser(content, map);
+
+        System.out.println(i);
+        
+        for ( Item t : i.getChildrenBy("cmd:") ) {
+            System.out.println(t + " - " + t.getContent());
+        }
+        
+        assertEquals(2, i.getChildrenBy("cmd:").size());
+    } 
     
     /*
      * helper method to run do file

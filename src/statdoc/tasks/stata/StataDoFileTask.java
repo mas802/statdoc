@@ -42,7 +42,7 @@ import statdoc.tasks.Task;
 public class StataDoFileTask implements Task {
 
     enum ReadMode {
-        Commands, DocBlock, CommentBlock, MataBlock
+        Commands, DocBlock, CommentBlock, MataBlock, InputBlock
     }
 
     private Path file;
@@ -104,6 +104,7 @@ public class StataDoFileTask implements Task {
         String currentDoc = null;
         String currentCmd = null;
         String currentMata = null;
+        String currentInput = null;
 
         /* are we in a mata block wit curly brackets */
         boolean matacurl = false;
@@ -111,6 +112,7 @@ public class StataDoFileTask implements Task {
         Integer[] docRange = new Integer[] { 0, 0 };
         Integer[] cmdRange = new Integer[] { 0, 0 };
         Integer[] mataRange = new Integer[] { 0, 0 };
+        Integer[] inputRange = new Integer[] { 0, 0 };
 
         // loop through the file
         int lineNumber = 0;
@@ -123,10 +125,10 @@ public class StataDoFileTask implements Task {
             String trimLine = rawLine.trim();
 
             // change mode based on prefix
-            if (mode.equals(ReadMode.MataBlock)) {
-                // do not change while in mata mode until an end of block is
-                // encountered
-                // inside the mata block
+            if (mode.equals(ReadMode.MataBlock)
+                    || mode.equals(ReadMode.InputBlock)) {
+                // do not change while in mata/input mode until an end of block
+                // is encountered inside the block
 
             } else if (trimLine.equals("mata") || trimLine.equals("mata:")
                     || trimLine.startsWith("mata ")) {
@@ -140,6 +142,13 @@ public class StataDoFileTask implements Task {
                 }
                 currentMata = "";
                 mataRange[0] = lineNumber;
+
+            } else if (trimLine.equals("input") || trimLine.startsWith("input ")) {
+                // start input block
+                mode = ReadMode.InputBlock;
+
+                currentInput = "";
+                inputRange[0] = lineNumber;
 
             } else if (trimLine.equals("/**") || trimLine.startsWith("/** ")) {
                 // start doc
@@ -340,8 +349,7 @@ public class StataDoFileTask implements Task {
                         || (matacurl && StataUtils.balanceChars(currentMata,
                                 "{", "}") == 0)) {
                     mataRange[1] = lineNumber;
-                    mode = ReadMode.Commands;
-
+                    
                     CmdItem cmdItem = hub.createCmd(currentMata, "mata",
                             "cmd:mata", fileItem, mataRange, currentDoc,
                             currentComment, docRange,
@@ -356,6 +364,31 @@ public class StataDoFileTask implements Task {
                     currentComment = null;
                     currentMata = null;
                     matacurl = false;
+                    mode = ReadMode.Commands;
+
+                }
+                break;
+            case InputBlock:
+
+                currentInput = currentInput + "\n" + rawLine;
+
+                if (trimLine.equals("end") || trimLine
+                        .startsWith("end ")) {
+                    inputRange[1] = lineNumber;
+                    
+                    CmdItem cmdItem = hub.createCmd(currentInput, "input",
+                            "cmd:input", fileItem, inputRange, currentDoc,
+                            currentComment, docRange,
+                            new HashMap<String, Object>());
+
+                    int inputLines = StataUtils.countChar(currentInput, "\n");
+
+                    cmdItem.put("command", "input");
+                    cmdItem.put("comment", "block (" + inputLines + " lines)");
+
+                    currentDoc = null;
+                    currentComment = null;
+                    currentInput = null;
                     mode = ReadMode.Commands;
 
                 }
@@ -508,7 +541,7 @@ public class StataDoFileTask implements Task {
             } else {
                 cmdfile = parameters;
             }
-            
+
             // use, set that MatchItem accordingly
             currentIn = hub.createMatch(cmdItem.getLine(), "file:data");
             currentIn.put("term", cmdfile);
@@ -605,7 +638,7 @@ public class StataDoFileTask implements Task {
                     if (param.trim().length() > 0 && !param.matches("[\\d]+")) {
                         String regex = StataUtils.stataTokenToRegex(param
                                 .replaceAll("\"", ""));
-                        
+
                         // check if there is at least one character to match
                         if (regex.matches(".*[a-zA-Z].*")) {
 
