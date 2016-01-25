@@ -106,5 +106,15 @@ h statdoc.jar
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+      <groupId>org.nuiton.thirdparty</groupId>
+      <artifactId>JRI</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rosuda.REngine</groupId>
+      <artifactId>REngine</artifactId>
+      <version>2.1.0</version>
+    </dependency>
 	</dependencies>
 </project>
