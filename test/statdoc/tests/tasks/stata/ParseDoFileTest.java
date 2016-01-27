@@ -339,9 +339,9 @@ public class ParseDoFileTest {
 
             t2.run();
 
-            org.junit.Assert.assertEquals(1, hub.getFiles().size());
+            org.junit.Assert.assertEquals(1, hub.getFiles().getChildren().size());
 
-            i = hub.getFiles().iterator().next();
+            i = hub.getFiles().getChildren().iterator().next();
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

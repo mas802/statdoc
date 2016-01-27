@@ -51,7 +51,7 @@ public class UpdateDirTask implements Task {
 
     private class TaskEntry {
         String type;
-        Class<Task> taskClass;
+        Class<? extends Task> taskClass;
     }
 
     Map<String, TaskEntry> taskMap = new HashMap<String, UpdateDirTask.TaskEntry>();
@@ -76,23 +76,23 @@ public class UpdateDirTask implements Task {
         // setup services from properties file
         ClassLoader cl;
         cl = UpdateDirTask.class.getClassLoader();
-        try {
-            for (Map.Entry<Object, Object> p : properties.entrySet()) {
-                String key = p.getKey().toString();
-                if (key.startsWith("statdoc.file.")) {
+        for (Map.Entry<Object, Object> p : properties.entrySet()) {
+            String key = p.getKey().toString();
+            if (key.startsWith("statdoc.file.")) {
 
-                    String param = key.substring(8);
-                    String name = param.substring(param.lastIndexOf('.') + 1);
-                    String classstr = p.getValue().toString();
+                String param = key.substring(8);
+                String name = param.substring(param.lastIndexOf('.') + 1);
+                String classstr = p.getValue().toString();
 
-                    TaskEntry te = new TaskEntry();
-                    te.type = param.replaceAll("\\.", ":");
+                TaskEntry te = new TaskEntry();
+                te.type = param.replaceAll("\\.", ":");
+                try {
                     te.taskClass = (Class<Task>) cl.loadClass(classstr);
-                    taskMap.put(name, te);
+                } catch (ClassNotFoundException e1) {
+                    te.taskClass = OtherFileTask.class;
                 }
+                taskMap.put(name, te);
             }
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
         }
         this.taskQueue = taskQueue;
     }
@@ -101,10 +101,9 @@ public class UpdateDirTask implements Task {
     public void run() {
         Thread.currentThread().setName("Run " + this.getClass());
 
-      
         try {
             Files.walkFileTree(rootDir, new SimpleFileVisitor<Path>() {
-                
+
                 @Override
                 public FileVisitResult visitFile(Path file,
                         BasicFileAttributes attrs) throws IOException {
@@ -126,28 +125,28 @@ public class UpdateDirTask implements Task {
                             TaskEntry te = taskMap.get(suffix);
                             Task task;
                             try {
-                                task = te.taskClass.getConstructor(Path.class, String.class,
-                                        hub.getClass(), taskQueue.getClass())
-                                        .newInstance(
-                                                file, te.type, hub,
-                                                taskQueue);
+                                task = te.taskClass.getConstructor(Path.class,
+                                        String.class, hub.getClass(),
+                                        taskQueue.getClass()).newInstance(file,
+                                        te.type, hub, taskQueue);
                                 taskQueue.execute(task);
                             } catch (InstantiationException
                                     | IllegalAccessException
                                     | IllegalArgumentException
                                     | InvocationTargetException
                                     | NoSuchMethodException | SecurityException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
+                                task = new OtherFileTask(file, te.type, hub,
+                                        taskQueue);
+                                taskQueue.execute(task);
                             }
                         } else {
-                            taskQueue.execute(new OtherFileTask(file, "file:general",
-                                    hub, taskQueue));
+                            taskQueue.execute(new OtherFileTask(file,
+                                    "file:general", hub, taskQueue));
                         }
-                    } 
+                    }
                     return FileVisitResult.CONTINUE;
                 }
-                
+
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir,
                         BasicFileAttributes attrs) throws IOException {
@@ -160,9 +159,9 @@ public class UpdateDirTask implements Task {
                     for (Pattern p : exclude) {
                         accept = accept && !p.matcher(filename).matches();
                     }
-                    
-                    if ( accept ) {
-                    return super.preVisitDirectory(dir, attrs);
+
+                    if (accept) {
+                        return super.preVisitDirectory(dir, attrs);
                     } else {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
