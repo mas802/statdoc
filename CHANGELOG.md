@@ -1,5 +1,6 @@
 # 0.9.3-beta (unreleased)
 
+- improve the appeal of the overview page to include images and variables
 - issue #18: add option to run single @statdocrun do file with -r --statdocrun
 - issue #19: add option to single single dta file with -a --analyse-data
 - fixed #10: trailing /// gets marked as a comments in do files
