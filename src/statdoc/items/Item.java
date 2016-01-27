@@ -175,13 +175,12 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
 
                         @Override
                         public int compare(MatchItem o1, MatchItem o2) {
-                            int l1 = o1.get("term").toString().length(); 
-                            int l2 = o2.get("term").toString().length(); 
-                            return (l1==l2)?o1.compareTo(o2):l2-l1;
+                            int l1 = o1.get("term").toString().length();
+                            int l2 = o2.get("term").toString().length();
+                            return (l1 == l2) ? o1.compareTo(o2) : l2 - l1;
                         }
-                    }
-            );
-            
+                    });
+
             /*
              * filter Items and put into set
              */
@@ -197,10 +196,10 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
                     }
                 }
             }
-            
+
             for (MatchItem m : lengthOrderedSet) {
                 String term = m.get("term").toString().trim();
-               
+
                 term = StatdocUtils.stringToRegex(term);
                 Collection<Item> links = m.getChildren();
 
@@ -210,8 +209,8 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
                 if (links.size() == 1) {
                     String linkStr = "ERROR";
                     for (Item link : links) {
-                        linkStr = "<a href=\"../" + link.getLink()
-                                + "\">" + term + "</a>";
+                        linkStr = "<a href=\"../" + link.getLink() + "\">"
+                                + term + "</a>";
                     }
                     result = pattern.matcher(result).replaceAll(
                             matchToken + counter + matchToken);
@@ -223,8 +222,8 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
                     String title = "<a title=\"multiple matches: ";
                     for (Item link : links) {
                         // title = title + " " + link.getFullName();
-                        linkStr = " href=\"../" + link.getLink()
-                                + "\">" + term + "</a>";
+                        linkStr = " href=\"../" + link.getLink() + "\">" + term
+                                + "</a>";
                     }
                     linkStr = title + "\"" + linkStr;
                     result = pattern.matcher(result).replaceAll(
@@ -232,11 +231,11 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
                     replace.add(linkStr);
                     counter++;
                 } else {
-                    throw new RuntimeException("no children in " + m
-                            + " " + m.get("term"));
+                    // FIXME disable for now throw new
+                    // RuntimeException("no children in " + m
+                    // + " " + m.get("term"));
                 }
-                    
-                
+
             }
 
             for (int i = 0; i < replace.size(); i++) {
