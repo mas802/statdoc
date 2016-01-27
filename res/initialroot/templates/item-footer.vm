@@ -72,5 +72,11 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF BOTTOM NAVBAR ========= -->
+<!-- DEBUG 
+Number of children: $!{item.getChildren().size()}
+#foreach ( $i in $!{item.getChildren()} )
+$i.type $i.fullName
+#end 
+-->
 </body>
 </html>

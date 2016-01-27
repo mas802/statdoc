@@ -55,17 +55,14 @@ public class GenerateFileinfoTask implements Task {
 
         {
             // get an item with grouped children
-            Item files = new Item("files", "files", "files/files-summary.html",
-                    "files:summary");
-            for (Item item : hub.getFiles()) {
-                files.addChild(item);
-            }
+            Item files = hub.getFiles();
 
             // produce files/files-summary.html
             Map<String, Object> data = new TreeMap<String, Object>(
                     hub.getGlobals());
             data.put("files", hub.getFiles());
-            data.put("typeMap", StatdocItemHub.getItemTypeMap(hub.getFiles()));
+            data.put("typeMap",
+                    StatdocItemHub.getItemTypeMap(hub.getFiles().getChildren()));
             data.put("filesItem", files);
             data.put("item", files);
             data.put("section", "files");
@@ -77,9 +74,9 @@ public class GenerateFileinfoTask implements Task {
             tu.evalVMtoFile(f2, "files-frame.vm", data);
         }
 
-        ArrayList<FileItem> arr = new ArrayList<FileItem>(hub.getFiles());
+        ArrayList<Item> arr = new ArrayList<Item>(hub.getFiles().getChildren());
         for (int i = 0; i < arr.size(); i++) {
-            FileItem fi = arr.get(i);
+            FileItem fi = (FileItem) arr.get(i);
 
             Map<String, Object> data = new TreeMap<String, Object>(
                     hub.getGlobals());

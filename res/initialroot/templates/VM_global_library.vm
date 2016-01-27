@@ -125,7 +125,7 @@ $!str <span class="cmd$key">$!line.getMatched( $key )</span>
 #end
 #end
 
-#macro ( cmdLines $cmdItems $title $uniqueIdAdd )
+#macro ( cmdLines $cmdItems $title $uniqueIdAdd)
 <table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variable Summary table, listing datasets and labels">
 <caption ><span><a name="variables"><!-- --></a>$title</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,7 @@ import statdoc.tasks.vm.GenerateFileinfoTask;
 import statdoc.tasks.vm.GenerateTokeninfoTask;
 import statdoc.tasks.vm.GenerateVariableinfoTask;
 import statdoc.utils.TemplateUtil;
+import statdoc.utils.TopComparator;
 
 /**
  * Main class of Statdoc and entry into the execution.
@@ -236,10 +238,12 @@ public class Statdoc {
             System.out.println("Statdocrun for the following do file ");
             System.out.println(statdocrunFile.toAbsolutePath());
 
-            if (!statdocrunFile.toFile().exists() || statdocrunFile.toFile().isDirectory()) {
-                System.out.println("ERROR, file does not exist or is directory "
-                        + statdocrunFile.toAbsolutePath()
-                        + " exists and is not a directory.");
+            if (!statdocrunFile.toFile().exists()
+                    || statdocrunFile.toFile().isDirectory()) {
+                System.out
+                        .println("ERROR, file does not exist or is directory "
+                                + statdocrunFile.toAbsolutePath()
+                                + " exists and is not a directory.");
                 return;
             }
         }
@@ -261,7 +265,8 @@ public class Statdoc {
             StataRunDoFileTask srdfTask = new StataRunDoFileTask(fi, hub, null);
             srdfTask.run();
 
-            System.out.println(fi.getChildrenBy("result:").iterator().next().getContent());
+            System.out.println(fi.getChildrenBy("result:").iterator().next()
+                    .getContent());
             System.out.println(" ");
             System.out.println("ran do file");
             System.out.println(" ");
@@ -272,7 +277,8 @@ public class Statdoc {
                     singleDataFile, "file:data", hub, null);
             task.run();
 
-            FileItem fi = hub.getFiles().first();
+            FileItem fi = (FileItem) hub.getFiles().getChildren().iterator()
+                    .next();
 
             Map<String, Object> data = new TreeMap<String, Object>(
                     hub.getGlobals());
@@ -322,9 +328,17 @@ public class Statdoc {
             Item overview = new Item("overview", "overview",
                     "overview/overview-summary.html", "overview:summary");
 
+            TreeSet<Item> topimg = new TreeSet<Item>(TopComparator.INSTANCE);
+            topimg.addAll(hub.getFiles().getChildrenBy("file:image"));
+
+            TreeSet<Item> topvar = new TreeSet<Item>(TopComparator.INSTANCE);
+            topvar.addAll( hub.getVariables().values() );
+
             Map<String, Object> data = new TreeMap<String, Object>(
                     hub.getGlobals());
             data.put("cmds", hub.getCmds());
+            data.put("topvar", topvar);
+            data.put("topimg", topimg);
             data.put("section", "overview");
             data.put("item", overview);
 

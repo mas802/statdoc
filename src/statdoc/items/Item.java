@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import statdoc.utils.NaturalComparator;
 import statdoc.utils.StatdocUtils;
+import statdoc.utils.TopComparator;
 
 /**
  * Item is the key class for all elements of analysis and provides a flexible
@@ -426,7 +427,8 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
      */
     private Map<String, Collection<Item>> children = new TreeMap<String, Collection<Item>>();
     private Map<String, Collection<Item>> groupedChildren = new TreeMap<String, Collection<Item>>();
-    private Collection<Item> childrenSet = new TreeSet<Item>();
+    private Collection<Item> childrenSet = null;
+    private Collection<Item> childrenTopSet = null;
 
     /* Determine whether children need to be regrouped */
     boolean dirtyChildren = true;
@@ -441,6 +443,7 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         }
         dirtyChildren = true;
         childrenSet = null;
+        childrenTopSet = null;
     }
 
     public final void addChild(Item child) {
@@ -459,6 +462,26 @@ public class Item extends TreeMap<String, Object> implements Comparable<Item> {
         return childrenSet;
     }
 
+
+    /**
+     * sort children according to their top position 
+     * 
+     * @see statdoc.utils.TopComparator
+     * 
+     * @return a descending ordered set of children
+     */
+    synchronized public Collection<Item> getChildrenTop() {
+        synchronized (children) {
+            if (childrenTopSet == null) {
+                childrenTopSet = new TreeSet<Item>(TopComparator.INSTANCE);
+                for (Collection<Item> group : children.values()) {
+                    childrenTopSet.addAll(group);
+                }
+            }
+        }
+        return childrenTopSet;
+    }
+    
     /**
      * gets a collection of filtered children
      * 

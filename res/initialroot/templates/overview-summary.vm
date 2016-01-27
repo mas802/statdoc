@@ -14,8 +14,15 @@ VARIABLES
 <tbody>
 <tr class="rowColor">
 <td class="colFirst"><a href="../variables/variables-summary.html">Summary</a></td>
-<td class="colLast">Summary of all Variables found in the data files.&nbsp;</td>
-</tr>
+<td class="colLast">
+#foreach( $itemCon in $topvar )
+   #if( ($velocityCount <= 5) )
+      #set( $item = $itemCon.getChildrenBy("variable:").iterator().next())
+      <div class="thumbdiv" style="background: ${itemCon.myColor()};">
+      <a href="../$item.getLink()" title="${item.fullName}">#graph($item  "span")<br>${item.name}</a></div>
+   #end
+#end
+</td>
 </tbody>
 </table>
 </div>
@@ -47,7 +54,14 @@ FILES
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../files/files-summary.html#Images">Images</a></td>
-<td class="colLast">Images and Graphs.&nbsp;</td>
+<td class="colLast">
+#foreach( $item in $topimg )
+   #if( ($velocityCount <= 5) )
+       <div class="thumbdiv" style="background: ${item.myColor()};">
+     <a href="../${item.getLink()}" title="${item.name}">$!item.content</a></div>
+   #end
+#end
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../files/files-summary.html#Documents">Documents</a></td>

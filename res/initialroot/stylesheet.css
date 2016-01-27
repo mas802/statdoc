@@ -625,3 +625,15 @@ padding: 1px;
 .graphx.graphaxis path {
   display: none;
 }
+
+.thumbdiv {
+  border: 1px solid #9eadc0; 
+  display: inline-block; 
+  width: 110px; 
+  height: 80px; 
+  margin: 2px; 
+  padding: 3px; 
+  vertical-align: top; 
+  text-align: center; 
+  overflow:hidden;
+}

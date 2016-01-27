@@ -52,7 +52,8 @@ public class StatdocItemHub {
      * into a superitem (or DB)
      */
 
-    private TreeSet<FileItem> files = new TreeSet<FileItem>();
+    private Item files = new Item("files", "files", "files/files-summary.html",
+            "files:summary");
     private Item cmds = new Item();
     private Map<String, TokenItem> tokens = new TreeMap<String, TokenItem>();
     private Map<String, Item> vars = new TreeMap<String, Item>();
@@ -91,7 +92,7 @@ public class StatdocItemHub {
         return this.globals;
     }
 
-    public TreeSet<FileItem> getFiles() {
+    public Item getFiles() {
         return files;
     }
 
@@ -130,7 +131,7 @@ public class StatdocItemHub {
     synchronized public FileItem createFile(Path file, String type) {
         FileItem fileItem = new FileItem(file, sourceDir, type);
 
-        files.add(fileItem);
+        files.addChild(fileItem);
 
         fileItem.put("date", new Date(file.toFile().lastModified()));
 
@@ -337,7 +338,8 @@ public class StatdocItemHub {
                  */
                 if (targetType.startsWith("file")) {
                     Pattern pattern = Pattern.compile(".*" + regex + ".*");
-                    for (FileItem fi : files) {
+                    for (Item i : files.getChildren()) {
+                        FileItem fi = (FileItem) i;
                         if (fi.getType().startsWith(targetType)) {
                             String matchee = fi.getPath().toAbsolutePath()
                                     .toString();

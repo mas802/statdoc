@@ -24,7 +24,7 @@ import statdoc.items.Item;
 public class NaturalComparator implements Comparator<Item> {
     public static final NaturalComparator INSTANCE = new NaturalComparator();
 
-    private NaturalComparator() {
+    protected NaturalComparator() {
     }
 
     private static final Pattern BOUNDARYSPLIT = Pattern
