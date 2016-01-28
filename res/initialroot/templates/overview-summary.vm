@@ -19,7 +19,8 @@ VARIABLES
    #if( ($velocityCount <= 5) )
       #set( $item = $itemCon.getChildrenBy("variable:").iterator().next())
       <div class="thumbdiv" style="background: ${itemCon.myColor()};">
-      <a href="../$item.getLink()" title="${item.fullName}">#graph($item  "span")<br>${item.name}</a></div>
+      <a href="../$item.getLink()" title="${item.fullName}"  target="classFrame">#graph($item  "span")<br>${item.name}</a>
+      </div>
    #end
 #end
 </td>
@@ -58,7 +59,7 @@ FILES
 #foreach( $item in $topimg )
    #if( ($velocityCount <= 5) )
        <div class="thumbdiv" style="background: ${item.myColor()};">
-     <a href="../${item.getLink()}" title="${item.name}">$!item.content</a></div>
+     <a href="../${item.getLink()}" title="${item.name}" target="classFrame" >$!item.content</a></div>
    #end
 #end
 </td>
