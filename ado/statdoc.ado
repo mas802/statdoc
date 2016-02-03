@@ -4,7 +4,7 @@
  *
  * A utility program initiate a statdoc task 
  * 
- * @author (c) 2015 Markus Schaffner
+ * @author (c) 2015-2016 Markus Schaffner
  *
  */
  
