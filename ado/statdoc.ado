@@ -41,7 +41,7 @@ program statdoc_main
 	version 13
 	syntax , [Output(string)] [Source(string)] [Initialise] [Derived-clear] [Clear]
 	
-	local version = "v0.9.3-beta"
+	local version = "v0.9.3-beta.3"
 
 	if ( "`source'" == "" ) {
 		local source = c(pwd)
@@ -89,7 +89,7 @@ program statdoc_do
   version 13
   syntax anything(name=dofile), [Output(string)]
   
-  local version = "v0.9.3-beta.2"
+  local version = "v0.9.3-beta.3"
  
   if ( "`output'" == "" ) {
     local dir = c(pwd)

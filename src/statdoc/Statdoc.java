@@ -62,7 +62,7 @@ import statdoc.utils.TopComparator;
  */
 public class Statdoc {
 
-    private final static String version = "v0.9.3-beta.2";
+    private final static String version = "v0.9.3-beta.3";
 
     // directory for all the files from initialroot
     private static final String[] dirs = new String[] { "overview", "files",
@@ -152,7 +152,8 @@ public class Statdoc {
                     i++;
                     outputDir = (new File(args[i])).toPath();
                 } else {
-                    System.err.println("Error with option --output ###" + args + "###");
+                    System.err.println("Error with option --output ###" + args
+                            + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-s") || args[i].equals("--source")) {
@@ -160,7 +161,8 @@ public class Statdoc {
                     i++;
                     sourceDir = (new File(args[i])).toPath();
                 } else {
-                    System.err.println("Error with option --source ###" + args + "###");
+                    System.err.println("Error with option --source ###" + args
+                            + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-r") || args[i].equals("--statdocrun")) {
@@ -168,7 +170,8 @@ public class Statdoc {
                     i++;
                     statdocrunFile = (new File(args[i])).toPath();
                 } else {
-                    System.err.println("Error with option --statdocrun ###" + args + "###");
+                    System.err.println("Error with option --statdocrun ###"
+                            + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-a") || args[i].equals("--analyse-data")) {
@@ -176,7 +179,8 @@ public class Statdoc {
                     i++;
                     singleDataFile = (new File(args[i])).toPath();
                 } else {
-                    System.err.println("Error with option --analyse-data ###" + args + "###");
+                    System.err.println("Error with option --analyse-data ###"
+                            + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-vc")
@@ -185,7 +189,8 @@ public class Statdoc {
                     i++;
                     versionCheck = args[i];
                 } else {
-                    System.err.println("Error with option --version-check ###" + args + "###");
+                    System.err.println("Error with option --version-check ###"
+                            + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-i") || args[i].equals("--initialise")) {
@@ -337,7 +342,7 @@ public class Statdoc {
             topimg.addAll(hub.getFiles().getChildrenBy("file:image"));
 
             TreeSet<Item> topvar = new TreeSet<Item>(TopComparator.INSTANCE);
-            topvar.addAll( hub.getVariables().values() );
+            topvar.addAll(hub.getVariables().values());
 
             Map<String, Object> data = new TreeMap<String, Object>(
                     hub.getGlobals());
@@ -429,9 +434,16 @@ public class Statdoc {
         }
 
         if (derivedClear) {
-            for (File file : new File(hub.outputDir.toFile(), "derived")
-                    .listFiles())
-                file.delete();
+            File d = new File(hub.outputDir.toFile(), "derived");
+            if (d.exists()) {
+                for (File file : d.listFiles()) {
+                    file.delete();
+                }
+            } else {
+                System.err
+                        .println("Cannot empty non-existing derived directory: "
+                                + d.toString());
+            }
         }
 
         for (String file : files) {
