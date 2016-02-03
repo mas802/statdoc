@@ -152,6 +152,7 @@ public class Statdoc {
                     i++;
                     outputDir = (new File(args[i])).toPath();
                 } else {
+                    System.err.println("Error with option --output ###" + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-s") || args[i].equals("--source")) {
@@ -159,6 +160,7 @@ public class Statdoc {
                     i++;
                     sourceDir = (new File(args[i])).toPath();
                 } else {
+                    System.err.println("Error with option --source ###" + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-r") || args[i].equals("--statdocrun")) {
@@ -166,6 +168,7 @@ public class Statdoc {
                     i++;
                     statdocrunFile = (new File(args[i])).toPath();
                 } else {
+                    System.err.println("Error with option --statdocrun ###" + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-a") || args[i].equals("--analyse-data")) {
@@ -173,6 +176,7 @@ public class Statdoc {
                     i++;
                     singleDataFile = (new File(args[i])).toPath();
                 } else {
+                    System.err.println("Error with option --analyse-data ###" + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-vc")
@@ -181,6 +185,7 @@ public class Statdoc {
                     i++;
                     versionCheck = args[i];
                 } else {
+                    System.err.println("Error with option --version-check ###" + args + "###");
                     ok = false;
                 }
             } else if (args[i].equals("-i") || args[i].equals("--initialise")) {
