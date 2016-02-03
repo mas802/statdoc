@@ -61,8 +61,8 @@ public class TemplateUtil {
             p.setProperty("file.resource.loader.path", basepath);
             // p.setProperty("file.resource.loader.cache", "false");
 
-            p.setProperty("velocimacro.library.autoreload", "false");
-            p.setProperty("file.resource.loader.cache", "true");
+            p.setProperty("velocimacro.library.autoreload", "true");
+            p.setProperty("file.resource.loader.cache", "false");
             p.setProperty("file.resource.loader.modificationCheckInterval",
                     "-1");
             p.setProperty("parser.pool.size", "50");
