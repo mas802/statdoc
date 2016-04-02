@@ -42,6 +42,12 @@ import statdoc.tasks.stata.StataUtils;
 @RunWith(JUnit4.class)
 public class ParseDoFileTest {
 
+    /*
+     * TODO the following strings have minor parsing issues
+     * 
+     * replace section_target = lower(trim(section_target))
+     */
+    
     @Test
     public void testDo() {
 
