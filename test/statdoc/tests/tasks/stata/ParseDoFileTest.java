@@ -417,6 +417,30 @@ public class ParseDoFileTest {
 
     }
 
+    
+
+    @Test
+    public void testSMCLToPlain() {
+
+        String[] tests = new String[] { "{com}. /**" };
+        String[] expect = new String[] { ". /**\n" }; 
+        // TODO is the trailing \n an issue or not?
+
+        for (int i = 0; i<tests.length; i++) {
+            String test = tests[i];
+            String exp = expect[i];
+            String result;
+            System.out.println(test);
+            result = StataUtils.smcl2plain(test, false);
+            System.out.print(":::" + result + ":::");
+            System.out.println();
+            System.out.println();
+            assertEquals(exp, result);
+        }
+
+    }
+    
+    
     @Test
     public void testMatch() {
         String a = "/Users/schaffne/Dropbox/projects/striker bias/DataAnalysis2006_11/dta/matchValues.dta";

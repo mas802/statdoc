@@ -356,6 +356,8 @@ public class StataUtils {
         result = result.replaceAll("" + M3, "");
         result = result.replaceAll("" + M4, "");
         result = result.replaceAll("" + M5, "");
+        result = result.replaceAll("" + M6, "");
+        result = result.replaceAll("" + M7, "");
 
         return result;
     }

@@ -42,6 +42,8 @@ public class TemplateUtil {
 
     static TemplateUtil instance;
 
+    private String basepath;
+    
     public static TemplateUtil getInstance() {
         if (instance == null) {
             throw new RuntimeException(
@@ -52,7 +54,7 @@ public class TemplateUtil {
 
     public TemplateUtil(String basepath) {
         instance = this;
-
+        
         try {
 
             Properties p = new Properties();
@@ -74,11 +76,17 @@ public class TemplateUtil {
                     "org.apache.velocity.runtime.log.NullLogSystem");
 
             Velocity.init(p);
+            
+            this.basepath = basepath;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+    
+    public String getDir() {
+        return basepath;
     }
 
     public void evalVMtoFile(File f, String templatename,
