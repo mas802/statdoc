@@ -16,6 +16,8 @@ program statdoc
 	version 13
  	gettoken subcmd 0 : 0
 
+  local version = "v0.9.3-beta.4"
+
   if ( "`subcmd'" == "rkeyval" ) {
     statdoc_rkeyval `0'
   } 
@@ -41,8 +43,6 @@ program statdoc_main
 	version 13
 	syntax , [Output(string)] [Source(string)] [Initialise] [Derived-clear] [Clear]
 	
-	local version = "v0.9.3-beta.4"
-
 	if ( "`source'" == "" ) {
 		local source = c(pwd)
 	}
@@ -89,8 +89,6 @@ program statdoc_do
   version 13
   syntax anything(name=dofile), [Output(string)]
   
-  local version = "v0.9.3-beta.3"
- 
   if ( "`output'" == "" ) {
     local dir = c(pwd)
     local output = "`dir'/statdoc"
@@ -116,6 +114,7 @@ program statdoc_do
   }
       
 end
+
 
 
 /**
