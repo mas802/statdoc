@@ -1,0 +1,403 @@
+#*
+
+VELOCITY MACROS
+
+*#
+#macro ( colors_table $tblitem $filter )
+<table style="width:100%;height: 1em;border-collapse: collapse;">
+<tr>
+#set( $tblitemSet = $tblitem.getChildrenBy( "$!filter" ) )
+#set( $size = $tblitemSet.size() )
+#set( $counter = 0 )
+#set( $maxcols = 50 )
+
+#if ( $size > $maxcols ) 
+    #set( $cellwidth = 100/$maxcols )
+#else 
+    #set( $cellwidth = 100/$size )
+#end
+<!-- DEBUG INFO
+$size
+$maxcols
+$cellwidth
+-->
+#foreach ( $child in $tblitemSet )
+#if ( ${child.getType().startsWith( "match" )} )
+##<td title="${child.getFullName()}" style="width:${cellwidth}%;border: 1px solid black; background: ${child.myColor()}" onclick="location.href='../$child.getLink()';"></td>
+#else
+<td title="${child.getFullName()}" style="width:${cellwidth}%;border: 1px solid black; background: ${child.myColor()}" onclick="location.href='../$child.getLink()';"></td>
+#end
+#set( $counter = $counter+1 )
+#if ( $counter == $maxcols ) 
+    </tr>
+    <tr>
+    #set( $counter = 0 )
+#end
+#end
+</tr>
+</table>
+#end
+
+#*
+
+MACRO PROPERTIES in the Map
+
+*#
+#macro( propmap $propitem )
+  <table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Properties">
+  <caption><span><a name="properties"><!-- --></a>All properties</span><span class="tabEnd">&nbsp;</span></caption>
+  <tr>
+  <th class="colFirst" scope="col">key</th>
+  <th class="colLast"  scope="col">content</th>
+  </tr>
+  <tbody>
+  #foreach( $key in $propitem.keySet() )
+  #if ( "$propcolor" == "altColor" ) #set( $propcolor = "rowColor" ) #else #set( $propcolor = "altColor" ) #end
+  <tr class="$propcolor">
+  <td class="colFirst">$key</td>
+  <td class="colLast">$!{propitem.getMatched( $key )}</td>
+  </tr>
+  #end
+  </tbody>
+  </table>
+#end
+
+#*
+
+MACRO displayItemLink to display a short (max 35 char) link to an item, usually a file
+
+*#
+#macro( displayItemLink $displayItem $displayElement $suffix )
+#if ( "$!{displayItem.getLine()}" != "" ) 
+  <$displayElement style="white-space: nowrap; background: ${displayItem.getFileItem().myColor()};">
+    <a href="../${displayItem.getFileItem().getLink()}" title="${displayItem.getFullName()}"  target="classFrame" >$displayItem.getFileItem().getAbbrevFullName(35)</a><b>:</b><a href="../${displayItem.getLink()}" title="$displayItem.getFullName()"  target="classFrame" >$displayItem.getLine()</a>$!suffix
+#else
+  <$displayElement style="white-space: nowrap; background: ${displayItem.myColor()};">
+    <a href="../${displayItem.getLink()}" title="$displayItem.getFullName()"  target="classFrame" >$displayItem.getAbbrevFullName(35)</a>$!suffix
+#end
+</$displayElement>  
+#end
+
+#macro ( fileBlock $title $items )
+#set( $color = "" )
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="$title Files Summary table, listing variables, and an explanation">
+<caption><span><a name="$title"><!-- --></a>$title</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">File</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+#foreach( $item in $items )
+#set( $uniqueId = "files_${item.hashCode()}" )
+#if ( "$color" == "altColor" ) #set( $color = "rowColor" ) #else #set( $color = "altColor" ) #end
+#if( $item.getType().startsWith("group:") )
+<tr class="$color">
+<td class="colFirst" style="text-align: right;"><a href="javascript:toggle('$uniqueId');" title="File group $item.getName()">[+] $item.getName() [$item.getChildren().size()]</a></td>
+<td class="colLast">Group of files starting with $item.getName()</td>
+</tr>
+<tbody id="$uniqueId" style="display:none;">
+#foreach( $sitem in $item.getChildren() )
+#if ( "$scolor" == "altColor" ) #set( $scolor = "rowColor" ) #else #set( $scolor = "altColor" ) #end
+<tr class="$scolor">
+<td class="colFirst" style="text-align: right;"><a href="../${sitem.getLink()}" title="File $sitem.getName()"  target="classFrame" >$sitem.getFullName()</a>#warningIcon($sitem)</td>
+<td class="colLast">$!{sitem.getDescription()}</td>
+</tr>
+#end
+</tbody>
+#else
+<tr class="$color">
+<td class="colFirst" style="text-align: right;"><a href="../${item.getLink()}"  target="classFrame" title="File $item.getName()">$item.getFullName()</a>#warningIcon($item)</td>
+<td class="colLast">$!{item.getDescription()}</td>
+</tr>
+#end
+#end
+</table>
+</li>
+</ul>
+#end
+
+
+#macro ( cmdkeyedpart $line $key $str )
+#if ( $line.containsKey( $key ) )
+$!str <span class="cmd$key">$!line.getMatched( $key )</span>
+#end
+#end
+
+#macro ( cmdLines $cmdItems $title $uniqueIdAdd)
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variable Summary table, listing datasets and labels">
+<caption ><span><a name="variables"><!-- --></a>$title</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst"  style="width:30px" scope="col">file</th>
+<th class="colOne"  style="width:30px" scope="col">#</th>
+<th class="colLast" width="100%" scope="col">command</th>
+</tr>
+#set( $oldline = "not set" )
+#foreach( $line in $cmdItems )
+#set ( $uniqueId = "line_$!{uniqueIdAdd}_${line.hashCode()}" )
+#if ( "$cmdcolor" == "altColor" ) #set( $cmdcolor = "rowColor" ) #else #set( $cmdcolor = "altColor" ) #end
+<tr class="$cmdcolor">
+<td class="cmd_$filter colFirst" style="text-align:right; padding-right: 1px; background: ${line.getFileItem().myColor()};"><a name="$line.getLine()" title="$line.getCommand()"><!-- --></a>
+    #if ( "${oldline.getFileItem().hashCode()}" != "${line.getFileItem().hashCode()}" )
+        #displayItemLink( ${line.getFileItem()} "span" "<b>:</b>" )
+    #else
+        <b>:</b>    
+    #end
+    #set( $oldline = $line )
+</td>
+<td class="cmd_$filter colOne" style="text-align:right; border: none; padding-left: 2px; background: ${line.myColor()};">
+    #set( $submatch = $line )
+    <a href="../${submatch.getLink()}" title="$submatch.getFullName()"  target="classFrame" >$submatch.getLine()</a>#*
+    *#&nbsp;<a onclick='toggle("$uniqueId");' title="$line.getCommand()">[+]</a>
+</td>
+#set( $ind = 2 * $line.get("indent") )
+<td class="colLast">
+#cmdLine( $line )
+</td>
+</tr>
+#end
+</table>
+#end
+
+#macro( cmdLine $line $uniqueId )
+#cmdkeyedpart( $line "prefix" )    
+#cmdkeyedpart( $line "command" )    
+#cmdkeyedpart( $line "parameters" " " )    
+#cmdkeyedpart( $line "using" "using" ) 
+#cmdkeyedpart( $line "if" "if") 
+#cmdkeyedpart( $line "in" "in" )
+#cmdkeyedpart( $line "weight" "weight" )
+#cmdkeyedpart( $line "options" ",")        
+#cmdkeyedpart( $line "comment" " ")
+#if ( "$uniqueId" != "" )
+<div id="$uniqueId" style="display:none">
+<ul class="blockList">
+<li class="blockList">
+<pre class="wrap">$line.getContent()</pre>
+</li>
+</ul>
+#propmap( $line )
+<br>
+</br>
+#*
+#if( $line.getChildrenBy( "match" ).size() > 0 )
+  <table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Matches">
+  <tr>
+  <th class="colFirst" scope="col">element</th>
+  <th class="colLast"  scope="col">match</th>
+  </tr>
+  <tbody>
+  #foreach( $match in $line.getChildrenBy( "match" ) )
+    #if ( "$!{match.get('term')}" != "" )
+  #if ( "$color" == "altColor" ) #set( $color = "rowColor" ) #else #set( $color = "altColor" ) #end
+  <tr class="$color">
+  <td class="colFirst">$match.get("term")#if ($match.containsKey("field")) <i>(${match.get("field")})</i>#end</td>
+  <td class="colLast">
+#set( $noMatches = $match.getChildren().size() )
+#set( $origin = $match.get("origin") )
+#if ( $noMatches == 0 )
+<i>no match found</i>
+#else
+    #foreach( $submatch in $match.getChildren() )
+#if ( "$!{submatch.getLine()}" != "" ) 
+    <a href="../${submatch.getFileItem().getLink()}" title="$submatch.getFullName()"  target="classFrame" >$submatch.getFileItem().getFullName()</a>:<a href="../${submatch.getLink()}" title="$submatch.getFullName()"  target="classFrame" >$submatch.getLine()</a>
+#else
+    <a href="../${submatch.getLink()}" title="$submatch.getFullName()"  target="classFrame" >$submatch.getFullName()</a>
+#end      
+    #end
+#end
+  </td>
+  </tr>
+  #end
+  #end
+  </tbody>
+  </table>
+<br>
+#end
+*#
+</div>
+#end
+#end
+
+#macro ( variableItems $varItems $title )
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variable Summary table, listing datasets and labels">
+<caption><span><a name="variables"><!-- --></a>$title</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Variable</th>
+<th class="colOne"  scope="col">Graph</th>
+<th class="colLast"  scope="col">Type</th>
+<th class="colLast"  scope="col">N</th>
+<th class="colLast"  scope="col">Descriptives</th>
+<th class="colLast" scope="col">Label</th>
+</tr>
+#foreach( $var in $varItems )
+#if ( "$gvarcolor" == "altColor" ) #set( $gvarcolor = "rowColor" ) #else #set( $gvarcolor = "altColor" ) #end
+#set( $uniqueId = "varg_${var.getName()}_$var.hashCode()" )
+#if ( $var.getType().equals("group") )
+<tbody>
+<tr class="$gvarcolor">
+<td class="colFirst">
+    <b><a href="javascript:toggle('$uniqueId');" title="Variable Group $var.getName()">[+] $var.getName() [$var.getChildrenBy("variable:").size()]</a></b>
+</td>
+<td class="colOne"></td>
+<td class="colLast">[group]</td>
+<td class="colLast"></td>
+<td class="colLast"></td>
+<td class="colLast"></td>
+</tr>
+</tbody>
+<tbody id="$uniqueId" style="display:none;">
+#set( $scolor = "rowColor" )
+#foreach( $gvar in $var.getChildren() )
+#if ( "$scolor" == "altColor" ) #set( $scolor = "rowColor" ) #else #set( $scolor = "altColor" ) #end
+#variableLine( $gvar $scolor "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" )
+#end
+</tbody>
+#else
+#variableLine( $var $gvarcolor )
+#end
+#end
+</table>
+</li>
+</ul>
+#end
+
+#macro( variableLine $var $gvarcolor $indent )
+#set( $uniqueId = "varline_${var.getName()}_$var.hashCode()" )
+#set( $data = $var.getFileItem() )
+<tr class="$gvarcolor"  style="background: ${var.myColor()};">
+<td class="colFirst"><a name="$data.getName()"><!--   --></a><a name="$var.getName()"><!--   --></a>
+$!{indent}<a href='javascript:toggle("$uniqueId");' title="Show more">[+]</a>
+<a href="../$var.getLink()#$data.getName()"  target="classFrame" title="Variable $var.getName()">$var.getName()</a><br>
+$!{indent}&nbsp;&nbsp;&nbsp;&nbsp;<i>@<a href="../$data.getLink()#${var.getName()}"  target="classFrame" title="Data $data.getName()">$data.getAbbrevName(32)</a></i></td>
+#variable_tds( $var )
+</tr>
+<tr id="$uniqueId" class="$varcolor" style="display:none; background: ${var.myColor()};">
+  <td class="colOne" colspan="8">
+<div class="block">
+#propmap( $var )
+#set( $estItems = $var.getChildrenByBy( "match", "cmd:statcmd", "cmd:estcmd" ) )
+#if ( $estItems.size() > 0 )
+<br>
+#cmdLines($estItems "Estimations and Descriptive Statistics with ${var.getName()}" "$uniqueId" )
+#end
+<br>
+#cmdLines($var.getChildrenByBy( "match", "cmd:manipulate" ) "Data Manipulations with ${var.getName()}")
+<ul class="blockList">
+<li class="blockList">
+<ul class="blockList">
+<li class="blockList">
+<h3>Script Output</h3>
+<pre class="wrap">$var.getContent()</pre>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+  </td>
+</tr>
+#end
+
+#macro( graph $vartds $element)
+#set( $grahpuniqueId = "graph_${vartds.hashCode()}")
+<$element id="$grahpuniqueId">
+#if ( $vartds.get( "class" ) != "constant" ) 
+#if ( $vartds.containsKey( "names" ) &&  $vartds.containsKey( "freq" ) ) 
+<script>
+    var freq = [$vartds.get('freq')];
+    var label = [$vartds.get('names')];
+    hist( "#$grahpuniqueId", freq, label );
+</script>
+#elseif ( $vartds.containsKey( "values" ) &&  $vartds.containsKey( "freq" ) ) 
+<script>
+    var freq = [$vartds.get('freq')];
+    var label = [$vartds.get('values')];
+    hist( "#$grahpuniqueId", freq, label );
+</script>
+#elseif ( $vartds.containsKey( "histw" ) ) 
+<script>
+    var freq = [$vartds.get('histh')];
+    var label = [$vartds.get('histw')];
+    hist( "#$grahpuniqueId", freq, label );
+</script>
+#else
+<!-- no graph -->
+#end
+#end
+</$element>
+#end
+
+#macro( variable_tds $vartds )
+<td class="colOne">
+#graph($vartds  "div")
+</td>
+<td class="colLast">
+    #set( $class = ${vartds.get("class")} )
+    $!class<br>
+    ($!{vartds.get("type")})
+</td>
+<td class="colLast">
+	$!{vartds.get("N")}<br>
+	($!{vartds.get("N_unique")})
+</td>
+#if ( "$class" == "constant" )
+<td class="colLast">$!{vartds.get("values")} </td>
+#elseif ( "$class" == "category" )
+<td class="colLast">
+#if ( $vartds.containsKey( "names" ) ) 
+$vartds.getAbbrevProperty('names', 50)
+#elseif ( $vartds.containsKey( "values" ) ) 
+$vartds.getAbbrevProperty('values', 50)
+#end
+</td>
+#elseif ( "$class" == "dummy" )
+<td class="colLast">
+#if ( $vartds.containsKey( "names" ) ) 
+$vartds.getAbbrevProperty('names', 50)
+#elseif ( $vartds.containsKey( "values" ) ) 
+$vartds.getAbbrevProperty('values', 50)
+#end
+</td>
+#elseif ( "$class" == "identifier" || "$class" == "string" )
+<td class="colLast">$!{vartds.get("example")}</td>
+#elseif ( "$class" == "empty" )
+<td class="colLast"></td>
+#else
+<td class="colLast">(x&#772;=$!{vartds.get("mean").trim()},&nbsp;$!{vartds.get("sd").trim()})&nbsp;[$!{vartds.get("min").trim()},$!{vartds.get("max").trim()}]</td>
+#end
+<td class="colLast">$!{vartds.get("label")} $!{vartds.getSummary()}</td>
+#end
+
+#*
+
+WARNINGS
+
+*#
+#macro( warnings $warnitem )
+#if( $warnitem.getWarnings().size() > 0 )
+<a name="warnings"><!-- --></a>
+<div class="contentContainer">
+#foreach( $warning in $warnitem.getWarnings() )
+<ul class="blockList">
+<li class="blockList">
+<div class="warning">&#9888;
+$warning
+</div>
+</li>
+</ul>
+#end
+</div>
+#end
+#end
+
+#macro( warningIcon $warnitem )
+#if( $warnitem.getWarnings().size() > 0 ) 
+#foreach( $warning in $warnitem.getWarnings() )
+<a class="warning" href="../${warnitem.getLink()}\#warnings"  target="classFrame" title="${warning}">&#9888;</a>
+#end
+#end
+#end

@@ -1,0 +1,54 @@
+#parse( "item-header.vm" )
+<div class="header">
+<h1 title="Package" class="title">Files&nbsp;of&nbsp;$project</h1>
+</div>
+<div class="contentContainer">
+#fileBlock( "Data" $filesItem.getGroupedChildrenBy("file:data") )
+#fileBlock( "Scripts" $filesItem.getGroupedChildrenBy("file:script") )
+#set( $color = "" )
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Image Files Summary table">
+<caption><span><a name="Images"><!-- --></a>Images</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col"></th>
+<th class="colLast" scope="col">Image Files</th>
+</tr>
+<tbody>
+<tr class="$color">
+<td class="colFirst" style="text-align: right; width: 20px;"></td><td class="colLast">
+#foreach( $item in $filesItem.getGroupedChildrenBy("file:image") )
+#set( $uniqueId = "files_${item.hashCode()}" )
+#if ( "$color" == "altColor" ) #set( $color = "rowColor" ) #else #set( $color = "altColor" ) #end
+#if( $item.getType().startsWith("group:") )
+<a href="javascript:toggle('$uniqueId');" title="File group $item.getName()">[+] $item.getName() [$item.getChildren().size()]</a> $item.getName()
+<span id="$uniqueId" style="display:none;">
+#foreach( $sitem in $item.getChildren() )
+#if ( "$scolor" == "altColor" ) #set( $scolor = "rowColor" ) #else #set( $scolor = "altColor" ) #end
+  <div class="thumbdiv" style="background: ${sitem.myColor()};">
+  <a href="../$sitem.getLink()" title="File $sitem.getFullName()"  target="classFrame">${sitem.name}#warningIcon($sitem)<br>${sitem.content}</a>
+  </div>
+#*
+<a href="../${sitem.getLink()}" title="File $sitem.getName()"  target="classFrame" >$sitem.getFullName()</a>#warningIcon($sitem)
+*#
+#end
+</span>
+#else
+	<div class="thumbdiv" style="background: ${item.myColor()};">
+	<a href="../$item.getLink()" title="File $item.getFullName()"  target="classFrame">${item.name}#warningIcon($item)<br>${item.content}</a>
+	</div>
+#* 
+<a href="../${item.getLink()}"  target="classFrame" title="File $item.getName()">$item.getFullName()</a>#warningIcon($item)
+$!{item.getDescription()} 
+*#
+#end
+#end
+</td>
+</tr>
+</table>
+</li>
+</ul>
+#fileBlock( "Documents" $filesItem.getGroupedChildrenBy("file:doc") )
+#fileBlock( "Other Files" $filesItem.getGroupedChildrenBy("file:general") )
+</div>
+#parse( "item-footer.vm" )

@@ -1,0 +1,154 @@
+#parse( "item-header.vm" )
+<div class="header">
+<h1 title="Variables" class="title">Variables&nbsp;of&nbsp;$project</h1>
+</div>
+
+#*
+
+ONLY VARS IN ESTIMATIONS (?)
+
+*#
+<div class="contentContainer">
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variables Summary table, listing variables, and an explanation">
+<caption><span>Variables In Estimations</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col" style="width: 10px;"></th>
+<th class="colLast" scope="col"></th>
+</tr>
+<tbody>
+<tr class="$color">
+<td class="colFirst" style="width: 10px;"></td>
+<td class="colLast">
+#foreach( $var in $variables )
+#set( $est = $var.getChildrenBy( "match:cmd:estcmd" ) )
+#if ( $est.size() != 0 )
+#foreach( $item in $var.getChildrenBy( "variable:" ) )
+  <div class="thumbdiv" style="background: ${item.myColor()};">
+  <a href="../$item.getLink()" title="${item.fullName}"  target="classFrame">#graph($item  "span")<br>${item.name}</a>
+  </div>
+#end
+#end
+#end
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+
+#*
+
+ONLY VARS IN STAT (?)
+
+*#
+<div class="contentContainer">
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variables Summary table, listing variables, and an explanation">
+<caption><span>Variables in Descriptive Statistics</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col" style="width: 10px;"></th>
+<th class="colLast" scope="col"></th>
+</tr>
+<tbody>
+<tr class="$color">
+<td class="colFirst" style="width: 10px;"></td>
+<td class="colLast">
+#foreach( $var in $variables )
+#set( $est = $var.getChildrenBy( "match:cmd:estcmd" ) )
+#set( $stat = $var.getChildrenBy(  "match:cmd:statcmd" ) )
+#if ( $est.size() == 0 && $stat.size() != 0 )
+#foreach( $item in $var.getChildrenBy( "variable:" ) )
+  <div class="thumbdiv" style="background: ${item.myColor()};">
+  <a href="../$item.getLink()" title="${item.fullName}"  target="classFrame">#graph($item  "span")<br>${item.name}</a>
+  </div>
+#end
+#end
+#end
+</td>
+</tr>
+
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+
+#*
+
+ONLY VARS IN MAN (?)
+
+*#
+<div class="contentContainer">
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variables Summary table, listing variables, and an explanation">
+<caption><span>Variables In Manipulations</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col" style="width: 10px;"></th>
+<th class="colLast" scope="col"></th>
+</tr>
+<tbody>
+<tr class="$color">
+<td class="colFirst" style="width: 10px;"></td>
+<td class="colLast">
+#foreach( $var in $variables )
+#set( $est = $var.getChildrenBy( "match:cmd:estcmd", "match:cmd:statcmd" ) )
+#set( $stat = $var.getChildrenBy(  "match:cmd:manipulate" ) )
+#if ( $est.size() == 0 && $stat.size() != 0 )
+#foreach( $item in $var.getChildrenBy( "variable:" ) )
+  <div class="thumbdiv" style="background: ${item.myColor()};">
+  <a href="../$item.getLink()" title="${item.fullName}"  target="classFrame">#graph($item  "span")<br>${item.name}</a>
+  </div>
+#end
+#end
+#end
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+
+
+#*
+
+OTHER VARS (?)
+
+*#
+<div class="contentContainer">
+<ul class="blockList">
+<li class="blockList">
+<table class="packageSummary" border="0" cellpadding="3" cellspacing="0" summary="Variables Summary table, listing variables, and an explanation">
+<caption><span>Unused Variables</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Variable</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+#foreach( $var in $variables )
+#set( $est = $var.getChildrenBy( "match:cmd:estcmd", "match:cmd:statcmd", "match:cmd:manipulate" ) )
+#if ( $est.size() == 0 )
+#if ( "$color" == "altColor" ) #set( $color = "rowColor" ) #else #set( $color = "altColor" ) #end
+<tr class="$color">
+<td class="colFirst"><a href="../${var.getLink()}" title="variable $var">$var</a></td>
+<td class="colLast">
+#foreach( $subvar in $var.getChildrenBy( "variable:" ) )
+<a href="../${subvar.getLink()}" style="background: $subvar.myColor();">
+@$subvar.getFileItem().getName()
+</a>
+#end
+</td>
+</tr>
+#end
+#end
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+#parse( "item-footer.vm" )
