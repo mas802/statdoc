@@ -6,6 +6,8 @@ Statdoc analyses your statistics project and provides a javadoc like set of docu
 The system is setup to be extendible and flexible, but it currently mainly
 focuses on projects using Stata. 
 
+(!) currently the pom.xml is disabled due to security issues, let me know if you need a proper update or proceed at your own risk
+
 features
 ========
 
